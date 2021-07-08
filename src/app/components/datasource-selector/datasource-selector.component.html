@@ -1,0 +1,11 @@
+<form>
+    <div class="m-2">
+        <label for="datasource" style="font-size: 12px">Fonte de Dados:</label>
+        <select class="form-control  form-control-sm" id="datasource"
+                [(ngModel)]="dataSourceSelected"
+                (ngModelChange)="onChangedDataLego()" [ngModelOptions]="{standalone: true}">
+            <option selected hidden [ngValue]="null">Selecione uma Fonte de Dados</option>
+            <option [ngValue]="item.id" *ngFor="let item of dataSources">{{item.name}}</option>
+        </select>
+    </div>
+</form>

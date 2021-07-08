@@ -1,9 +1,13 @@
 {
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "cli": {
+    "analytics": false,
+    "defaultCollection": "@angular-eslint/schematics"
+  },
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "fireboard": {
+    "ng-fireboard": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -12,12 +16,12 @@
       },
       "root": "",
       "sourceRoot": "src",
-      "prefix": "app",
+      "prefix": "fb",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/fireboard",
+            "outputPath": "dist/ng-fireboard",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -65,18 +69,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "fireboard:build"
+            "browserTarget": "ng-fireboard:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "fireboard:build:production"
+              "browserTarget": "ng-fireboard:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "fireboard:build"
+            "browserTarget": "ng-fireboard:build"
           }
         },
         "test": {
@@ -97,15 +101,11 @@
           }
         },
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@angular-eslint/builder:lint",
           "options": {
-            "tsConfig": [
-              "tsconfig.app.json",
-              "tsconfig.spec.json",
-              "e2e/tsconfig.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
+            "lintFilePatterns": [
+              "src/**/*.ts",
+              "src/**/*.html"
             ]
           }
         },
@@ -113,16 +113,16 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "fireboard:serve"
+            "devServerTarget": "ng-fireboard:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "fireboard:serve:production"
+              "devServerTarget": "ng-fireboard:serve:production"
             }
           }
         }
       }
     }
   },
-  "defaultProject": "fireboard"
+  "defaultProject": "ng-fireboard"
 }

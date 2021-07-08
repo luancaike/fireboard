@@ -1,0 +1,34 @@
+$size-sidebar: 300px;
+$size-toolbar: 50px;
+
+.btn:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+.ddd-area {
+    display: flex;
+    flex-wrap: wrap;
+    position: relative;
+
+    .sidebar {
+        flex: 0 0 $size-sidebar;
+        height: calc(100vh - #{$size-toolbar});
+        background: #d4d4d4;
+        max-width: $size-sidebar;
+    }
+
+    .workspace {
+        flex: 0 0 calc(100% - #{$size-sidebar});
+        max-width: calc(100% - #{$size-sidebar});
+        height: calc(100vh - #{$size-toolbar});
+    }
+
+    .toolbar {
+        height: $size-toolbar;
+        background: white;
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+}
+
