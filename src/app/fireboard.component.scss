@@ -1,5 +1,16 @@
+@import 'style/scrollbar';
+
 $size-sidebar: 300px;
 $size-toolbar: 50px;
+
+:host {
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    background: #e2e2e2;
+    box-sizing: border-box;
+    overflow: hidden;
+}
 
 .btn:focus {
     outline: none;
@@ -14,14 +25,87 @@ $size-toolbar: 50px;
     .sidebar {
         flex: 0 0 $size-sidebar;
         height: calc(100vh - #{$size-toolbar});
-        background: #d4d4d4;
+        background-color: #e2e2e2;
         max-width: $size-sidebar;
+        border-left: solid 1px #4444;
+        box-shadow: 0 0 10px 0 rgba(99, 99, 99, 0.3);
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+
+        .tab-content {
+            height: calc(100% - 43px);
+            overflow-x: hidden;
+            overflow-y: auto;
+            @include scroll-style;
+
+            ::ng-deep .tab-pane.active {
+                background: white;
+                height: 100% !important;
+            }
+        }
+
+        .float-icon {
+            position: absolute;
+            right: 10px;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        ul.nav-tabs {
+            .nav-link {
+                border: none;
+
+                &.active {
+                    border-color: #fff #fff #dee2e6 !important;
+
+                    &:after {
+                        display: block;
+                        width: 25px;
+                        content: '';
+                        border-bottom: #4285f4 4px solid !important;
+                        left: 12px;
+                        position: absolute;
+                        bottom: -3px;
+                    }
+
+                    .tab-icon,
+                    .tab-label {
+                        color: #4285f4;
+                        font-weight: bold;
+                    }
+
+                    .tab-label {
+                        display: inline-block;
+                    }
+                }
+
+                .tab-icon,
+                .tab-label {
+                    color: #6c757d;
+                }
+
+                .tab-label {
+                    margin-left: 5px;
+                    display: none;
+                }
+
+                .tab-icon {
+                    display: inline-block;
+                }
+            }
+        }
     }
 
     .workspace {
         flex: 0 0 calc(100% - #{$size-sidebar});
         max-width: calc(100% - #{$size-sidebar});
         height: calc(100vh - #{$size-toolbar});
+
+        ::ng-deep.main-area {
+            @include scroll-style;
+        }
     }
 
     .toolbar {
@@ -29,6 +113,7 @@ $size-toolbar: 50px;
         background: white;
         flex: 0 0 100%;
         max-width: 100%;
+        box-shadow: 0 0 10px 0 rgba(99, 99, 99, 0.3);
+        z-index: 2;
     }
 }
-

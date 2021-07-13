@@ -9,11 +9,23 @@ import { fas } from '@fortawesome/free-solid-svg-icons';
 import { fab } from '@fortawesome/free-brands-svg-icons';
 import { IconsModule } from './icons/icons.module';
 import { WidgetsModule } from './widgets/widgets.module';
-import { DatasourceSelectorComponent } from './components/datasource-selector/datasource-selector.component';
+import { DataSourceSelectorComponent } from './components/data-source-selector/data-source-selector.component';
+import { DragDropModule } from '@angular/cdk/drag-drop';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { StyleEditorComponent } from './components/style-editor/style-editor.component';
 
 @NgModule({
-    imports: [BrowserModule, FormsModule, WidgetsModule, IconsModule, CraftableModule, FontAwesomeModule],
-    declarations: [FireboardComponent, DatasourceSelectorComponent],
+    imports: [
+        BrowserModule,
+        FormsModule,
+        WidgetsModule,
+        IconsModule,
+        CraftableModule,
+        FontAwesomeModule,
+        DragDropModule,
+        NgbModule
+    ],
+    declarations: [FireboardComponent, DataSourceSelectorComponent, StyleEditorComponent],
     bootstrap: [FireboardComponent]
 })
 export class FireboardModule {

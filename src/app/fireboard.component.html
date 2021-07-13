@@ -1,80 +1,73 @@
 <div class="ddd-area">
     <div class="toolbar">
         <div class="btn-group mt-2 mx-2">
-            <button type="button"
-                    class="btn btn-sm btn-outline-primary"
-                    [class.btn-primary]="craftable.enableDraw"
-                    [class.btn-outline-primary]="!craftable.enableDraw"
-                    (click)="drawNewLego()">
+            <button
+                type="button"
+                class="btn btn-sm btn-outline-primary"
+                [class.btn-primary]="craftable.enableDraw"
+                [class.btn-outline-primary]="!craftable.enableDraw"
+                (click)="drawNewLego()"
+            >
                 <i class="bi bi-pencil"></i>
                 Draw
             </button>
-            <button type="button"
-                    [class.btn-secondary]="visualizationMode"
-                    [class.btn-outline-secondary]="!visualizationMode"
-                    class="btn btn-sm" (click)="visualizationMode = !visualizationMode">
+            <button
+                type="button"
+                [class.btn-secondary]="visualizationMode"
+                [class.btn-outline-secondary]="!visualizationMode"
+                class="btn btn-sm"
+                (click)="visualizationMode = !visualizationMode"
+            >
                 <i class="bi bi-eye-fill"></i>
                 Visualization
             </button>
         </div>
-        <div class="btn-group  mt-2 mx-2">
-            <button type="button"
-                    title="Undo"
-                    class="btn btn-sm btn-outline-secondary"
-                    (click)="craftable.undo()">
+        <div class="btn-group mt-2 mx-2">
+            <button type="button" title="Undo" class="btn btn-sm btn-outline-secondary" (click)="craftable.undo()">
                 <i class="bi bi-arrow-90deg-left"></i>
             </button>
-            <button type="button"
-                    title="Redo"
-                    class="btn btn-sm btn-outline-secondary"
-                    (click)="craftable.redo()">
+            <button type="button" title="Redo" class="btn btn-sm btn-outline-secondary" (click)="craftable.redo()">
                 <i class="bi bi-arrow-90deg-right"></i>
             </button>
         </div>
-        <div class="btn-group  mt-2 mx-2">
-            <button type="button"
-                    class="btn btn-sm btn-outline-secondary"
-                    title="Select All"
-                    (click)="craftable.selectAll()">
-                <i class="bi bi-check-all" style="font-size: 1rem;"></i>
+        <div class="btn-group mt-2 mx-2">
+            <button
+                type="button"
+                class="btn btn-sm btn-outline-secondary"
+                title="Select All"
+                (click)="craftable.selectAll()"
+            >
+                <i class="bi bi-check-all" style="font-size: 1rem"></i>
             </button>
-            <button type="button"
-                    title="Unselect All"
-                    class="btn btn-sm btn-outline-secondary"
-                    (click)="craftable.unSelectAll()">
-                <i class="bi bi-x" style="font-size: 1rem;"></i>
+            <button
+                type="button"
+                title="Unselect All"
+                class="btn btn-sm btn-outline-secondary"
+                (click)="craftable.unSelectAll()"
+            >
+                <i class="bi bi-x" style="font-size: 1rem"></i>
             </button>
         </div>
-        <div class="btn-group  mt-2 mx-2">
-            <button type="button"
-                    class="btn btn-sm btn-outline-secondary"
-                    (click)="craftable.duplicate()">
+        <div class="btn-group mt-2 mx-2">
+            <button type="button" class="btn btn-sm btn-outline-secondary" (click)="craftable.duplicate()">
                 <i class="bi bi-files"></i>
                 Duplicate
             </button>
-            <button type="button"
-                    class="btn btn-sm btn-outline-secondary"
-                    (click)="craftable.copy()">
+            <button type="button" class="btn btn-sm btn-outline-secondary" (click)="craftable.copy()">
                 <i class="bi bi-files"></i>
                 Copy
             </button>
-            <button type="button"
-                    class="btn btn-sm btn-outline-secondary"
-                    (click)="craftable.cut()">
+            <button type="button" class="btn btn-sm btn-outline-secondary" (click)="craftable.cut()">
                 <i class="bi bi-scissors"></i>
                 Cut
             </button>
-            <button type="button"
-                    class="btn btn-sm btn-outline-secondary"
-                    (click)="craftable.paste()">
+            <button type="button" class="btn btn-sm btn-outline-secondary" (click)="craftable.paste()">
                 <i class="bi bi-clipboard"></i>
                 Paste
             </button>
         </div>
-        <div class="btn-group  mt-2 mx-2">
-            <button type="button"
-                    class="btn btn-sm btn-outline-secondary"
-                    (click)="craftable.bringToForward()">
+        <div class="btn-group mt-2 mx-2">
+            <button type="button" class="btn btn-sm btn-outline-secondary" (click)="craftable.bringToForward()">
                 <i class="bi bi-front"></i>
                 Bring Forward
             </button>
@@ -84,20 +77,20 @@
                     type="button"
                     class="btn btn-sm btn-outline-secondary dropdown-toggle"
                     data-bs-toggle="dropdown"
-                    aria-expanded="false">
-                </button>
+                    aria-expanded="false"
+                ></button>
                 <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1">
-                    <li><a class="dropdown-item" (click)="craftable.bringToFront()" href="#">
-                        <i class="bi bi-intersect"></i>
-                        Bring to Front
-                    </a></li>
+                    <li>
+                        <a class="dropdown-item" (click)="craftable.bringToFront()" href="#">
+                            <i class="bi bi-intersect"></i>
+                            Bring to Front
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>
         <div class="btn-group mt-2 mx-2">
-            <button type="button"
-                    class="btn btn-sm btn-outline-secondary"
-                    (click)="craftable.bringToBackward()">
+            <button type="button" class="btn btn-sm btn-outline-secondary" (click)="craftable.bringToBackward()">
                 <i class="bi bi-back"></i>
                 Bring Backward
             </button>
@@ -107,42 +100,68 @@
                     type="button"
                     class="btn btn-sm btn-outline-secondary dropdown-toggle"
                     data-bs-toggle="dropdown"
-                    aria-expanded="false">
-                </button>
+                    aria-expanded="false"
+                ></button>
                 <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1">
-                    <li><a class="dropdown-item" (click)="craftable.bringToBack()" href="#">
-                        <i class="bi bi-intersect"></i>
-                        Bring to Back
-                    </a></li>
+                    <li>
+                        <a class="dropdown-item" (click)="craftable.bringToBack()" href="#">
+                            <i class="bi bi-intersect"></i>
+                            Bring to Back
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>
-        <div class="btn-group  mt-2 mx-2">
-            <button type="button"
-                    class="btn btn-sm btn-outline-danger"
-                    (click)="craftable.deleteSelection()">
+        <div class="btn-group mt-2 mx-2">
+            <button type="button" class="btn btn-sm btn-outline-danger" (click)="craftable.deleteSelection()">
                 <i class="bi bi-trash-fill"></i>
                 Delete
             </button>
         </div>
+        <div class="btn-group mt-2 mx-2">
+            <div [hidden]="!isLoading">
+                <fa-icon [icon]="['fas', 'circle-notch']" size="2x" [spin]="true"></fa-icon>
+            </div>
+        </div>
     </div>
     <div class="workspace">
-        <ng-craftable
-            #craftable
-            (selectionChange)="selectionChange($event)"
-            [visualizationMode]="visualizationMode">
+        <ng-craftable #craftable (selectionChange)="selectionChange($event)" [visualizationMode]="visualizationMode">
             <ng-template #template let-data>
-                <fb-bar-chart #chart [legoData]="data"></fb-bar-chart>
+                <fb-bar-chart #chart [legoData]="data" [dataGetter]="dataGetter"></fb-bar-chart>
             </ng-template>
         </ng-craftable>
     </div>
     <div class="sidebar">
-        <div [hidden]="!showLegoOptionsEditor">
-            <fb-datasource-selector
-                #datasourceSelector
-                (changedDataSource)="updateLegoDataSource($event)"
-                [dataSources]="dataSources"></fb-datasource-selector>
-        </div>
+        <ul ngbNav #nav="ngbNav" class="nav-tabs" [destroyOnHide]="false">
+            <li [ngbNavItem]="1">
+                <a ngbNavLink>
+                    <fa-icon [fixedWidth]="true" class="tab-icon" icon="swatchbook"></fa-icon>
+                    <span class="tab-label">Estilo</span>
+                </a>
+                <ng-template ngbNavContent>
+                    <fb-style-editor
+                        [hidden]="!showLegoOptionsEditor"
+                        #styleEditorComponent
+                        (changedOptions)="updateLegoOptions($event)"
+                    ></fb-style-editor>
+                </ng-template>
+            </li>
+            <li [ngbNavItem]="2">
+                <a ngbNavLink>
+                    <fa-icon [fixedWidth]="true" class="tab-icon" icon="database"></fa-icon>
+                    <span class="tab-label">Dados</span>
+                </a>
+                <ng-template ngbNavContent>
+                    <fb-data-source-selector
+                        [hidden]="!showLegoOptionsEditor"
+                        #datasourceSelector
+                        (changedDataSource)="updateLegoDataSource($event)"
+                        [dataSources]="dataSources"
+                    ></fb-data-source-selector>
+                </ng-template>
+            </li>
+        </ul>
+
+        <div [ngbNavOutlet]="nav"></div>
     </div>
 </div>
-

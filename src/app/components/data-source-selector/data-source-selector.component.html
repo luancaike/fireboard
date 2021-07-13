@@ -1,0 +1,87 @@
+<div class="datasource-options-container">
+    <div class="datasource-selector">
+        <label for="datasource" style="font-size: 12px">Fonte de Dados:</label>
+        <select
+            class="form-control form-control-sm"
+            id="datasource"
+            [(ngModel)]="dataSourceSelected"
+            (ngModelChange)="changedDatasource()"
+            [ngModelOptions]="{ standalone: true }"
+        >
+            <option selected hidden [ngValue]="null">Selecione uma Fonte de Dados</option>
+            <option [ngValue]="item.id" *ngFor="let item of dataSources">{{ item.name }}</option>
+        </select>
+    </div>
+    <div class="field-selector-container">
+        <div class="field-selector">
+            <div
+                *ngFor="let item of dataSourceBindOptions"
+                cdkDropList
+                #todoList="cdkDropList"
+                [id]="item.key"
+                [cdkDropListData]="dataSourceSelectedKeys.get(item.key)?.data"
+                class="field-bindings"
+                (cdkDropListDropped)="drop($event)"
+            >
+                <span class="field-bindings-label">{{ item.label }}</span>
+                <div
+                    *ngFor="let key of dataSourceSelectedKeys.get(item.key)?.data"
+                    [class.custom]="key.type === 'custom'"
+                    [class.number]="key.type === 'number'"
+                    [class.text]="key.type === 'string'"
+                    [class.date]="key.type === 'date'"
+                    class="field"
+                    cdkDragBoundary=".field-bindings"
+                    cdkDrag
+                >
+                    <div class="field-text">
+                        <fa-icon *ngIf="key.type === 'number'" class="column-icon" icon="calculator"></fa-icon>
+                        <fa-icon *ngIf="key.type === 'string'" class="column-icon" icon="font"></fa-icon>
+                        <fa-icon *ngIf="key.type === 'date'" class="column-icon" icon="calendar"></fa-icon>
+                        <fa-icon *ngIf="key.type === 'custom'" class="column-icon" icon="code"></fa-icon>
+                        {{ key.name }}
+                    </div>
+                    <fa-icon
+                        class="remove-icon"
+                        icon="times-circle"
+                        (click)="removeItemOfArray(key, dataSourceSelectedKeys.get(item.key)?.data)"
+                    ></fa-icon>
+                </div>
+            </div>
+            <!--            <div-->
+            <!--                class="field-bindings">-->
+            <!--                <span class="field-bindings-label">Filtros</span>-->
+            <!--            </div>-->
+        </div>
+        <div class="field-list">
+            <div
+                cdkDropList
+                class="field-list-wrapper"
+                #fieldLists="cdkDropList"
+                [cdkDropListData]="dataSourceKeys"
+                [cdkDropListSortingDisabled]="true"
+                [cdkDropListConnectedTo]="bindingsIds"
+            >
+                <span class="field-list-label">Colunas</span>
+                <div
+                    *ngFor="let item of dataSourceKeys"
+                    [class.custom]="item.type === 'custom'"
+                    [class.number]="item.type === 'number'"
+                    [class.text]="item.type === 'string'"
+                    [class.date]="item.type === 'date'"
+                    class="field"
+                    cdkDragBoundary=".field-selector-container"
+                    cdkDrag
+                >
+                    <div class="field-text">
+                        <fa-icon *ngIf="item.type === 'number'" class="column-icon" icon="calculator"></fa-icon>
+                        <fa-icon *ngIf="item.type === 'string'" class="column-icon" icon="font"></fa-icon>
+                        <fa-icon *ngIf="item.type === 'date'" class="column-icon" icon="calendar"></fa-icon>
+                        <fa-icon *ngIf="item.type === 'custom'" class="column-icon" icon="code"></fa-icon>
+                        {{ item.name }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

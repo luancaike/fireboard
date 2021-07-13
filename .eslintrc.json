@@ -16,7 +16,6 @@
                 "createDefaultProgram": true
             },
             "extends": [
-                "plugin:angular/johnpapa",
                 "plugin:@typescript-eslint/recommended",
                 "plugin:prettier/recommended",
                 "plugin:@angular-eslint/recommended",

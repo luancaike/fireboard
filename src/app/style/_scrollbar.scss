@@ -1,0 +1,19 @@
+@mixin scroll-style {
+    &::-webkit-scrollbar {
+        transition-property: width;
+        transition-duration: 1s;
+        width: 10px;
+        height: 10px;
+        border: none;
+    }
+
+    &::-webkit-scrollbar-track {
+        background: #e2e2e2;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: #929292;
+        border-radius: 20px;
+        border: 2px solid #e2e2e2;
+    }
+}
