@@ -44,7 +44,7 @@ export class StyleEditorComponent {
         return true;
     }
 
-    @debounce(50)
+    @debounce(20)
     setValueByKeyPath(keyPath: string, value: unknown): void {
         SetValueObjectByPath(this.legoOptions, keyPath, value);
         this.changedOptions.emit({ ...this.legoOptions });
