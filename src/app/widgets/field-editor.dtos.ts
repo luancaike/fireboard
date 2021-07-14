@@ -3,7 +3,9 @@ export type FieldEditor =
     | FieldEditorSelect
     | FieldEditorColor
     | FieldEditorCheckbox
-    | FieldEditorGroup;
+    | FieldEditorGroup
+    | FieldEditorAlignment
+    | FieldEditorPosition;
 
 export enum FieldEditorTypes {
     Text = 'text',
@@ -12,7 +14,9 @@ export enum FieldEditorTypes {
     Color = 'color',
     Checkbox = 'checkbox',
     EditorGroup = 'editorgroup',
-    FontSize = 'fontsize'
+    FontSize = 'fontsize',
+    Alignment = 'alignment',
+    Position = 'position'
 }
 
 export interface FieldEditorBase {
@@ -22,9 +26,23 @@ export interface FieldEditorBase {
     dependencyKey?: string;
 }
 
+export interface FieldEditorDirections {
+    label?: string;
+    icon: string;
+    value: any;
+}
+
 export interface FieldEditorSelect extends FieldEditorBase {
     type: FieldEditorTypes.Select;
-    data: { key: never; value: any }[];
+    data: { text: string; value: any }[];
+}
+export interface FieldEditorAlignment extends FieldEditorBase {
+    type: FieldEditorTypes.Alignment;
+    data: { text: string; value: any }[];
+}
+export interface FieldEditorPosition extends FieldEditorBase {
+    type: FieldEditorTypes.Position;
+    data: { text: string; value: any }[];
 }
 
 export interface FieldEditorColor extends FieldEditorBase {

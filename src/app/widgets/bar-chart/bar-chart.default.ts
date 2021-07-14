@@ -101,6 +101,30 @@ export class BarChartDefault {
                         label: 'Cor da Fonte',
                         type: FieldEditorTypes.Color,
                         dependencyKey: 'title.display'
+                    },
+                    {
+                        key: 'title.position',
+                        label: 'Posição',
+                        type: FieldEditorTypes.Position,
+                        data: [
+                            {
+                                value: 'bottom',
+                                text: 'Inferior'
+                            },
+                            {
+                                value: 'top',
+                                text: 'Superior'
+                            },
+                            {
+                                value: 'right',
+                                text: 'Direita'
+                            },
+                            {
+                                value: 'left',
+                                text: 'Esquerda'
+                            }
+                        ],
+                        dependencyKey: 'title.display'
                     }
                 ]
             },
@@ -118,6 +142,50 @@ export class BarChartDefault {
                         label: 'Largura Completa',
                         type: FieldEditorTypes.Checkbox,
                         dependencyKey: 'legend.display'
+                    },
+                    {
+                        key: 'legend.position',
+                        label: 'Posição',
+                        type: FieldEditorTypes.Position,
+                        data: [
+                            {
+                                value: 'bottom',
+                                text: 'Inferior'
+                            },
+                            {
+                                value: 'top',
+                                text: 'Superior'
+                            },
+                            {
+                                value: 'right',
+                                text: 'Direita'
+                            },
+                            {
+                                value: 'left',
+                                text: 'Esquerda'
+                            }
+                        ],
+                        dependencyKey: 'legend.display'
+                    },
+                    {
+                        key: 'legend.align',
+                        label: 'Alinhamento',
+                        type: FieldEditorTypes.Alignment,
+                        data: [
+                            {
+                                value: 'start',
+                                text: 'Inicio'
+                            },
+                            {
+                                value: 'center',
+                                text: 'Centro'
+                            },
+                            {
+                                value: 'end',
+                                text: 'Fim'
+                            }
+                        ],
+                        dependencyKey: 'legend.display'
                     }
                 ]
             },
@@ -129,6 +197,207 @@ export class BarChartDefault {
                         key: 'layout.padding',
                         label: 'Preenchimento',
                         type: FieldEditorTypes.Number
+                    }
+                ]
+            },
+            {
+                type: FieldEditorTypes.EditorGroup,
+                label: 'Rótulos de Dados',
+                children: [
+                    {
+                        key: 'plugins.datalabels.display',
+                        label: 'Mostrar',
+                        type: FieldEditorTypes.Checkbox
+                    },
+                    {
+                        key: 'plugins.datalabels.clamp',
+                        label: 'Clamp',
+                        type: FieldEditorTypes.Checkbox,
+                        dependencyKey: 'plugins.datalabels.display'
+                    },
+                    {
+                        key: 'plugins.datalabels.clip',
+                        label: 'Clip',
+                        type: FieldEditorTypes.Checkbox,
+                        dependencyKey: 'plugins.datalabels.display'
+                    },
+                    {
+                        key: 'plugins.datalabels.color',
+                        label: 'Cor',
+                        type: FieldEditorTypes.Color,
+                        dependencyKey: 'plugins.datalabels.display'
+                    },
+                    {
+                        key: 'plugins.datalabels.font.size',
+                        label: 'Tamanho',
+                        type: FieldEditorTypes.FontSize,
+                        dependencyKey: 'plugins.datalabels.display'
+                    },
+                    {
+                        key: 'plugins.datalabels.offset',
+                        label: 'Deslocamento',
+                        type: FieldEditorTypes.Number,
+                        dependencyKey: 'plugins.datalabels.display'
+                    },
+                    {
+                        key: 'plugins.datalabels.align',
+                        label: 'Alinhamento',
+                        type: FieldEditorTypes.Alignment,
+                        data: [
+                            {
+                                value: 'center',
+                                text: 'Centro'
+                            },
+                            {
+                                value: 'start',
+                                text: 'Inicio'
+                            },
+                            {
+                                value: 'end',
+                                text: 'Fim'
+                            },
+                            {
+                                value: 'right',
+                                text: 'Direita'
+                            },
+                            {
+                                value: 'left',
+                                text: 'Esquerda'
+                            },
+                            {
+                                value: 'bottom',
+                                text: 'Inferior'
+                            },
+                            {
+                                value: 'top',
+                                text: 'Superior'
+                            }
+                        ],
+                        dependencyKey: 'plugins.datalabels.display'
+                    },
+                    {
+                        key: 'plugins.datalabels.anchor',
+                        label: 'Posição',
+                        type: FieldEditorTypes.Position,
+                        data: [
+                            {
+                                value: 'center',
+                                text: 'Centro'
+                            },
+                            {
+                                value: 'start',
+                                text: 'Inicio'
+                            },
+                            {
+                                value: 'end',
+                                text: 'Fim'
+                            }
+                        ],
+                        dependencyKey: 'plugins.datalabels.display'
+                    }
+                ]
+            },
+            {
+                type: FieldEditorTypes.EditorGroup,
+                label: 'Eixo X',
+                children: [
+                    {
+                        type: FieldEditorTypes.EditorGroup,
+                        label: 'Linhas',
+                        children: [
+                            {
+                                key: 'scales.xAxes[0].gridLines.display',
+                                label: 'Mostrar',
+                                type: FieldEditorTypes.Checkbox
+                            },
+                            {
+                                key: 'scales.xAxes[0].gridLines.lineWidth',
+                                label: 'Largura',
+                                type: FieldEditorTypes.Number,
+                                dependencyKey: 'scales.xAxes[0].gridLines.display'
+                            },
+                            {
+                                key: 'scales.xAxes[0].gridLines.color',
+                                label: 'Cor',
+                                type: FieldEditorTypes.Color,
+                                dependencyKey: 'scales.xAxes[0].gridLines.display'
+                            }
+                        ]
+                    },
+                    {
+                        type: FieldEditorTypes.EditorGroup,
+                        label: 'Ticks',
+                        children: [
+                            {
+                                key: 'scales.xAxes[0].ticks.display',
+                                label: 'Mostrar',
+                                type: FieldEditorTypes.Checkbox
+                            },
+                            {
+                                key: 'scales.xAxes[0].ticks.fontSize',
+                                label: 'Tamanho',
+                                type: FieldEditorTypes.FontSize,
+                                dependencyKey: 'scales.xAxes[0].ticks.display'
+                            },
+                            {
+                                key: 'scales.xAxes[0].ticks.color',
+                                label: 'Cor',
+                                type: FieldEditorTypes.Color,
+                                dependencyKey: 'scales.xAxes[0].ticks.display'
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                type: FieldEditorTypes.EditorGroup,
+                label: 'Eixo Y',
+                children: [
+                    {
+                        type: FieldEditorTypes.EditorGroup,
+                        label: 'Linhas',
+                        children: [
+                            {
+                                key: 'scales.yAxes[0].gridLines.display',
+                                label: 'Mostrar',
+                                type: FieldEditorTypes.Checkbox
+                            },
+                            {
+                                key: 'scales.yAxes[0].gridLines.lineWidth',
+                                label: 'Largura',
+                                type: FieldEditorTypes.Number,
+                                dependencyKey: 'scales.yAxes[0].gridLines.display'
+                            },
+                            {
+                                key: 'scales.yAxes[0].gridLines.color',
+                                label: 'Cor',
+                                type: FieldEditorTypes.Color,
+                                dependencyKey: 'scales.yAxes[0].gridLines.display'
+                            }
+                        ]
+                    },
+                    {
+                        type: FieldEditorTypes.EditorGroup,
+                        label: 'Ticks',
+                        children: [
+                            {
+                                key: 'scales.yAxes[0].ticks.display',
+                                label: 'Mostrar',
+                                type: FieldEditorTypes.Checkbox
+                            },
+                            {
+                                key: 'scales.yAxes[0].ticks.fontSize',
+                                label: 'Tamanho',
+                                type: FieldEditorTypes.FontSize,
+                                dependencyKey: 'scales.yAxes[0].ticks.display'
+                            },
+                            {
+                                key: 'scales.yAxes[0].ticks.color',
+                                label: 'Cor',
+                                type: FieldEditorTypes.Color,
+                                dependencyKey: 'scales.yAxes[0].ticks.display'
+                            }
+                        ]
                     }
                 ]
             }

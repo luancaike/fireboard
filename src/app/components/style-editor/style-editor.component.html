@@ -13,9 +13,11 @@
                 </fa-stack>
             </div>
         </div>
-        <div class="mb-4" *ngIf="item.type === 'editorgroup' && this.checkDependenceKey(item)">
-            <h6>{{ item.label }}</h6>
+        <div class="container-editor-group" *ngIf="item.type === 'editorgroup' && this.checkDependenceKey(item)">
+            <label class="container-editor-label">{{ item.label }}</label>
+            <div class="container-editor-children">
             <ng-container *ngTemplateOutlet="fieldsData; context: { data: item.children }"></ng-container>
+            </div>
         </div>
         <div *ngIf="item.type === 'number' && this.checkDependenceKey(item)">
             <label>{{ item.label }}</label>
@@ -87,6 +89,35 @@
                 (ngModelChange)="setValueByKeyPath(item.key, $event)"
                 class="form-control form-control-sm"
             ></textarea>
+        </div>
+        <div *ngIf="item.type === 'alignment' && this.checkDependenceKey(item)">
+            <label>{{ item.label }}</label>
+            <div class="group-input-icon">
+                <select
+                    [(ngModel)]="form[item.key]"
+                    (ngModelChange)="setValueByKeyPath(item.key, $event)"
+                    class="form-control form-control-sm">
+                    <option *ngFor="let option of item.data" [ngValue]="option.value">{{option.text}}</option>
+                </select>
+                <fa-stack>
+                    <fa-icon icon="long-arrow-alt-left" stackItemSize="1x" transform="right-5"></fa-icon>
+                    <fa-icon icon="grip-lines-vertical" stackItemSize="1x" transform="left-5"></fa-icon>
+                </fa-stack>
+            </div>
+        </div>
+        <div *ngIf="item.type === 'position' && this.checkDependenceKey(item)">
+            <label>{{ item.label }}</label>
+            <div class="group-input-icon">
+                <select
+                    [(ngModel)]="form[item.key]"
+                    (ngModelChange)="setValueByKeyPath(item.key, $event)"
+                    class="form-control form-control-sm">
+                    <option *ngFor="let option of item.data" [ngValue]="option.value">{{option.text}}</option>
+                </select>
+                <fa-stack>
+                    <fa-icon stackItemSize="1x" [fixedWidth]="true" icon="arrows-alt"></fa-icon>
+                </fa-stack>
+            </div>
         </div>
     </ng-container>
 </ng-template>

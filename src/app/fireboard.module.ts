@@ -13,6 +13,7 @@ import { DataSourceSelectorComponent } from './components/data-source-selector/d
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { StyleEditorComponent } from './components/style-editor/style-editor.component';
+import { ToolbarMenuComponent } from './components/toolbar-menu/toolbar-menu.component';
 
 @NgModule({
     imports: [
@@ -25,7 +26,7 @@ import { StyleEditorComponent } from './components/style-editor/style-editor.com
         DragDropModule,
         NgbModule
     ],
-    declarations: [FireboardComponent, DataSourceSelectorComponent, StyleEditorComponent],
+    declarations: [FireboardComponent, DataSourceSelectorComponent, StyleEditorComponent, ToolbarMenuComponent],
     bootstrap: [FireboardComponent]
 })
 export class FireboardModule {

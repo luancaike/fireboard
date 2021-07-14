@@ -24,10 +24,12 @@ export class FireboardComponent {
     @ViewChild('craftable') craftable: CraftableComponent;
     @ViewChild('datasourceSelector') datasourceSelector: DataSourceSelectorComponent;
     @ViewChild('styleEditorComponent') styleEditorComponent: StyleEditorComponent;
+    nameBoard = 'Nome do Dashboard';
     isLoading = false;
     showLegoOptionsEditor = false;
     dataSources: DataSource[] = DataSourceMockList;
     visualizationMode = false;
+
     dataGetter = (data: DataGetter): Promise<any[]> => {
         return new Promise((resolve) => {
             const result = DataSourceDataMockList.find((value) => value.id === data.id);
@@ -37,8 +39,10 @@ export class FireboardComponent {
 
     constructor(private cdr: ChangeDetectorRef) {}
 
-    drawNewLego(): void {
-        this.craftable.drawNewLego();
+    drawNewLego(data?: any): void {
+        const activeElement = document.activeElement as HTMLButtonElement;
+        activeElement.blur && activeElement.blur();
+        this.craftable.drawNewLego(data);
     }
 
     selectionChange(data: string[]): void {

@@ -1,0 +1,30 @@
+<div class="menu-list">
+    <div class="menu-item" #item *ngFor="let menuItem of menuOptions">
+<!--        (blur)="blurMenu(item)"-->
+        <button #menu class="menu-select" (click)="selectMenu(item)" (blur)="blurMenu(item)">
+            {{menuItem.title}}
+        </button>
+        <div class="menu-children" #menuChild *ngIf="menuItem.children">
+            <div class="menu-children-item"
+                 [class.item-disabled]="menuSubItem.disabled"
+                 [class.item-separator]="menuSubItem.separator"
+                 *ngFor="let menuSubItem of menuItem.children; let i = index"
+                 (mouseenter)="showSubMenu(menuChild, subMenu, menuSubItem.children, i)"
+                 (click)="callActionMenu(item, menuSubItem.action)">
+                <fa-icon [fixedWidth]="true" class="item-icon" *ngIf="menuSubItem.icon" [icon]="menuSubItem.icon"></fa-icon>
+                {{menuSubItem.title}}
+                <span class="item-short" *ngIf="menuSubItem?.short?.length">{{menuSubItem.short}}</span>
+                <fa-icon [fixedWidth]="true" class="item-subMenu" *ngIf="menuSubItem?.children?.length" icon="caret-right"></fa-icon>
+            </div>
+        </div>
+        <div class="menu-children" #subMenu [class.visible]="menuSubOptions && menuSubOptions?.length">
+            <div class="menu-children-item" *ngFor="let menuSubItem of menuSubOptions"
+                 [class.item-disabled]="menuSubItem.disabled"
+                 (click)="callActionMenu(item, menuSubItem.action)">
+                {{menuSubItem.title}}
+                <span class="item-short" *ngIf="menuSubItem?.short?.length">{{menuSubItem.short}}</span>
+            </div>
+        </div>
+    </div>
+</div>
+

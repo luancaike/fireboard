@@ -3,13 +3,36 @@
 .style-editor-container {
     padding: 15px;
     color: #6c757d;
+    background: white;
 
     .group-input-icon {
         display: flex;
+        margin-bottom: 10px
     }
 
     label {
         font-size: 14px;
+    }
+
+    .container-editor-group {
+        margin-bottom: 30px;
+
+        .container-editor-children {
+            margin-left: 15px;
+        }
+
+        .container-editor-label {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+
+        .container-editor-group {
+            .container-editor-label {
+                font-size: 14px;
+                font-weight: 500;
+            }
+        }
     }
 
     /* The container */

@@ -1,7 +1,7 @@
 @import 'style/scrollbar';
 
 $size-sidebar: 300px;
-$size-toolbar: 50px;
+$size-toolbar: 120px;
 
 :host {
     position: absolute;
@@ -55,9 +55,13 @@ $size-toolbar: 50px;
 
         ul.nav-tabs {
             .nav-link {
-                border: none;
+                &:not(.active) {
+                    border: none;
+                }
 
                 &.active {
+                    position: relative;
+                    border-width: 1px;
                     border-color: #fff #fff #dee2e6 !important;
 
                     &:after {
@@ -73,7 +77,6 @@ $size-toolbar: 50px;
                     .tab-icon,
                     .tab-label {
                         color: #4285f4;
-                        font-weight: bold;
                     }
 
                     .tab-label {
@@ -88,7 +91,6 @@ $size-toolbar: 50px;
 
                 .tab-label {
                     margin-left: 5px;
-                    display: none;
                 }
 
                 .tab-icon {
@@ -109,11 +111,175 @@ $size-toolbar: 50px;
     }
 
     .toolbar {
+        display: flex;
         height: $size-toolbar;
         background: white;
         flex: 0 0 100%;
         max-width: 100%;
         box-shadow: 0 0 10px 0 rgba(99, 99, 99, 0.3);
         z-index: 2;
+        flex-grow: 1;
+        flex-direction: column;
+
+        .toolbar-separator {
+            height: 70%;
+            border-left: #dcdcdc 1px solid;
+            position: relative;
+            top: 5px;
+            margin: 0 10px;
+        }
+
+        .toolbar-menu {
+            flex: 0 0 70px;
+
+            .label-editable {
+                padding: 10px 20px;
+                max-width: 600px;
+
+                .name-board {
+                    color: #42484e;
+                    outline: 0;
+                    display: block;
+                    font-size: 20px;
+                    font-weight: 600;
+                    background: transparent;
+                    border: transparent;
+                    border-bottom: 1px solid transparent;
+                    width: 100%;
+                    height: 20px;
+                    line-height: 20px;
+                    margin-top: 2px;
+                    transition: border-color 0.2s ease-in-out;
+                    overflow: hidden;
+
+                    &:focus {
+                        border-color: rgb(66, 66, 66);
+                    }
+                }
+            }
+
+            .menu-container {
+                width: 50%;
+            }
+        }
+
+        .toolbar-tools {
+            border-top: #dee2e6 solid 1px;
+            flex: 0 0 50px;
+            display: flex;
+            padding: 8px;
+
+            .btn-group {
+                color: #42484e;
+                max-width: 100%;
+            }
+
+            .btn-toolbar-dropdown {
+                max-width: 100%;
+
+                &:hover {
+                    background-color: rgba(108, 117, 125, 0.1);
+                }
+
+                &:focus-within {
+                    .dropdown-options {
+                        display: flex;
+                        justify-content: space-evenly;
+                        align-items: center;
+                    }
+                }
+
+                .dropdown-options {
+                    padding: 5px;
+                    display: none;
+                    position: absolute;
+                    min-width: 0;
+                    max-width: 300px;
+                    min-height: 0;
+                    max-height: 600px;
+                    background: white;
+                    overflow: auto;
+                    z-index: 3;
+                    box-shadow: 0 0 30px 0 rgba(100, 100, 100, .3);
+                    flex-direction: row;
+                    flex-wrap: wrap;
+                    align-content: flex-start;
+
+                    .dropdown-options-item {
+                        outline: 0;
+                        background: white;
+                        color: #6c757d;
+                        height: 45px;
+                        cursor: pointer;
+                        flex: 0 0 50px;
+                        border: #dcdcdc 1px solid;
+
+                        &:hover {
+                            background: rgba(108, 117, 125, 0.1);
+                        }
+                    }
+
+                    .dropdown-options-list-item {
+                        outline: 0;
+                        background: white;
+                        color: #6c757d;
+                        height: 40px;
+                        cursor: pointer;
+                        flex: 0 0 100%;
+                        border: none;
+                        text-align: start;
+                        vertical-align: middle;
+
+                        &:hover {
+                            background: rgba(108, 117, 125, 0.1);
+                        }
+
+                        .btn-icon {
+                            width: 20px!important;
+                            height: 20px!important;
+                            margin: 0 5px;
+                        }
+                    }
+                }
+
+                .dropdown-button {
+                    height: 100%;
+                    width: 100%;
+                    display: inline-block;
+                    text-align: center;
+                    white-space: nowrap;
+                    vertical-align: middle;
+                    -webkit-user-select: none;
+                    -moz-user-select: none;
+                    -ms-user-select: none;
+                    user-select: none;
+                    border: 1px solid transparent;
+                    line-height: 10px;
+                    background: white;
+                    color: #6c757d;
+
+                    &:focus, &:hover:focus {
+                        outline: 0;
+                        background: #6c757d;
+                        color: white;
+                    }
+
+                    &:hover {
+                        background: rgba(108, 117, 125, 0.1);
+                    }
+
+                    .btn-icon {
+                        font-size: 15px;
+                        margin: 0 5px;
+                    }
+
+                    .btn-icon-arrow {
+                        margin-left: 5px;
+                        font-size: 12px;
+                    }
+                }
+            }
+        }
+
     }
 }
