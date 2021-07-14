@@ -5,7 +5,8 @@ export type FieldEditor =
     | FieldEditorCheckbox
     | FieldEditorGroup
     | FieldEditorAlignment
-    | FieldEditorPosition;
+    | FieldEditorPosition
+    | FieldEditorRange;
 
 export enum FieldEditorTypes {
     Text = 'text',
@@ -16,7 +17,8 @@ export enum FieldEditorTypes {
     EditorGroup = 'editorgroup',
     FontSize = 'fontsize',
     Alignment = 'alignment',
-    Position = 'position'
+    Position = 'position',
+    Range = 'range'
 }
 
 export interface FieldEditorBase {
@@ -54,7 +56,15 @@ export interface FieldEditorCheckbox extends FieldEditorBase {
     type: FieldEditorTypes.Checkbox;
     options?: { key: never; value: any }[];
 }
+
 export interface FieldEditorGroup extends FieldEditorBase {
     type: FieldEditorTypes.EditorGroup;
     children: FieldEditor[];
+}
+
+export interface FieldEditorRange extends FieldEditorBase {
+    type: FieldEditorTypes.Range;
+    step?: number;
+    max?: number;
+    min?: number;
 }

@@ -33,6 +33,20 @@
                 </fa-stack>
             </div>
         </div>
+        <div *ngIf="item.type === 'range' && this.checkDependenceKey(item)">
+            <label>{{ item.label }}</label>
+            <div class="group-input-icon">
+                <input
+                    type="range"
+                    class="form-control-range"
+                    [(ngModel)]="form[item.key]"
+                    (ngModelChange)="setValueByKeyPath(item.key, $event)"
+                    [step]="item.step || 1"
+                    [min]="item.min || 0"
+                    [max]="item.max || 100"
+                />
+            </div>
+        </div>
         <div *ngIf="item.type === 'fontsize' && this.checkDependenceKey(item)">
             <label>{{ item.label }}</label>
             <div class="group-input-icon">
@@ -61,15 +75,6 @@
                     <fa-icon stackItemSize="1x" [fixedWidth]="true" icon="palette"></fa-icon>
                 </fa-stack>
             </div>
-        </div>
-        <div *ngIf="item.type === 'range' && this.checkDependenceKey(item)">
-            <label>{{ item.label }}</label>
-            <input
-                [(ngModel)]="form[item.key]"
-                (ngModelChange)="setValueByKeyPath(item.key, $event)"
-                type="range"
-                class="form-control form-control-sm"
-            />
         </div>
         <div *ngIf="item.type === 'checkbox' && this.checkDependenceKey(item)">
             <label class="container-checkbox">

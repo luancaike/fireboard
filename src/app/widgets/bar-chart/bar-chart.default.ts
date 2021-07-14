@@ -196,7 +196,8 @@ export class BarChartDefault {
                     {
                         key: 'layout.padding',
                         label: 'Preenchimento',
-                        type: FieldEditorTypes.Number
+                        type: FieldEditorTypes.Range,
+                        max: 150
                     }
                 ]
             },
