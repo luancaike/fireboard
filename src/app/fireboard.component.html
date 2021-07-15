@@ -90,9 +90,13 @@
                     *ngIf="data.type === 'pie-chart'"
                     [legoData]="data"
                     [dataGetter]="dataGetter">
-                    {{ data | json }}</fb-pie-chart
-                >
-                <span *ngIf="data.type === 'line-chart'"> {{ data | json }}</span>
+                </fb-pie-chart>
+                <fb-line-chart
+                    #chart
+                    *ngIf="data.type === 'line-chart'"
+                    [legoData]="data"
+                    [dataGetter]="dataGetter">
+                </fb-line-chart>
                 <span *ngIf="data.type === 'table'"> {{ data | json }}</span>
             </ng-template>
         </ng-craftable>
