@@ -9,16 +9,12 @@ export abstract class ChartAbstract extends WidgetAbstract {
     public plugins: PluginServiceGlobalRegistrationAndOptions[] = [
         pluginDataLabels as PluginServiceGlobalRegistrationAndOptions
     ];
-    public colors: Color[] = PresetColors.map((color) => ({
+    public colors: Color[] | string[] = PresetColors.map((color) => ({
         backgroundColor: GetColorChart(color),
         borderColor: GetColorChart(color)
     }));
-    public labels: Label[] = ['Example 1', 'Example 2'];
-    public datasets: ChartDataSets[] = [
-        { data: [20, 15], label: 'Serie 1' },
-        { data: [5, 30], label: 'Serie 2' },
-        { data: [10, 20], label: 'Serie 3' }
-    ];
+    public labels: Label[] = [];
+    public datasets: ChartDataSets[] = [];
 
     setOptions(options: WidgetOptions): void {
         super.setOptions({

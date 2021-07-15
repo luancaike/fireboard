@@ -1,13 +1,14 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { WidgetComponent } from '../widget.interface';
-import { BarChartDefault } from './bar-chart.default';
+import { PieChartDefault } from './pie-chart.default';
 import { DataSourceKey } from 'src/app/models/data-source.dtos';
 import { ChartDataSets } from 'chart.js';
 import { ChartAbstract } from '../chart.abstract';
 import { Label } from 'ng2-charts/lib/base-chart.directive';
+import { PresetColors } from '../../utils/chart';
 
 @Component({
-    selector: 'fb-bar-chart',
+    selector: 'fb-pie-chart',
     changeDetection: ChangeDetectionStrategy.OnPush,
     template: `
         <div *ngIf="!isLoading" style="display: block; height: 100%">
@@ -18,24 +19,28 @@ import { Label } from 'ng2-charts/lib/base-chart.directive';
                 [options]="options"
                 [datasets]="datasets"
                 [labels]="labels"
-                chartType="bar"
+                chartType="pie"
             >
             </canvas>
         </div>
     `
 })
-export class BarChartComponent extends ChartAbstract implements WidgetComponent, OnChanges {
+export class PieChartComponent extends ChartAbstract implements WidgetComponent, OnChanges {
     @Input() public legoData;
     @Input() public dataGetter;
 
-    public dataSourceBindOptions = BarChartDefault.dataSourceBindOptions();
-    public options = BarChartDefault.options();
-    public fieldsEditor = BarChartDefault.fieldsEditor();
-    public labels: Label[] = ['Example 1', 'Example 2'];
+    public dataSourceBindOptions = PieChartDefault.dataSourceBindOptions();
+    public options = PieChartDefault.options();
+    public fieldsEditor = PieChartDefault.fieldsEditor();
+    public labels: Label[] = ['Red', 'Blue', 'Yellow'];
+    public colors = PresetColors;
     public datasets: ChartDataSets[] = [
-        { data: [20, 15], label: 'Serie 1' },
-        { data: [5, 30], label: 'Serie 2' },
-        { data: [10, 20], label: 'Serie 3' }
+        {
+            label: 'My First Dataset',
+            data: [300, 50, 100],
+            borderColor: ['rgb(255,255,255)', 'rgb(255,255,255)', 'rgb(255,255,255)'],
+            backgroundColor: ['rgb(66,133,244)', 'rgb(244,66,66)', 'rgb(66,244,128)']
+        }
     ];
 
     constructor(protected cdr: ChangeDetectorRef) {

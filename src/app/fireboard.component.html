@@ -2,19 +2,27 @@
     <div class="toolbar">
         <div class="toolbar-menu">
             <div class="label-editable">
-                <input class="name-board" [(ngModel)]="nameBoard"/>
+                <input class="name-board" [(ngModel)]="nameBoard" />
             </div>
             <div class="menu-container">
                 <fb-toolbar-menu [craftable]="craftable"></fb-toolbar-menu>
             </div>
         </div>
         <div class="toolbar-tools">
-            <button type="button" title="Redo" class="btn btn-sm btn-outline-secondary border-0"
-                    (click)="craftable.undo()">
+            <button
+                type="button"
+                title="Redo"
+                class="btn btn-sm btn-outline-secondary border-0"
+                (click)="craftable.undo()"
+            >
                 <fa-icon icon="undo"></fa-icon>
             </button>
-            <button type="button" title="Redo" class="btn btn-sm btn-outline-secondary border-0"
-                    (click)="craftable.redo()">
+            <button
+                type="button"
+                title="Redo"
+                class="btn btn-sm btn-outline-secondary border-0"
+                (click)="craftable.redo()"
+            >
                 <fa-icon icon="redo"></fa-icon>
             </button>
             <div class="toolbar-separator"></div>
@@ -25,16 +33,16 @@
                     <fa-icon class="btn-icon-arrow" icon="chevron-down"></fa-icon>
                 </button>
                 <div class="dropdown-options">
-                    <button class="dropdown-options-item" (click)="drawNewLego({ type: 'bar-chart'})">
+                    <button class="dropdown-options-item" (click)="drawNewLego({ type: 'bar-chart' })">
                         <fb-icon icon="bar-chart"></fb-icon>
                     </button>
-                    <button class="dropdown-options-item" (click)="drawNewLego({ type: 'line-chart'})">
+                    <button class="dropdown-options-item" (click)="drawNewLego({ type: 'line-chart' })">
                         <fb-icon icon="line-chart"></fb-icon>
                     </button>
-                    <button class="dropdown-options-item" (click)="drawNewLego({ type: 'pie-chart'})">
+                    <button class="dropdown-options-item" (click)="drawNewLego({ type: 'pie-chart' })">
                         <fb-icon icon="pie-chart"></fb-icon>
                     </button>
-                    <button class="dropdown-options-item" (click)="drawNewLego({ type: 'table'})">
+                    <button class="dropdown-options-item" (click)="drawNewLego({ type: 'table' })">
                         <fb-icon icon="table"></fb-icon>
                     </button>
                 </div>
@@ -47,18 +55,15 @@
                     <fa-icon class="btn-icon-arrow" icon="chevron-down"></fa-icon>
                 </button>
                 <div class="dropdown-options list">
-                    <button
-                        class="dropdown-options-list-item">
+                    <button class="dropdown-options-list-item">
                         <fa-icon [fixedWidth]="true" icon="calendar-alt" class="btn-icon"></fa-icon>
                         Intervalo de Datas
                     </button>
-                    <button
-                        class="dropdown-options-list-item">
+                    <button class="dropdown-options-list-item">
                         <fa-icon [fixedWidth]="true" icon="list" class="btn-icon"></fa-icon>
                         Lista de Seleção
                     </button>
-                    <button
-                        class="dropdown-options-list-item">
+                    <button class="dropdown-options-list-item">
                         <fa-icon [fixedWidth]="true" icon="font" class="btn-icon"></fa-icon>
                         Caixa de Entrada
                     </button>
@@ -74,9 +79,19 @@
     <div class="workspace">
         <ng-craftable #craftable (selectionChange)="selectionChange($event)" [visualizationMode]="visualizationMode">
             <ng-template #template let-data>
-                <fb-bar-chart *ngIf="data.type === 'bar-chart'" #chart [legoData]="data"
-                              [dataGetter]="dataGetter"></fb-bar-chart>
-                <span *ngIf="data.type === 'pie-chart'"> {{ data | json }}</span>
+                <fb-bar-chart
+                    #chart
+                    *ngIf="data.type === 'bar-chart'"
+                    [legoData]="data"
+                    [dataGetter]="dataGetter"
+                ></fb-bar-chart>
+                <fb-pie-chart
+                    #chart
+                    *ngIf="data.type === 'pie-chart'"
+                    [legoData]="data"
+                    [dataGetter]="dataGetter">
+                    {{ data | json }}</fb-pie-chart
+                >
                 <span *ngIf="data.type === 'line-chart'"> {{ data | json }}</span>
                 <span *ngIf="data.type === 'table'"> {{ data | json }}</span>
             </ng-template>
