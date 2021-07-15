@@ -3,6 +3,7 @@ import { WidgetOptions } from '../../widgets/widget.abstract';
 import { FieldEditor } from '../../widgets/field-editor.dtos';
 import { GetValueObjectByPath, SetValueObjectByPath } from '../../utils/objects';
 import { debounce } from 'src/app/utils/effects';
+import { ColorByDark } from '../../utils/chart';
 
 @Component({
     selector: 'fb-style-editor',
@@ -13,6 +14,7 @@ import { debounce } from 'src/app/utils/effects';
 export class StyleEditorComponent {
     @Input() public fieldsEditor: FieldEditor[];
     @Output() public changedOptions = new EventEmitter<WidgetOptions>();
+    public colorByDark = ColorByDark;
     public legoOptions: WidgetOptions;
     public form = {};
 
@@ -46,6 +48,28 @@ export class StyleEditorComponent {
 
     @debounce(20)
     setValueByKeyPath(keyPath: string, value: unknown): void {
+        this.setValueObjectByPath(keyPath, value);
+    }
+
+    @debounce(300)
+    setValueColor(keyPath: string, value: unknown): void {
+        this.setValueObjectByPath(keyPath, value);
+    }
+
+    addColor(keyPath: string, value: unknown[]): void {
+        value.push('#fff');
+        this.setValueObjectByPath(keyPath, value);
+    }
+
+    removeColor(keyPath: string, value: unknown[], itemRemove: unknown): void {
+        const taskIndex = value.indexOf(itemRemove);
+        if (taskIndex !== -1) {
+            value.splice(taskIndex, 1);
+        }
+        this.setValueObjectByPath(keyPath, value);
+    }
+
+    setValueObjectByPath(keyPath: string, value: unknown): void {
         SetValueObjectByPath(this.legoOptions, keyPath, value);
         this.changedOptions.emit({ ...this.legoOptions });
         this.cdr.detectChanges();

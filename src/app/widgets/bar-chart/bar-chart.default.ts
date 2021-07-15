@@ -2,11 +2,16 @@ import { ChartOptions } from 'chart.js';
 import { FieldEditor, FieldEditorTypes } from '../field-editor.dtos';
 import { DataSourceBindOption } from '../widget.abstract';
 import { DataSourceKeyTypes } from '../../models/data-source.dtos';
+import { PresetColors } from '../../utils/chart';
 
 export class BarChartDefault {
     static options(): ChartOptions {
         return {
             plugins: {
+                colorschemes: {
+                    override: true,
+                    scheme: PresetColors
+                },
                 datalabels: {
                     offset: -5,
                     color: '#66686b',
@@ -75,6 +80,11 @@ export class BarChartDefault {
 
     static fieldsEditor(): FieldEditor[] {
         return [
+            {
+                key: 'plugins.colorschemes.scheme',
+                label: 'Cores',
+                type: FieldEditorTypes.ThemePalette
+            },
             {
                 type: FieldEditorTypes.EditorGroup,
                 label: 'Título',

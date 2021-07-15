@@ -16,7 +16,7 @@
         <div class="container-editor-group" *ngIf="item.type === 'editorgroup' && this.checkDependenceKey(item)">
             <label class="container-editor-label">{{ item.label }}</label>
             <div class="container-editor-children">
-            <ng-container *ngTemplateOutlet="fieldsData; context: { data: item.children }"></ng-container>
+                <ng-container *ngTemplateOutlet="fieldsData; context: { data: item.children }"></ng-container>
             </div>
         </div>
         <div *ngIf="item.type === 'number' && this.checkDependenceKey(item)">
@@ -45,6 +45,24 @@
                     [min]="item.min || 0"
                     [max]="item.max || 100"
                 />
+            </div>
+        </div>
+        <div *ngIf="item.type === 'themepalette' && this.checkDependenceKey(item)">
+            <label>{{ item.label }}</label>
+            <div class="palette-container">
+                <div class="palette-color" *ngFor="let color of form[item.key]; let i = index"
+                     [style.backgroundColor]="color">
+                    <fa-icon class="palette-color-remove" icon="times" (click)="removeColor(item.key, form[item.key], color)"></fa-icon>
+                    <input
+                        class="color-change"
+                        [(ngModel)]="form[item.key][i]"
+                        (ngModelChange)="setValueColor(item.key, form[item.key])"
+                        type="color"
+                    />
+                </div>
+                <div class="palette-color-add" (click)="addColor(item.key, form[item.key])">
+                    <fa-icon icon="plus"></fa-icon>
+                </div>
             </div>
         </div>
         <div *ngIf="item.type === 'fontsize' && this.checkDependenceKey(item)">
@@ -101,8 +119,9 @@
                 <select
                     [(ngModel)]="form[item.key]"
                     (ngModelChange)="setValueByKeyPath(item.key, $event)"
-                    class="form-control form-control-sm">
-                    <option *ngFor="let option of item.data" [ngValue]="option.value">{{option.text}}</option>
+                    class="form-control form-control-sm"
+                >
+                    <option *ngFor="let option of item.data" [ngValue]="option.value">{{ option.text }}</option>
                 </select>
                 <fa-stack>
                     <fa-icon icon="long-arrow-alt-left" stackItemSize="1x" transform="right-5"></fa-icon>
@@ -116,8 +135,9 @@
                 <select
                     [(ngModel)]="form[item.key]"
                     (ngModelChange)="setValueByKeyPath(item.key, $event)"
-                    class="form-control form-control-sm">
-                    <option *ngFor="let option of item.data" [ngValue]="option.value">{{option.text}}</option>
+                    class="form-control form-control-sm"
+                >
+                    <option *ngFor="let option of item.data" [ngValue]="option.value">{{ option.text }}</option>
                 </select>
                 <fa-stack>
                     <fa-icon stackItemSize="1x" [fixedWidth]="true" icon="arrows-alt"></fa-icon>

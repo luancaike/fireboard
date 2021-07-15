@@ -5,7 +5,6 @@ import { DataSourceKey } from 'src/app/models/data-source.dtos';
 import { ChartDataSets } from 'chart.js';
 import { ChartAbstract } from '../chart.abstract';
 import { Label } from 'ng2-charts/lib/base-chart.directive';
-import { PresetColors } from '../../utils/chart';
 
 @Component({
     selector: 'fb-pie-chart',
@@ -14,7 +13,6 @@ import { PresetColors } from '../../utils/chart';
         <div *ngIf="!isLoading" style="display: block; height: 100%">
             <canvas
                 baseChart
-                [colors]="colors"
                 [plugins]="plugins"
                 [options]="options"
                 [datasets]="datasets"
@@ -33,13 +31,10 @@ export class PieChartComponent extends ChartAbstract implements WidgetComponent,
     public options = PieChartDefault.options();
     public fieldsEditor = PieChartDefault.fieldsEditor();
     public labels: Label[] = ['Red', 'Blue', 'Yellow'];
-    public colors = PresetColors;
     public datasets: ChartDataSets[] = [
         {
             label: 'My First Dataset',
-            data: [300, 50, 100],
-            borderColor: ['rgb(255,255,255)', 'rgb(255,255,255)', 'rgb(255,255,255)'],
-            backgroundColor: ['rgb(66,133,244)', 'rgb(244,66,66)', 'rgb(66,244,128)']
+            data: [300, 50, 100]
         }
     ];
 

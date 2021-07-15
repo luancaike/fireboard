@@ -18,7 +18,8 @@ export enum FieldEditorTypes {
     FontSize = 'fontsize',
     Alignment = 'alignment',
     Position = 'position',
-    Range = 'range'
+    Range = 'range',
+    ThemePalette = 'themepalette'
 }
 
 export interface FieldEditorBase {

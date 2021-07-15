@@ -2,11 +2,16 @@ import { ChartOptions } from 'chart.js';
 import { FieldEditor, FieldEditorTypes } from '../field-editor.dtos';
 import { DataSourceBindOption } from '../widget.abstract';
 import { DataSourceKeyTypes } from '../../models/data-source.dtos';
+import { PresetColors } from '../../utils/chart';
 
 export class PieChartDefault {
     static options(): ChartOptions {
         return {
             plugins: {
+                colorschemes: {
+                    override: true,
+                    scheme: PresetColors
+                },
                 datalabels: {
                     color: '#66686b',
                     clamp: true,
@@ -42,6 +47,11 @@ export class PieChartDefault {
 
     static fieldsEditor(): FieldEditor[] {
         return [
+            {
+                key: 'plugins.colorschemes.scheme',
+                label: 'Cores',
+                type: FieldEditorTypes.ThemePalette
+            },
             {
                 type: FieldEditorTypes.EditorGroup,
                 label: 'Título',

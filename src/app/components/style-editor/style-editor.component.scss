@@ -35,6 +35,60 @@
         }
     }
 
+    .palette-container {
+        display: flex;
+        width: 100%;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+        padding: 10px;
+
+        .palette-color, .palette-color-add {
+            position: relative;
+            margin: 5px 8px;
+            border-radius: 5px;
+            flex: 0 0 30px;
+            height: 30px;
+            vertical-align: middle;
+            text-align: center;
+            box-shadow: 0 0 3px 0 rgba(99, 99, 99, 0.6);
+
+            &:hover {
+
+            }
+
+            .color-change {
+                height: 100%;
+                width: 100%;
+                opacity: 0;
+                cursor: pointer;
+            }
+
+            .palette-color-remove {
+                background: #41474c;
+                color: white;
+                position: absolute;
+                left: 65%;
+                top: -10px;
+                cursor: pointer;
+                padding: 0 5px;
+                border-radius: 10px;
+                font-size: 10px;
+            }
+        }
+
+        .palette-color-add {
+            cursor: pointer;
+            box-shadow: none;
+            padding: 3px;
+
+            &:hover {
+                opacity: 1;
+                background: #6c757d;
+                color: white
+            }
+        }
+    }
+
     /* The container */
     .container-checkbox {
         display: block;

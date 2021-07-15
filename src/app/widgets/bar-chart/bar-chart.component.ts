@@ -13,7 +13,6 @@ import { Label } from 'ng2-charts/lib/base-chart.directive';
         <div *ngIf="!isLoading" style="display: block; height: 100%">
             <canvas
                 baseChart
-                [colors]="colors"
                 [plugins]="plugins"
                 [options]="options"
                 [datasets]="datasets"
