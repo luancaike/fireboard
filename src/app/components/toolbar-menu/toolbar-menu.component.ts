@@ -1,6 +1,6 @@
 import { Component, ElementRef, Input, ViewChild } from '@angular/core';
 import { debounce } from '../../utils/effects';
-import { CraftableComponent } from 'ng-craftable';
+import { FireboardComponent } from '../../fireboard.component';
 
 @Component({
     selector: 'fb-toolbar-menu',
@@ -9,7 +9,7 @@ import { CraftableComponent } from 'ng-craftable';
 })
 export class ToolbarMenuComponent {
     @ViewChild('subMenu') subMenu: ElementRef<HTMLDivElement>;
-    @Input() craftable: CraftableComponent;
+    @Input() dashboard: FireboardComponent;
     menuSubOptions = [];
     menuOptions = [
         {
@@ -25,12 +25,14 @@ export class ToolbarMenuComponent {
                 },
                 {
                     title: 'Exportar',
-                    icon: 'file-download'
+                    icon: 'file-download',
+                    action: (): any => this.dashboard.exportData()
                 },
                 {
                     title: 'Importar',
                     icon: 'file-upload',
-                    separator: true
+                    separator: true,
+                    action: (): any => this.dashboard.importData()
                 },
                 {
                     title: 'Sair',
@@ -43,54 +45,54 @@ export class ToolbarMenuComponent {
             children: [
                 {
                     title: 'Anular',
-                    action: (): any => this.craftable.undo(),
+                    action: (): any => this.dashboard.craftable.undo(),
                     icon: 'undo',
                     short: 'Ctrl+Z'
                 },
                 {
                     title: 'Refazer',
-                    action: (): any => this.craftable.redo(),
+                    action: (): any => this.dashboard.craftable.redo(),
                     icon: 'redo',
                     short: 'Ctrl+Shift+Z',
                     separator: true
                 },
                 {
                     title: 'Cortar',
-                    action: (): any => this.craftable.cut(),
+                    action: (): any => this.dashboard.craftable.cut(),
                     icon: 'cut',
                     short: 'Ctrl+X'
                 },
                 {
                     title: 'Copiar',
-                    action: (): any => this.craftable.copy(),
+                    action: (): any => this.dashboard.craftable.copy(),
                     icon: 'copy',
                     short: 'Ctrl+C'
                 },
                 {
                     title: 'Colar',
-                    action: (): any => this.craftable.paste(),
+                    action: (): any => this.dashboard.craftable.paste(),
                     icon: 'paste',
                     short: 'Ctrl+V'
                 },
                 {
                     title: 'Eliminar',
-                    action: (): any => this.craftable.deleteSelection(),
+                    action: (): any => this.dashboard.craftable.deleteSelection(),
                     short: 'Delete'
                 },
                 {
                     title: 'Duplicar',
-                    action: (): any => this.craftable.duplicate(),
+                    action: (): any => this.dashboard.craftable.duplicate(),
                     short: 'Ctrl+D',
                     separator: true
                 },
                 {
                     title: 'Selecionar tudo',
-                    action: (): any => this.craftable.selectAll(),
+                    action: (): any => this.dashboard.craftable.selectAll(),
                     short: 'Ctrl+A'
                 },
                 {
                     title: 'Não selecionar nada',
-                    action: (): any => this.craftable.unSelectAll(),
+                    action: (): any => this.dashboard.craftable.unSelectAll(),
                     short: 'Ctrl+Shift+A'
                 }
             ]
@@ -100,22 +102,22 @@ export class ToolbarMenuComponent {
             children: [
                 {
                     title: 'Trazer para a frente',
-                    action: (): any => this.craftable.bringToForward(),
+                    action: (): any => this.dashboard.craftable.bringToForward(),
                     short: 'Ctrl+Shift+↑'
                 },
                 {
                     title: 'Trazer para diante',
-                    action: (): any => this.craftable.bringToFront(),
+                    action: (): any => this.dashboard.craftable.bringToFront(),
                     short: 'Ctrl+↑'
                 },
                 {
                     title: 'Enviar para a trás',
-                    action: (): any => this.craftable.bringToBack(),
+                    action: (): any => this.dashboard.craftable.bringToBack(),
                     short: 'Ctrl+↓'
                 },
                 {
                     title: 'Enviar para último plano',
-                    action: (): any => this.craftable.bringToBackward(),
+                    action: (): any => this.dashboard.craftable.bringToBackward(),
                     short: 'Ctrl+Shift+↓'
                 }
             ]

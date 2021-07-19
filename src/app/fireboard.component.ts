@@ -13,6 +13,7 @@ import { DataSource } from './models/data-source.dtos';
 import { DataSourceMockList } from './models/mocks';
 import { StyleEditorComponent } from './components/style-editor/style-editor.component';
 import { ExternalDataService } from './service/external-data.service';
+import { debounce } from './utils/effects';
 
 @Component({
     selector: 'fb-dashboard-builder',
@@ -66,6 +67,22 @@ export class FireboardComponent {
             const component = this.widgetsList.find((el) => el.legoData.key === lego.key);
             component.setOptions(legoOptions);
         }
+    }
+
+    exportData() {
+        const dataSave = this.craftable.legoData.map((lego) => ({
+            ...lego,
+            data: this.widgetsList.find((w) => w.legoData.key === lego.key).getConfig()
+        }));
+        localStorage.setItem('localData', JSON.stringify(dataSave));
+        console.log(dataSave);
+    }
+
+    @debounce()
+    importData() {
+        const dataImport = JSON.parse(localStorage.getItem('localData'));
+        this.craftable.setLegoData(dataImport);
+        this.cdr.detectChanges();
     }
 
     showSelectedLegoOptionsEditor(): void {
