@@ -51,6 +51,16 @@ export abstract class WidgetAbstract implements WidgetComponent {
 
     constructor(protected cdr: ChangeDetectorRef) {}
 
+    showLoading() {
+        this.isLoading = true;
+        this.cdr.detectChanges();
+    }
+
+    hiddenLoading() {
+        this.isLoading = false;
+        this.cdr.detectChanges();
+    }
+
     getConfig(): WidgetConfig {
         return {
             dataSourceSelectedKeys: this.dataSourceSelectedKeys,
@@ -99,9 +109,11 @@ export abstract class WidgetAbstract implements WidgetComponent {
     }
 
     updateDataAndApplyComponent(): void {
+        this.showLoading();
         this.getData().then((data) => {
             this.setData(data);
             this.applyComponentData();
+            this.hiddenLoading();
         });
     }
 

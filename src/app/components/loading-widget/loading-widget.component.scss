@@ -1,0 +1,59 @@
+.loading-background {
+    background: white;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 5;
+    top: 0;
+    left: 0;
+    opacity: 0.5;
+
+    #loading {
+        position: absolute;
+        width: 50px;
+        height: 40px;
+
+        rect {
+            fill: #748591;
+            fill-opacity: 1;
+            fill-rule: evenodd;
+            stroke: #748591;
+            stroke-width: 0.1px;
+            stroke-linecap: butt;
+            stroke-linejoin: miter;
+            stroke-opacity: 1;
+            opacity: 0;
+            animation-name: invis;
+            animation-duration: 1s;
+            animation-timing-function: steps(8);
+            animation-iteration-count: infinite;
+
+            &:nth-child(1) {
+                animation-delay: 0s;
+            }
+
+            &:nth-child(2) {
+                animation-delay: 0.166667s;
+            }
+
+            &:nth-child(3) {
+                animation-delay: 0.333333s;
+            }
+
+        }
+
+        @keyframes invis {
+            25% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0;
+            }
+        }
+    }
+}
+
+

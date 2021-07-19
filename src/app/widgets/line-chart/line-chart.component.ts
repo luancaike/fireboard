@@ -11,7 +11,8 @@ import { ExternalDataService } from '../../service/external-data.service';
     selector: 'fb-line-chart',
     changeDetection: ChangeDetectionStrategy.OnPush,
     template: `
-        <div *ngIf="!isLoading" style="display: block; height: 100%">
+        <fb-loading-widget [show]="isLoading"></fb-loading-widget>
+        <div style="display: block; height: 100%">
             <canvas
                 baseChart
                 [plugins]="plugins"
