@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, Input } from '@angular/core';
 import { WidgetComponent } from '../widget.interface';
 import { BarChartDefault } from './bar-chart.default';
 import { DataSourceKey } from 'src/app/models/data-source.dtos';
@@ -25,7 +25,7 @@ import { ExternalDataService } from '../../service/external-data.service';
         </div>
     `
 })
-export class BarChartComponent extends ChartAbstract implements WidgetComponent, OnChanges {
+export class BarChartComponent extends ChartAbstract implements WidgetComponent, AfterViewInit {
     @Input() public legoData;
 
     public dataSourceBindOptions = BarChartDefault.dataSourceBindOptions();
@@ -42,9 +42,11 @@ export class BarChartComponent extends ChartAbstract implements WidgetComponent,
         super(cdr);
     }
 
-    ngOnChanges(changes: SimpleChanges): void {
-        if (changes.legoData) {
-            this.legoData.data = this.getConfig();
+    ngAfterViewInit() {
+        if (this.legoData.data) {
+            this.setConfig(this.legoData.data);
+        } else {
+            this.legoData.data = this.getOptions();
         }
     }
 

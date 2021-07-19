@@ -38,7 +38,7 @@ export interface DataGetter {
 }
 
 export abstract class WidgetAbstract implements WidgetComponent {
-    public legoData: LegoConfig;
+    abstract legoData: LegoConfig;
     abstract externalDataService: ExternalDataService;
     public isLoading: boolean;
     public dataSource: number = null;
@@ -67,7 +67,7 @@ export abstract class WidgetAbstract implements WidgetComponent {
             dataSourceBindOptions: this.dataSourceBindOptions,
             filters: this.filters,
             dataSource: this.dataSource,
-            options: this.options
+            options: this.getOptions()
         };
     }
 

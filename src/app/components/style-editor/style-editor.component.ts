@@ -22,6 +22,7 @@ export class StyleEditorComponent {
 
     editLego(legoOptions: WidgetOptions): void {
         this.legoOptions = legoOptions;
+        this.form = {};
         console.log(legoOptions);
         this.setLegoOptionsValueInForm();
         this.cdr.detectChanges();
@@ -60,8 +61,7 @@ export class StyleEditorComponent {
     }
 
     @debounce(1000)
-    setValueColor(keyPath: string, value: unknown, index: number): void {
-        console.log(document.querySelector('color-pick' + index));
+    setValueColor(keyPath: string, value: unknown): void {
         this.setValueObjectByPath(keyPath, value);
     }
 

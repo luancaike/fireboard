@@ -10,21 +10,19 @@ export abstract class ChartAbstract extends WidgetAbstract {
         pluginDataLabels as PluginServiceGlobalRegistrationAndOptions,
         pluginColorschemes as PluginServiceGlobalRegistrationAndOptions
     ];
-    public colors: string[] = PresetColors;
     public labels: Label[] = [];
     public datasets: ChartDataSets[] = [];
 
     setOptions(options: WidgetOptions): void {
         super.setOptions({
             ...{
-                ...options,
                 plugins: {
-                    ...options.plugins,
                     colorschemes: {
-                        ...options.colorschemes,
                         override: true,
-                        scheme: this.colors
-                    }
+                        scheme: PresetColors(),
+                        ...options.colorschemes
+                    },
+                    ...options.plugins
                 },
                 animation: {
                     duration: 0
@@ -32,7 +30,8 @@ export abstract class ChartAbstract extends WidgetAbstract {
                 hover: {
                     animationDuration: 0
                 },
-                responsiveAnimationDuration: 0
+                responsiveAnimationDuration: 0,
+                ...options
             }
         });
     }

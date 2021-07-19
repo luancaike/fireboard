@@ -10,7 +10,7 @@ export class PieChartDefault {
             plugins: {
                 colorschemes: {
                     override: true,
-                    scheme: PresetColors
+                    scheme: PresetColors()
                 },
                 datalabels: {
                     color: '#66686b',

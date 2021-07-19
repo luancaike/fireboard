@@ -10,7 +10,7 @@ export class BarChartDefault {
             plugins: {
                 colorschemes: {
                     override: true,
-                    scheme: PresetColors
+                    scheme: PresetColors()
                 },
                 datalabels: {
                     offset: -5,
