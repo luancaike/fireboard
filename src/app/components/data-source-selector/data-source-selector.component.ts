@@ -9,8 +9,10 @@ import {
     ViewChild
 } from '@angular/core';
 import { DataSourceBindOption, DataSourceSelectedKey, WidgetConfig } from '../../widgets/widget.abstract';
-import { DataSource, DataSourceKey } from '../../models/data-source.dtos';
+import { DataSource, DataSourceKey, FilterModel } from '../../models/data-source.dtos';
 import { FilterSelectorComponent } from '../filter-selector/filter-selector.component';
+import { LoadingBarService } from '../../service/loading-bar.service';
+import { ExternalDataService } from '../../service/external-data.service';
 
 @Component({
     selector: 'fb-data-source-selector',
@@ -20,7 +22,9 @@ import { FilterSelectorComponent } from '../filter-selector/filter-selector.comp
 })
 export class DataSourceSelectorComponent {
     @ViewChild('fbFilter') fbFilter: FilterSelectorComponent;
+
     @Input() public dataSources: DataSource[];
+
     @Output() public changedDataSource = new EventEmitter<WidgetConfig>();
 
     public stateFilterPanel = false;
@@ -28,10 +32,16 @@ export class DataSourceSelectorComponent {
     public dataSourceSelected: number = null;
     public legoConfig: WidgetConfig = null;
     public dataSourceBindOptions: DataSourceBindOption[] = [];
+    public filters: FilterModel[] = [];
+    public filtersSelected: FilterModel[] = [];
     public dataSourceSelectedKeys: Map<string, DataSourceSelectedKey> = new Map();
     public bindingsIds: string[] = [];
 
-    constructor(protected cdr: ChangeDetectorRef) {}
+    constructor(
+        protected cdr: ChangeDetectorRef,
+        public loadingBarService: LoadingBarService,
+        public externalDataService: ExternalDataService
+    ) {}
 
     showFilterPanel() {
         this.stateFilterPanel = true;
@@ -39,20 +49,17 @@ export class DataSourceSelectorComponent {
 
         if (dataSource) {
             this.fbFilter.columnsData = dataSource.keys;
-            this.fbFilter.filters = [
-                { id: 1, name: 'teste 1' },
-                { id: 2, name: 'teste 2' },
-                { id: 3, name: 'teste 3' },
-                { id: 4, name: 'teste 4' },
-                { id: 1, name: 'teste 1' },
-                { id: 2, name: 'teste 2' },
-                { id: 3, name: 'teste 3' },
-                { id: 4, name: 'teste 4' },
-                { id: 1, name: 'teste 1' },
-                { id: 2, name: 'teste 2' },
-                { id: 3, name: 'teste 3' },
-                { id: 4, name: 'teste 4' }
-            ];
+            this.getAndSetFilters();
+        }
+    }
+
+    getAndSetFilters() {
+        if (this.externalDataService.filtersGetter && this.dataSourceSelected) {
+            this.loadingBarService.show();
+            this.externalDataService.filtersGetter(this.dataSourceSelected).then((data) => {
+                this.filters = data;
+                this.loadingBarService.hide();
+            });
         }
     }
 
@@ -62,12 +69,18 @@ export class DataSourceSelectorComponent {
         this.selectDataSource();
         this.mountDataSourceBindOptions();
         this.mountDataSourceKeys();
+        this.mountFilters();
         this.cdr.detectChanges();
     }
 
     resetData(): void {
         this.dataSourceKeys = [];
         this.dataSourceSelectedKeys.clear();
+    }
+
+    selectFilter(filter: FilterModel): void {
+        this.filtersSelected = [...this.filtersSelected, filter];
+        this.changedFiltersSelected();
     }
 
     selectDataSource(): void {
@@ -104,6 +117,12 @@ export class DataSourceSelectorComponent {
         }
     }
 
+    mountFilters(): void {
+        if (Array.isArray(this.legoConfig.filters)) {
+            this.filtersSelected = this.legoConfig.filters;
+        }
+    }
+
     clearDataSourceKeys(): void {
         if (Array.isArray(this.legoConfig.dataSourceBindOptions)) {
             const keys = this.legoConfig.dataSourceBindOptions.map(({ key }) => key);
@@ -121,7 +140,16 @@ export class DataSourceSelectorComponent {
         if (~index) {
             array.splice(index, 1);
         }
+    }
+
+    removeKey(item: unknown, array: any[]): void {
+        this.removeItemOfArray(item, array);
         this.changedKeysSelected();
+    }
+
+    removeFilter(item: unknown, array: any[]): void {
+        this.removeItemOfArray(item, array);
+        this.changedFiltersSelected();
     }
 
     updateLegoKeysBySelections(): void {
@@ -141,6 +169,10 @@ export class DataSourceSelectorComponent {
         this.changedDataSource.emit({ dataSourceSelectedKeys: Array.from(this.dataSourceSelectedKeys.values()) });
     }
 
+    changedFiltersSelected(): void {
+        this.changedDataSource.emit({ filters: this.filtersSelected });
+    }
+
     drop(event: CdkDragDrop<DataSourceKey[]>): void {
         if (event.previousContainer === event.container) {
             moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
@@ -148,5 +180,14 @@ export class DataSourceSelectorComponent {
             copyArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
         }
         this.changedKeysSelected();
+    }
+
+    dropFilter(event: CdkDragDrop<FilterModel[]>): void {
+        if (event.previousContainer === event.container) {
+            moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+        } else {
+            copyArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
+        }
+        this.changedFiltersSelected();
     }
 }

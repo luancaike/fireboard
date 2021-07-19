@@ -103,3 +103,22 @@ export interface CustomFilterDto {
     expression: Expression;
     label: string;
 }
+
+export const DefaultFilterConfig = (): CustomFilterDto => ({
+    label: null,
+    expression: {
+        elseExpression: null,
+        elseIfExpression: [],
+        returnData: [],
+        type: TypeExpression.GROUP,
+        logicalOperators: 'AND',
+        rules: [
+            {
+                selectedColumn: null,
+                selectedOperator: null,
+                selectedParameters: null,
+                type: TypeExpression.CONDITION
+            }
+        ]
+    }
+});

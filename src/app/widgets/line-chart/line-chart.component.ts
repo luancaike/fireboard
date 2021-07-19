@@ -5,6 +5,7 @@ import { DataSourceKey } from 'src/app/models/data-source.dtos';
 import { ChartDataSets } from 'chart.js';
 import { ChartAbstract } from '../chart.abstract';
 import { Label } from 'ng2-charts/lib/base-chart.directive';
+import { ExternalDataService } from '../../service/external-data.service';
 
 @Component({
     selector: 'fb-line-chart',
@@ -25,7 +26,6 @@ import { Label } from 'ng2-charts/lib/base-chart.directive';
 })
 export class LineChartComponent extends ChartAbstract implements WidgetComponent, OnChanges {
     @Input() public legoData;
-    @Input() public dataGetter;
 
     public dataSourceBindOptions = LineChartDefault.dataSourceBindOptions();
     public options = LineChartDefault.options();
@@ -37,7 +37,7 @@ export class LineChartComponent extends ChartAbstract implements WidgetComponent
         { data: [10, 20, 30, 35, 25, 20, 40], label: 'Series C' }
     ];
 
-    constructor(protected cdr: ChangeDetectorRef) {
+    constructor(protected cdr: ChangeDetectorRef, public externalDataService: ExternalDataService) {
         super(cdr);
     }
 

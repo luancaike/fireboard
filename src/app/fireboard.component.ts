@@ -8,10 +8,11 @@ import {
 } from '@angular/core';
 import { CraftableComponent } from 'ng-craftable';
 import { DataSourceSelectorComponent } from './components/data-source-selector/data-source-selector.component';
-import { DataGetter, WidgetAbstract, WidgetConfig, WidgetOptions } from './widgets/widget.abstract';
+import { WidgetAbstract, WidgetConfig, WidgetOptions } from './widgets/widget.abstract';
 import { DataSource } from './models/data-source.dtos';
-import { DataSourceDataMockList, DataSourceMockList } from './models/mocks';
+import { DataSourceMockList } from './models/mocks';
 import { StyleEditorComponent } from './components/style-editor/style-editor.component';
+import { ExternalDataService } from './service/external-data.service';
 
 @Component({
     selector: 'fb-dashboard-builder',
@@ -30,14 +31,7 @@ export class FireboardComponent {
     dataSources: DataSource[] = DataSourceMockList;
     visualizationMode = false;
 
-    dataGetter = (data: DataGetter): Promise<any[]> => {
-        return new Promise((resolve) => {
-            const result = DataSourceDataMockList.find((value) => value.id === data.id);
-            resolve(result ? result.data : []);
-        });
-    };
-
-    constructor(private cdr: ChangeDetectorRef) {}
+    constructor(private cdr: ChangeDetectorRef, public externalDataService: ExternalDataService) {}
 
     drawNewLego(data?: any): void {
         const activeElement = document.activeElement as HTMLButtonElement;

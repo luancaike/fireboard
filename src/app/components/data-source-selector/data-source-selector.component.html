@@ -44,17 +44,41 @@
                     <fa-icon
                         class="remove-icon"
                         icon="times-circle"
-                        (click)="removeItemOfArray(key, dataSourceSelectedKeys.get(item.key)?.data)"
+                        (click)="removeKey(key, dataSourceSelectedKeys.get(item.key)?.data)"
                     ></fa-icon>
                 </div>
             </div>
-            <div class="field-bindings">
-                <span class="field-bindings-label">Filtros
-                <fa-icon
-                    icon="plus"
-                    (click)="showFilterPanel()"
-                ></fa-icon>
+            <div
+                cdkDropList
+                [cdkDropListData]="filtersSelected"
+                class="field-bindings"
+                (cdkDropListDropped)="dropFilter($event)"
+            >
+                <span class="field-bindings-label">
+                    Filtros
+                    <fa-icon
+                        class="field-bindings-icon"
+                        *ngIf="dataSourceSelected"
+                        icon="plus"
+                        (click)="showFilterPanel()"
+                    ></fa-icon>
                 </span>
+                <div
+                    *ngFor="let filter of filtersSelected"
+                    class="field filter"
+                    cdkDragBoundary=".field-bindings"
+                    cdkDrag
+                >
+                    <div class="field-text">
+                        <fa-icon class="column-icon" icon="filter"></fa-icon>
+                        {{ filter.name }}
+                    </div>
+                    <fa-icon
+                        class="remove-icon"
+                        icon="times-circle"
+                        (click)="removeFilter(filter, filtersSelected)"
+                    ></fa-icon>
+                </div>
             </div>
         </div>
         <div class="field-list">
@@ -92,6 +116,8 @@
 <fb-modal-panel [showPainel]="stateFilterPanel">
     <fb-filter-selector
         #fbFilter
+        [filters]="filters"
+        (selectFilter)="selectFilter($event)"
         [(showPanel)]="stateFilterPanel"
     ></fb-filter-selector>
 </fb-modal-panel>

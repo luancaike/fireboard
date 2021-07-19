@@ -17,6 +17,11 @@
         color: black;
     }
 
+    &.filter {
+        background-color: rgb(231, 231, 231);
+        color: black;
+    }
+
     &.number {
         background-color: rgba(66, 133, 244, 0.9);
         color: black;
@@ -110,6 +115,7 @@
                 }
 
                 .field-bindings-label {
+                    color: #6c757d;
                     display: inline-block;
                     position: sticky;
                     top: 0;
@@ -118,6 +124,19 @@
                     font-weight: bold;
                     z-index: 2;
                     padding: 5px;
+
+                    .field-bindings-icon {
+                        padding: 6px;
+                        position: absolute;
+                        right: 0;
+                        cursor: pointer;
+                        height: 100%;
+                        top: 0;
+
+                        &:hover {
+                            color: #42484e;
+                        }
+                    }
                 }
 
                 .field {
@@ -146,6 +165,7 @@
                 max-width: 100%;
 
                 .field-list-label {
+                    color: #6c757d;
                     display: inline-block;
                     position: sticky;
                     top: 0;

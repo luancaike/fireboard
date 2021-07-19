@@ -1,4 +1,6 @@
+import { ChangeDetectorRef } from '@angular/core';
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { LoadingBarService } from '../../service/loading-bar.service';
 
 @Component({
     selector: 'fb-loading-bar',
@@ -8,4 +10,10 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 })
 export class LoadingBarComponent {
     @Input() isShow = false;
+    constructor(public loadingBarService: LoadingBarService, private cdr: ChangeDetectorRef) {
+        this.loadingBarService.isShow.subscribe((value) => {
+            this.isShow = value;
+            this.cdr.detectChanges();
+        });
+    }
 }

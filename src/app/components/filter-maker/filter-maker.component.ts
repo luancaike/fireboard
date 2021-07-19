@@ -3,193 +3,18 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import {
     ColumnOperators,
     CustomFilterDto,
+    DefaultFilterConfig,
     OperatorsNumber,
     OperatorsText,
     ReturnTypes,
     TypeExpression
 } from './filter-maker.model';
 import { DataSourceKey } from '../../models/data-source.dtos';
+import { ExternalDataService } from '../../service/external-data.service';
 
 @Component({
     selector: 'fb-filter-maker',
-    template: `
-        <div
-            class="card border-0"
-            style="display: flex;
-                                        justify-content: space-between;
-                                        height: 100%;"
-        >
-            <div class="card-header d-flex justify-content-between">
-                <h5 style="margin: .5rem;">
-                    <fa-icon icon="plus" class="mr-2"></fa-icon>
-                    Criar Novo Filtro
-                </h5>
-                <button class="btn btn-outline-dark btn-sm" (click)="showPanel = false">
-                    FECHAR
-                    <fa-icon icon="times" class="ml-2"></fa-icon>
-                </button>
-            </div>
-            <div
-                class="card-body py-4 scroll-style"
-                style="max-height: calc(100% - 65px);overflow-x: hidden;overflow-y: auto;"
-            >
-                <input
-                    required
-                    placeholder="Nome"
-                    [(ngModel)]="customFilter.label"
-                    class="form-control form-control-sm"
-                />
-                <ng-container
-                    *ngTemplateOutlet="queryConfig; context: { model: customFilter.expression }"
-                ></ng-container>
-            </div>
-            <div class="card-footer text-muted d-flex justify-content-end">
-                <button class="btn btn-primary ml-3" (click)="saveExpression()">
-                    <fa-icon icon="save" class="mr-2"></fa-icon>
-                    SALVAR
-                </button>
-            </div>
-        </div>
-        <ng-template #queryRule let-model="model" let-parent="parent">
-            <div class="query-container-rule">
-                <div class="query-param-rule">
-                    <label>Colunas</label>
-                    <fb-select-column
-                        [valueChange]="valueChange(model)"
-                        [value]="model.selectedColumn"
-                        placeholder="Colunas"
-                        [searchable]="true"
-                        [clearable]="false"
-                        [items]="columnsData"
-                    ></fb-select-column>
-                </div>
-                <div class="query-param-rule" *ngIf="model.selectedColumn">
-                    <label>Operadores</label>
-                    <ng-select
-                        class="ng-select-sm"
-                        [(ngModel)]="model.selectedOperator"
-                        placeholder="Operadores"
-                        [searchable]="true"
-                        [clearable]="false"
-                        [items]="model.selectedColumn?.type === 'number' ? operatorsNumber : operatorsText"
-                        style="flex-grow: 1"
-                    >
-                    </ng-select>
-                </div>
-                <div class="query-param-rule">
-                    <label>&nbsp;</label>
-                    <ng-select
-                        class="ng-select-sm"
-                        *ngIf="showSelectBetweenParams(model)"
-                        [addTag]="true"
-                        (ngModelChange)="model.selectedParameters = $event"
-                        [ngModel]="model.selectedParameters"
-                        [multiple]="true"
-                        [searchable]="true"
-                        [clearable]="false"
-                        [items]="valuesOfColumnSelected"
-                        style="flex-grow: 1"
-                    >
-                    </ng-select>
-                    <ng-select
-                        class="ng-select-sm"
-                        #selectParams
-                        *ngIf="showSelectParams(model)"
-                        [addTag]="true"
-                        (ngModelChange)="model.selectedParameters = $event"
-                        [ngModel]="model.selectedParameters"
-                        [searchable]="true"
-                        [clearable]="false"
-                        [items]="valuesOfColumnSelected"
-                        style="flex-grow: 1"
-                    >
-                    </ng-select>
-                    <div class="input-group" *ngIf="showNumberBetweenParams(model)">
-                        <input
-                            type="number"
-                            placeholder="De"
-                            (ngModelChange)="setBetweenModel(model, 'from', $event)"
-                            [ngModel]="getBetweenModel(model, 'from')"
-                            class="form-control"
-                        />
-                        <input
-                            type="number"
-                            placeholder="Até"
-                            (ngModelChange)="setBetweenModel(model, 'to', $event)"
-                            [ngModel]="getBetweenModel(model, 'to')"
-                            class="form-control"
-                        />
-                    </div>
-                    <input
-                        *ngIf="showNumberParams(model)"
-                        class="form-control"
-                        type="number"
-                        [(ngModel)]="model.selectedParameters"
-                    />
-                    <input
-                        *ngIf="showStringParams(model)"
-                        type="text"
-                        class="form-control"
-                        [(ngModel)]="model.selectedParameters"
-                    />
-                </div>
-                <fa-icon icon="times" class="text-danger remove-rule" (click)="removeItem(parent, model)"></fa-icon>
-            </div>
-        </ng-template>
-        <ng-template #queryConfig let-model="model" let-parent="parent">
-            <div class="query-header">
-                <div class="btn-toolbar">
-                    <div class="btn-group mr-2">
-                        <button
-                            type="button"
-                            class="btn btn-outline-secondary"
-                            [class.active]="model.logicalOperators === 'AND'"
-                            (click)="model.logicalOperators = 'AND'"
-                        >
-                            E
-                        </button>
-                        <button
-                            [class.active]="model.logicalOperators === 'OR'"
-                            (click)="model.logicalOperators = 'OR'"
-                            type="button"
-                            class="btn btn-outline-secondary"
-                        >
-                            OU
-                        </button>
-                    </div>
-                    <div class="btn-group">
-                        <button type="button" class="btn btn-outline-primary" (click)="addCondition(model.rules)">
-                            <fa-icon icon="plus" class="mr-2"></fa-icon>
-                            Condição
-                        </button>
-                        <button type="button" class="btn btn-outline-primary" (click)="addGroup(model.rules)">
-                            <fa-icon icon="layer-group" class="mr-2"></fa-icon>
-                            Grupo
-                        </button>
-                    </div>
-                    <div class="btn-group remove-group" *ngIf="parent">
-                        <button type="button" class="btn btn-outline-danger" (click)="removeItem(parent, model)">
-                            <fa-icon icon="times"></fa-icon>
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <div class="row query-container">
-                <ng-container *ngFor="let rule of model.rules">
-                    <div class="col-12 query-group" *ngIf="rule.type === 2">
-                        <ng-container
-                            *ngTemplateOutlet="queryConfig; context: { model: rule, parent: model.rules }"
-                        ></ng-container>
-                    </div>
-                    <div class="col-12 query-rule" *ngIf="rule.type === 1">
-                        <ng-container
-                            *ngTemplateOutlet="queryRule; context: { model: rule, parent: model.rules }"
-                        ></ng-container>
-                    </div>
-                </ng-container>
-            </div>
-        </ng-template>
-    `,
+    templateUrl: './filter-maker.component.html',
     styleUrls: ['./filter-maker.component.scss']
 })
 export class FilterMakerComponent {
@@ -210,24 +35,7 @@ export class FilterMakerComponent {
     nameNewColumn: string;
     valuesOfColumnSelected = [];
     returnTypes = ReturnTypes;
-    customFilter: CustomFilterDto = {
-        label: null,
-        expression: {
-            elseExpression: null,
-            elseIfExpression: [],
-            returnData: [],
-            type: TypeExpression.GROUP,
-            logicalOperators: 'AND',
-            rules: [
-                {
-                    selectedColumn: null,
-                    selectedOperator: null,
-                    selectedParameters: null,
-                    type: TypeExpression.CONDITION
-                }
-            ]
-        }
-    };
+    customFilter: CustomFilterDto = DefaultFilterConfig();
     operatorsText = OperatorsText;
     operatorsNumber = OperatorsNumber;
 
@@ -236,6 +44,8 @@ export class FilterMakerComponent {
     valueChange = (model: any) => (value) => {
         model.selectedColumn = value;
     };
+
+    constructor(public externalDataService: ExternalDataService) {}
 
     moveReturn = (event: CdkDragDrop<string[]>, data) => {
         moveItemInArray(data, event.previousIndex, event.currentIndex);
@@ -347,13 +157,15 @@ export class FilterMakerComponent {
             ]
         });
     };
-    saveExpression = () => {
+
+    async saveExpression() {
         try {
-            this.addFilter.emit(this.customFilter);
+            const newFilter = await this.externalDataService.addFilter(this.customFilter);
+            this.addFilter.emit(newFilter);
+            this.customFilter = DefaultFilterConfig();
             this.showPanel = false;
         } catch (e) {
-            console.log('ERRO');
             console.log(e);
         }
-    };
+    }
 }

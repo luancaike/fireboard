@@ -11,10 +11,10 @@ import { DataSourceKey, FilterModel } from '../../models/data-source.dtos';
                                         height: 100%;"
         >
             <div class="card-header d-flex justify-content-between">
-                <h5 style="margin: .5rem;">
+                <h6 style="margin: .5rem;">
                     <fa-icon icon="filter" class="mr-2"></fa-icon>
                     Selecionar Filtro
-                </h5>
+                </h6>
                 <button class="btn btn-outline-dark btn-sm" (click)="showPanel = false">
                     FECHAR
                     <fa-icon icon="times" class="ml-2"></fa-icon>
@@ -25,7 +25,7 @@ import { DataSourceKey, FilterModel } from '../../models/data-source.dtos';
                 style="max-height: calc(100% - 65px);overflow-x: hidden;overflow-y: auto;"
             >
                 <ul class="list-group">
-                    <li class="list-group-item filter-item" *ngFor="let item of filters">
+                    <li class="list-group-item filter-item" *ngFor="let item of filters" (click)="_selectFilter(item)">
                         {{ item.name }}
                     </li>
                 </ul>
@@ -38,7 +38,12 @@ import { DataSourceKey, FilterModel } from '../../models/data-source.dtos';
             </div>
         </div>
         <fb-modal-panel [showPainel]="stateFilterPanel">
-            <fb-filter-maker #fbFilter [columnsData]="columnsData" [(showPanel)]="stateFilterPanel"></fb-filter-maker>
+            <fb-filter-maker
+                #fbFilter
+                (addFilter)="_selectFilter($event)"
+                [columnsData]="columnsData"
+                [(showPanel)]="stateFilterPanel"
+            ></fb-filter-maker>
         </fb-modal-panel>
     `,
     styleUrls: ['./filter-selector.component.scss']
@@ -46,6 +51,7 @@ import { DataSourceKey, FilterModel } from '../../models/data-source.dtos';
 export class FilterSelectorComponent {
     @Output() showPanelChange = new EventEmitter();
     @Output() addFilter = new EventEmitter();
+    @Output() selectFilter = new EventEmitter<FilterModel>();
     @Input() columnsData: DataSourceKey[] = [];
     @Input() filters: FilterModel[] = [];
 
@@ -65,4 +71,9 @@ export class FilterSelectorComponent {
     createFilter = () => {
         this.stateFilterPanel = true;
     };
+
+    _selectFilter(filter: FilterModel): void {
+        this.selectFilter.emit(filter);
+        this.showPanel = false;
+    }
 }

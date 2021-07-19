@@ -21,6 +21,7 @@ import { NgSelectModule } from '@ng-select/ng-select';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FilterSelectorComponent } from './components/filter-selector/filter-selector.component';
 import { LoadingBarComponent } from './components/loading-bar/loading-bar.component';
+import { LoadingBarService } from './service/loading-bar.service';
 
 @NgModule({
     imports: [
@@ -35,6 +36,7 @@ import { LoadingBarComponent } from './components/loading-bar/loading-bar.compon
         NgbModule,
         NgSelectModule
     ],
+    providers: [LoadingBarService],
     declarations: [
         FireboardComponent,
         DataSourceSelectorComponent,

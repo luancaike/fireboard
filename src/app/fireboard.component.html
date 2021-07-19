@@ -79,19 +79,16 @@
                     #chart
                     *ngIf="data.type === 'bar-chart'"
                     [legoData]="data"
-                    [dataGetter]="dataGetter"
                 ></fb-bar-chart>
                 <fb-pie-chart
                     #chart
                     *ngIf="data.type === 'pie-chart'"
-                    [legoData]="data"
-                    [dataGetter]="dataGetter">
+                    [legoData]="data">
                 </fb-pie-chart>
                 <fb-line-chart
                     #chart
                     *ngIf="data.type === 'line-chart'"
-                    [legoData]="data"
-                    [dataGetter]="dataGetter">
+                    [legoData]="data">
                 </fb-line-chart>
                 <span *ngIf="data.type === 'table'"> {{ data | json }}</span>
             </ng-template>

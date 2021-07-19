@@ -5,6 +5,7 @@ import { DataSourceKey } from 'src/app/models/data-source.dtos';
 import { ChartDataSets } from 'chart.js';
 import { ChartAbstract } from '../chart.abstract';
 import { Label } from 'ng2-charts/lib/base-chart.directive';
+import { ExternalDataService } from '../../service/external-data.service';
 
 @Component({
     selector: 'fb-pie-chart',
@@ -25,7 +26,6 @@ import { Label } from 'ng2-charts/lib/base-chart.directive';
 })
 export class PieChartComponent extends ChartAbstract implements WidgetComponent, OnChanges {
     @Input() public legoData;
-    @Input() public dataGetter;
 
     public dataSourceBindOptions = PieChartDefault.dataSourceBindOptions();
     public options = PieChartDefault.options();
@@ -38,7 +38,7 @@ export class PieChartComponent extends ChartAbstract implements WidgetComponent,
         }
     ];
 
-    constructor(protected cdr: ChangeDetectorRef) {
+    constructor(protected cdr: ChangeDetectorRef, public externalDataService: ExternalDataService) {
         super(cdr);
     }
 

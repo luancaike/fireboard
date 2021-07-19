@@ -1,8 +1,9 @@
 import { FieldEditor } from './field-editor.dtos';
 import { LegoConfig } from 'ng-craftable/lib/model';
 import { ChangeDetectorRef } from '@angular/core';
-import { DataSourceKey, DataSourceKeyTypes } from '../models/data-source.dtos';
+import { DataSourceKey, DataSourceKeyTypes, FilterModel } from '../models/data-source.dtos';
 import { WidgetComponent } from './widget.interface';
+import { ExternalDataService } from '../service/external-data.service';
 
 export interface DataSourceBindOptionRules {
     max?: number;
@@ -25,6 +26,7 @@ export interface WidgetConfig {
     dataSourceSelectedKeys?: DataSourceSelectedKey[];
     dataSourceBindOptions?: DataSourceBindOption[];
     dataSource?: number;
+    filters?: FilterModel[];
     options?: WidgetOptions;
 }
 
@@ -32,16 +34,18 @@ export type WidgetOptions = { [key: string]: any };
 
 export interface DataGetter {
     id?: number;
+    filters?: FilterModel[];
 }
 
 export abstract class WidgetAbstract implements WidgetComponent {
     public legoData: LegoConfig;
-    public dataGetter: (data: DataGetter) => Promise<any[]>;
+    abstract externalDataService: ExternalDataService;
     public isLoading: boolean;
     public dataSource: number = null;
     public dataSourceBindOptions: DataSourceBindOption[] = [];
     public dataSourceSelectedKeys: DataSourceSelectedKey[] = [];
     public options: WidgetOptions = {};
+    public filters: FilterModel[] = [];
     public data: any[] = [];
     public fieldsEditor: FieldEditor[] = [];
 
@@ -51,6 +55,7 @@ export abstract class WidgetAbstract implements WidgetComponent {
         return {
             dataSourceSelectedKeys: this.dataSourceSelectedKeys,
             dataSourceBindOptions: this.dataSourceBindOptions,
+            filters: this.filters,
             dataSource: this.dataSource,
             options: this.options
         };
@@ -65,7 +70,7 @@ export abstract class WidgetAbstract implements WidgetComponent {
     }
 
     setConfig(widgetConfig: WidgetConfig): void {
-        const { dataSource, options, dataSourceBindOptions, dataSourceSelectedKeys } = widgetConfig;
+        const { dataSource, options, dataSourceBindOptions, dataSourceSelectedKeys, filters } = widgetConfig;
         if (dataSourceSelectedKeys) {
             this.setDataSourceSelectKeys(dataSourceSelectedKeys);
         }
@@ -78,19 +83,26 @@ export abstract class WidgetAbstract implements WidgetComponent {
         if (options) {
             this.setOptions(options);
         }
+        if (filters) {
+            this.setFilters(filters);
+        }
         if (this.checkValidityForGetData()) {
-            this.getData().then((data) => {
-                this.setData(data);
-                this.applyComponentData();
-            });
+            this.updateDataAndApplyComponent();
         }
     }
 
     async getData(): Promise<any[]> {
-        if (this.dataSource && this.dataGetter) {
-            return await this.dataGetter({ id: this.dataSource });
+        if (this.dataSource && this.externalDataService.dataGetter) {
+            return await this.externalDataService.dataGetter({ id: this.dataSource, filters: this.filters });
         }
         return [];
+    }
+
+    updateDataAndApplyComponent(): void {
+        this.getData().then((data) => {
+            this.setData(data);
+            this.applyComponentData();
+        });
     }
 
     checkValidityForGetData(): boolean {
@@ -119,6 +131,12 @@ export abstract class WidgetAbstract implements WidgetComponent {
 
     setOptions(options: WidgetOptions): void {
         this.options = options;
+        this.cdr.detectChanges();
+    }
+
+    setFilters(filters: FilterModel[]): void {
+        this.filters = filters;
+        this.updateDataAndApplyComponent();
         this.cdr.detectChanges();
     }
 
