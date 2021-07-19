@@ -1,5 +1,5 @@
 <ng-template #fieldsData let-data="data">
-    <ng-container *ngFor="let item of data; let i = index">
+    <ng-container *ngFor="let item of data; let i = index; trackBy: trackByKey">
         <div *ngIf="item.type === 'text' && this.checkDependenceKey(item)">
             <label>{{ item.label }}</label>
             <div class="group-input-icon">
@@ -50,13 +50,14 @@
         <div *ngIf="item.type === 'themepalette' && this.checkDependenceKey(item)">
             <label>{{ item.label }}</label>
             <div class="palette-container">
-                <div class="palette-color" *ngFor="let color of form[item.key]; let i = index"
+                <div class="palette-color" *ngFor="let color of form[item.key]; let i = index; trackBy: trackBy"
                      [style.backgroundColor]="color">
                     <fa-icon class="palette-color-remove" icon="times" (click)="removeColor(item.key, form[item.key], color)"></fa-icon>
                     <input
+                        [id]="'color-pick' + i"
                         class="color-change"
                         [(ngModel)]="form[item.key][i]"
-                        (ngModelChange)="setValueColor(item.key, form[item.key])"
+                        (ngModelChange)="setValueColor(item.key, form[item.key], i)"
                         type="color"
                     />
                 </div>

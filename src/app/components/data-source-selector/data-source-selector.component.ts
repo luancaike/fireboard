@@ -1,7 +1,16 @@
 import { CdkDragDrop, copyArrayItem, moveItemInArray } from '@angular/cdk/drag-drop';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, Output } from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    EventEmitter,
+    Input,
+    Output,
+    ViewChild
+} from '@angular/core';
 import { DataSourceBindOption, DataSourceSelectedKey, WidgetConfig } from '../../widgets/widget.abstract';
 import { DataSource, DataSourceKey } from '../../models/data-source.dtos';
+import { FilterMakeComponent } from '../filter-make/filter-make.component';
 
 @Component({
     selector: 'fb-data-source-selector',
@@ -10,8 +19,11 @@ import { DataSource, DataSourceKey } from '../../models/data-source.dtos';
     styleUrls: ['./data-source-selector.component.scss']
 })
 export class DataSourceSelectorComponent {
+    @ViewChild('fbFilter') fbFilter: FilterMakeComponent;
     @Input() public dataSources: DataSource[];
     @Output() public changedDataSource = new EventEmitter<WidgetConfig>();
+
+    public stateFilterPanel = false;
     public dataSourceKeys: DataSourceKey[] = [];
     public dataSourceSelected: number = null;
     public legoConfig: WidgetConfig = null;
@@ -20,6 +32,17 @@ export class DataSourceSelectorComponent {
     public bindingsIds: string[] = [];
 
     constructor(protected cdr: ChangeDetectorRef) {}
+
+    showFilterPanel() {
+        this.stateFilterPanel = true;
+        const dataSource = this.dataSources.find(({ id }) => this.dataSourceSelected === id);
+
+        if (dataSource) {
+            this.fbFilter.columnsData = dataSource.keys;
+            console.log(dataSource.keys);
+            console.log(dataSource);
+        }
+    }
 
     editLego(legoConfig: WidgetConfig): void {
         this.legoConfig = legoConfig;

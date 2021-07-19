@@ -51,8 +51,17 @@ export class StyleEditorComponent {
         this.setValueObjectByPath(keyPath, value);
     }
 
-    @debounce(300)
-    setValueColor(keyPath: string, value: unknown): void {
+    trackBy(index: number, item: any): any {
+        return item;
+    }
+
+    trackByKey(index: number, item: any): any {
+        return item.key;
+    }
+
+    @debounce(1000)
+    setValueColor(keyPath: string, value: unknown, index: number): void {
+        console.log(document.querySelector('color-pick' + index));
         this.setValueObjectByPath(keyPath, value);
     }
 

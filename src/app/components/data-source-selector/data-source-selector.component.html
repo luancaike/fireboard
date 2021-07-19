@@ -48,10 +48,14 @@
                     ></fa-icon>
                 </div>
             </div>
-            <!--            <div-->
-            <!--                class="field-bindings">-->
-            <!--                <span class="field-bindings-label">Filtros</span>-->
-            <!--            </div>-->
+            <div class="field-bindings">
+                <span class="field-bindings-label">Filtros
+                <fa-icon
+                    icon="plus"
+                    (click)="showFilterPanel()"
+                ></fa-icon>
+                </span>
+            </div>
         </div>
         <div class="field-list">
             <div
@@ -85,3 +89,9 @@
         </div>
     </div>
 </div>
+<fb-modal-panel [showPainel]="stateFilterPanel">
+    <fb-filter
+        #fbFilter
+        [(showPanel)]="stateFilterPanel"
+    ></fb-filter>
+</fb-modal-panel>

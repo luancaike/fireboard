@@ -1,0 +1,90 @@
+::ng-deep {
+    .ng-select-column {
+        .ng-option {
+            padding: 0 !important;
+
+            &.ng-option-selected {
+                fa-icon {
+                    color: #3c3c3c !important;
+                }
+            }
+        }
+
+        .ng-value {
+            background-color: transparent !important;
+
+            .string {
+                background-color: rgba(66, 244, 128, 0.5);
+            }
+
+            .number {
+                background-color: rgba(66, 133, 244, 0.5);
+            }
+
+            .custom {
+                background-color: rgba(102, 51, 153, 0.5);
+            }
+
+            .date {
+                background-color: rgba(246, 109, 0, 0.5);
+            }
+
+            .ng-value-icon {
+                &.right {
+                    border: none !important;
+                }
+
+                &:hover {
+                    background-color: rgba(0, 0, 0, 0.03) !important;
+                }
+            }
+        }
+
+        .ng-option-marked {
+            background-color: transparent !important;
+
+            fa-icon {
+                color: #3c3c3c !important;
+            }
+
+            .ng-option-label {
+                &.string {
+                    background-color: rgba(66, 244, 128, 0.5);
+                }
+
+                &.number {
+                    background-color: rgba(66, 133, 244, 0.5);
+                }
+
+                &.custom {
+                    background-color: rgba(102, 51, 153, 0.5);
+                }
+
+                &.date {
+                    background-color: rgba(246, 109, 0, 0.5);
+                }
+            }
+        }
+
+        .ng-option-label {
+            padding: 8px 10px;
+
+            &.string fa-icon {
+                color: rgba(66, 244, 128, 1);
+            }
+
+            &.number fa-icon {
+                color: rgba(66, 133, 244, 1);
+            }
+
+            &.custom fa-icon {
+                color: rgba(102, 51, 153, 1);
+            }
+
+            &.date fa-icon {
+                color: rgba(246, 109, 0, 1);
+            }
+        }
+    }
+
+}

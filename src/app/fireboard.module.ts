@@ -14,9 +14,15 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { StyleEditorComponent } from './components/style-editor/style-editor.component';
 import { ToolbarMenuComponent } from './components/toolbar-menu/toolbar-menu.component';
+import { ModalPanelComponent } from './components/modal-panel/modal-panel.component';
+import { FilterMakeComponent } from './components/filter-make/filter-make.component';
+import { SelectColumnComponent } from './components/select-column/select-column.component';
+import { NgSelectModule } from '@ng-select/ng-select';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
     imports: [
+        BrowserAnimationsModule,
         BrowserModule,
         FormsModule,
         WidgetsModule,
@@ -24,9 +30,18 @@ import { ToolbarMenuComponent } from './components/toolbar-menu/toolbar-menu.com
         CraftableModule,
         FontAwesomeModule,
         DragDropModule,
-        NgbModule
+        NgbModule,
+        NgSelectModule
     ],
-    declarations: [FireboardComponent, DataSourceSelectorComponent, StyleEditorComponent, ToolbarMenuComponent],
+    declarations: [
+        FireboardComponent,
+        DataSourceSelectorComponent,
+        StyleEditorComponent,
+        ToolbarMenuComponent,
+        ModalPanelComponent,
+        FilterMakeComponent,
+        SelectColumnComponent
+    ],
     bootstrap: [FireboardComponent]
 })
 export class FireboardModule {

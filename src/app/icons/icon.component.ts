@@ -24,7 +24,6 @@ export class FbIconComponent implements OnChanges, AfterViewInit {
 
     private setIcon(): void {
         if (this.template) {
-            console.log(this.template);
             this.template.nativeElement.innerHTML = this.getIcon();
         }
     }

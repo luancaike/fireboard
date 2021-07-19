@@ -1,0 +1,148 @@
+@import '../../style/scrollbar';
+
+.scroll-style {
+    @include scroll-style
+}
+
+.query-group {
+    .query-container {
+        margin-left: 1rem;
+
+        //&::after {
+        //    left: -1px;
+        //    width: 15px;
+        //    height: calc(50% + 12px);
+        //    border-width: 2px 0 0 2px;
+        //    bottom: -15px;
+        //}
+    }
+}
+
+.query-header {
+    padding: 1rem 0;
+}
+
+.query-container-rule {
+    display: flex;
+    width: 100%;
+    padding: 1rem;
+    justify-content: space-around;
+    border: #ddd 1px solid;
+
+    &:hover {
+        .remove-rule {
+            visibility: visible;
+        }
+    }
+
+    .remove-rule {
+        visibility: hidden;
+        position: absolute;
+        cursor: pointer;
+        right: 25px;
+        top: 7px;
+    }
+
+    .query-param-rule {
+        flex: 1;
+        margin: 0.5rem
+    }
+}
+
+.query-container-execute {
+    display: flex;
+    width: 100%;
+    justify-content: space-around;
+
+    .query-param-execute {
+        flex: 1;
+        margin: 0.5rem
+    }
+}
+
+.query-container {
+    margin-left: 1.5rem;
+
+    &:hover {
+        .remove-group {
+            visibility: visible;
+        }
+    }
+
+    .remove-group {
+        visibility: hidden;
+    }
+
+    .query-header {
+
+        &::before {
+            border-color: #ddd;
+            border-style: dotted;
+            content: '';
+            position: absolute;
+        }
+
+        &::before {
+            left: 4px;
+            width: 10px;
+            border-width: 0 0 2px 2px;
+            top: 22px;
+        }
+    }
+
+    .query-group {
+        margin-bottom: 1.5rem;
+
+        &:last-of-type {
+            &::before {
+                border: none;
+            }
+        }
+
+        &::before {
+            border-color: #ddd;
+            border-style: dotted;
+            content: '';
+            position: absolute;
+        }
+
+        &::before {
+            left: 4px;
+            width: 10px;
+            height: calc(100% + 40px);
+            border-width: 0 0 0 2px;
+            top: -5px;
+        }
+    }
+
+    .query-rule {
+        &:last-of-type {
+            &::after {
+                border: none;
+            }
+        }
+
+        &::before, &::after {
+            border-color: #ddd;
+            border-style: dotted;
+            content: '';
+            position: absolute;
+        }
+
+        &::before {
+            left: 4px;
+            width: 10px;
+            height: calc(50% + 15px);
+            border-width: 0 0 2px 2px;
+            top: -9px;
+        }
+
+        &::after {
+            left: 4px;
+            width: 10px;
+            height: calc(50% + 15px);
+            border-width: 2px 0 0 2px;
+            bottom: -19px;
+        }
+    }
+}
