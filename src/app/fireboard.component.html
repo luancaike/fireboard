@@ -1,5 +1,5 @@
 <div class="ddd-area">
-    <div class="loading-bar"></div>
+    <fb-loading-bar [isShow]="isLoading"></fb-loading-bar>
     <div class="toolbar">
         <div class="toolbar-menu">
             <div class="label-editable">
@@ -68,11 +68,6 @@
                         <fa-icon [fixedWidth]="true" icon="font" class="btn-icon"></fa-icon>
                         Caixa de Entrada
                     </button>
-                </div>
-            </div>
-            <div class="btn-group">
-                <div [hidden]="!isLoading">
-                    <fa-icon [icon]="['fas', 'circle-notch']" size="2x" [spin]="true"></fa-icon>
                 </div>
             </div>
         </div>

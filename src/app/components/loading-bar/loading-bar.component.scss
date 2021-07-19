@@ -1,0 +1,27 @@
+.loading-bar-wrapper {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 4;
+
+    .loading-bar {
+        background-color: #dc3545;
+        height: 3px;
+
+        animation-name: loading;
+        animation-duration: 60s;
+        animation-timing-function: cubic-bezier(0, 0.99, 0.51, 0.64);
+    }
+}
+@keyframes loading {
+    from {
+        width: 0;
+    }
+    to {
+        width: 100%;
+    }
+}

@@ -20,6 +20,7 @@ import { SelectColumnComponent } from './components/select-column/select-column.
 import { NgSelectModule } from '@ng-select/ng-select';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FilterSelectorComponent } from './components/filter-selector/filter-selector.component';
+import { LoadingBarComponent } from './components/loading-bar/loading-bar.component';
 
 @NgModule({
     imports: [
@@ -42,7 +43,8 @@ import { FilterSelectorComponent } from './components/filter-selector/filter-sel
         ModalPanelComponent,
         FilterMakerComponent,
         SelectColumnComponent,
-        FilterSelectorComponent
+        FilterSelectorComponent,
+        LoadingBarComponent
     ],
     bootstrap: [FireboardComponent]
 })
