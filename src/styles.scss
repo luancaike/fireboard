@@ -4,3 +4,19 @@ body {
   background: rgb(226, 226, 226);
 }
 @import "~@ng-select/ng-select/themes/default.theme.css";
+
+@import "~ag-grid-community/dist/styles/ag-grid.css";
+@import "~ag-grid-community/dist/styles/ag-theme-fresh.css";
+
+/* Fix AgGrid */
+.ag-theme-fresh .ag-header {
+    background-image: linear-gradient(white, white) !important;
+}
+
+.ag-theme-fresh .ag-primary-cols-header-panel {
+    height: 32px;
+}
+
+.ag-theme-fresh .ag-column-drop-cell {
+    background-image: linear-gradient(white, white) !important;
+}

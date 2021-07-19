@@ -27,6 +27,8 @@
     "@fortawesome/free-solid-svg-icons": "^5.15.2",
     "@ng-bootstrap/ng-bootstrap": "^5.3.1",
     "@ng-select/ng-select": "^5.1.0",
+    "ag-grid-angular": "^19.0.0",
+    "ag-grid-community": "^19.0.0",
     "chartjs-plugin-colorschemes": "^0.4.0",
     "ng-craftable": "^1.0.0-alpha.1",
     "ng2-charts": "^2.4.2",

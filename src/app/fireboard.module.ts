@@ -22,6 +22,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FilterSelectorComponent } from './components/filter-selector/filter-selector.component';
 import { LoadingBarComponent } from './components/loading-bar/loading-bar.component';
 import { LoadingBarService } from './service/loading-bar.service';
+import { AgGridModule } from 'ag-grid-angular';
+import { TableComponent } from './widgets/table/table.component';
 
 @NgModule({
     imports: [
@@ -34,7 +36,8 @@ import { LoadingBarService } from './service/loading-bar.service';
         FontAwesomeModule,
         DragDropModule,
         NgbModule,
-        NgSelectModule
+        NgSelectModule,
+        AgGridModule.withComponents([])
     ],
     providers: [LoadingBarService],
     declarations: [
@@ -46,7 +49,8 @@ import { LoadingBarService } from './service/loading-bar.service';
         FilterMakerComponent,
         SelectColumnComponent,
         FilterSelectorComponent,
-        LoadingBarComponent
+        LoadingBarComponent,
+        TableComponent
     ],
     bootstrap: [FireboardComponent]
 })
