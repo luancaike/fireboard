@@ -10,7 +10,7 @@ import {
 } from '@angular/core';
 import { DataSourceBindOption, DataSourceSelectedKey, WidgetConfig } from '../../widgets/widget.abstract';
 import { DataSource, DataSourceKey } from '../../models/data-source.dtos';
-import { FilterMakeComponent } from '../filter-make/filter-make.component';
+import { FilterSelectorComponent } from '../filter-selector/filter-selector.component';
 
 @Component({
     selector: 'fb-data-source-selector',
@@ -19,7 +19,7 @@ import { FilterMakeComponent } from '../filter-make/filter-make.component';
     styleUrls: ['./data-source-selector.component.scss']
 })
 export class DataSourceSelectorComponent {
-    @ViewChild('fbFilter') fbFilter: FilterMakeComponent;
+    @ViewChild('fbFilter') fbFilter: FilterSelectorComponent;
     @Input() public dataSources: DataSource[];
     @Output() public changedDataSource = new EventEmitter<WidgetConfig>();
 
@@ -39,8 +39,20 @@ export class DataSourceSelectorComponent {
 
         if (dataSource) {
             this.fbFilter.columnsData = dataSource.keys;
-            console.log(dataSource.keys);
-            console.log(dataSource);
+            this.fbFilter.filters = [
+                { id: 1, name: 'teste 1' },
+                { id: 2, name: 'teste 2' },
+                { id: 3, name: 'teste 3' },
+                { id: 4, name: 'teste 4' },
+                { id: 1, name: 'teste 1' },
+                { id: 2, name: 'teste 2' },
+                { id: 3, name: 'teste 3' },
+                { id: 4, name: 'teste 4' },
+                { id: 1, name: 'teste 1' },
+                { id: 2, name: 'teste 2' },
+                { id: 3, name: 'teste 3' },
+                { id: 4, name: 'teste 4' }
+            ];
         }
     }
 

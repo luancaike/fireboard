@@ -6,11 +6,6 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
     styleUrls: ['./select-column.component.scss'],
     template: `
         <div class="input-group w-100">
-            <div class="input-group-prepend" *ngIf="icon">
-                <div class="input-group-text">
-                    <fa-icon [icon]="icon" [fixedWidth]="true"></fa-icon>
-                </div>
-            </div>
             <ng-select
                 class="ng-select-sm ng-select-column"
                 [placeholder]="placeholder"
@@ -68,7 +63,6 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 })
 export class SelectColumnComponent {
     @Input() items: any[];
-    @Input() icon: string;
     @Input() clearable: boolean;
     @Input() searchable: boolean;
     @Input() multiple: boolean;

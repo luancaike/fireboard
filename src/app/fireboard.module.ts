@@ -15,10 +15,11 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { StyleEditorComponent } from './components/style-editor/style-editor.component';
 import { ToolbarMenuComponent } from './components/toolbar-menu/toolbar-menu.component';
 import { ModalPanelComponent } from './components/modal-panel/modal-panel.component';
-import { FilterMakeComponent } from './components/filter-make/filter-make.component';
+import { FilterMakerComponent } from './components/filter-maker/filter-maker.component';
 import { SelectColumnComponent } from './components/select-column/select-column.component';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { FilterSelectorComponent } from './components/filter-selector/filter-selector.component';
 
 @NgModule({
     imports: [
@@ -39,8 +40,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
         StyleEditorComponent,
         ToolbarMenuComponent,
         ModalPanelComponent,
-        FilterMakeComponent,
-        SelectColumnComponent
+        FilterMakerComponent,
+        SelectColumnComponent,
+        FilterSelectorComponent
     ],
     bootstrap: [FireboardComponent]
 })

@@ -18,3 +18,7 @@ export interface DataSourceKey {
     name: string;
     key: string;
 }
+export interface FilterModel {
+    id: number;
+    name: string;
+}

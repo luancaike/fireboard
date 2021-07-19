@@ -20,7 +20,7 @@ import { Component, Input } from '@angular/core';
                 cursor: auto;
                 -webkit-box-shadow: 3px -40px 50px 0 rgba(0, 0, 0, 0.3);
                 box-shadow: 3px -40px 50px 0 rgba(0, 0, 0, 0.3);
-                height: 650px;
+                height: 70vh;
                 background: white;
                 width: 100%;
             }

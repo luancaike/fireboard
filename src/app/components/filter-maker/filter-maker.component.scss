@@ -4,6 +4,20 @@
     @include scroll-style
 }
 
+.card-header {
+    color: #6c757d;
+
+    button {
+        color: #6c757d;
+        border: none;
+
+        &:hover {
+            color: white;
+            background: #6c757d;
+        }
+    }
+}
+
 .query-group {
     .query-container {
         margin-left: 1rem;

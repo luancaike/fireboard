@@ -7,50 +7,47 @@ import {
     OperatorsText,
     ReturnTypes,
     TypeExpression
-} from './filter-make.model';
+} from './filter-maker.model';
 import { DataSourceKey } from '../../models/data-source.dtos';
 
 @Component({
-    selector: 'fb-filter',
+    selector: 'fb-filter-maker',
     template: `
-        <div class="row h-100">
-            <div class="col-12">
-                <div
-                    class="card border-0"
-                    style="display: flex;
+        <div
+            class="card border-0"
+            style="display: flex;
                                         justify-content: space-between;
                                         height: 100%;"
-                >
-                    <div class="card-header bg-primary text-white d-flex justify-content-between">
-                        <h5 style="margin: .5rem;">
-                            <fa-icon icon="filter" class="mr-2"></fa-icon>
-                            Criar Novo Filtro
-                        </h5>
-                        <button class="btn btn-outline-light btn-sm" (click)="showPanel = false">
-                            FECHAR
-                            <fa-icon icon="times" class="ml-2"></fa-icon>
-                        </button>
-                    </div>
-                    <div class="row mt-2 justify-content-around border-bottom">
-                        <div class="col-5 form-group">
-                            <input required placeholder="Nome" [(ngModel)]="customFilter.label" class="form-control" />
-                        </div>
-                    </div>
-                    <div
-                        class="card-body py-4 scroll-style"
-                        style="max-height: 460px;overflow-x: hidden;overflow-y: auto;"
-                    >
-                        <ng-container
-                            *ngTemplateOutlet="queryConfig; context: { model: customFilter.expression }"
-                        ></ng-container>
-                    </div>
-                    <div class="card-footer text-muted d-flex justify-content-end">
-                        <button class="btn btn-primary ml-3" (click)="salvarExpression()">
-                            <fa-icon icon="save" class="mr-2"></fa-icon>
-                            SALVAR
-                        </button>
-                    </div>
-                </div>
+        >
+            <div class="card-header d-flex justify-content-between">
+                <h5 style="margin: .5rem;">
+                    <fa-icon icon="plus" class="mr-2"></fa-icon>
+                    Criar Novo Filtro
+                </h5>
+                <button class="btn btn-outline-dark btn-sm" (click)="showPanel = false">
+                    FECHAR
+                    <fa-icon icon="times" class="ml-2"></fa-icon>
+                </button>
+            </div>
+            <div
+                class="card-body py-4 scroll-style"
+                style="max-height: calc(100% - 65px);overflow-x: hidden;overflow-y: auto;"
+            >
+                <input
+                    required
+                    placeholder="Nome"
+                    [(ngModel)]="customFilter.label"
+                    class="form-control form-control-sm"
+                />
+                <ng-container
+                    *ngTemplateOutlet="queryConfig; context: { model: customFilter.expression }"
+                ></ng-container>
+            </div>
+            <div class="card-footer text-muted d-flex justify-content-end">
+                <button class="btn btn-primary ml-3" (click)="saveExpression()">
+                    <fa-icon icon="save" class="mr-2"></fa-icon>
+                    SALVAR
+                </button>
             </div>
         </div>
         <ng-template #queryRule let-model="model" let-parent="parent">
@@ -193,9 +190,9 @@ import { DataSourceKey } from '../../models/data-source.dtos';
             </div>
         </ng-template>
     `,
-    styleUrls: ['./filter-make.component.scss']
+    styleUrls: ['./filter-maker.component.scss']
 })
-export class FilterMakeComponent {
+export class FilterMakerComponent {
     @Output() showPanelChange = new EventEmitter();
     @Output() addFilter = new EventEmitter();
     @Input() columnsData: DataSourceKey[] = [];
@@ -205,6 +202,7 @@ export class FilterMakeComponent {
         this.showPanelChange.emit(value);
         this._showPanel = value;
     }
+
     get showPanel(): boolean {
         return this._showPanel;
     }
@@ -349,7 +347,7 @@ export class FilterMakeComponent {
             ]
         });
     };
-    salvarExpression = () => {
+    saveExpression = () => {
         try {
             this.addFilter.emit(this.customFilter);
             this.showPanel = false;
