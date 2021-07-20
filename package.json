@@ -30,7 +30,7 @@
     "ag-grid-angular": "^19.0.0",
     "ag-grid-community": "^19.0.0",
     "chartjs-plugin-colorschemes": "^0.4.0",
-    "ng-craftable": "^1.0.0-alpha.2",
+    "ng-craftable": "^1.0.0-alpha.3",
     "ng2-charts": "^2.4.2",
     "rxjs": "~6.6.0",
     "tslib": "^2.0.0",
