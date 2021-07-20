@@ -1,26 +1,40 @@
 import { WidgetAbstract, WidgetOptions } from './widget.abstract';
-import { Label, PluginServiceGlobalRegistrationAndOptions } from 'ng2-charts/lib/base-chart.directive';
 import { PresetColors } from '../utils/chart';
-import { ChartDataSets } from 'chart.js';
-import * as pluginDataLabels from 'chartjs-plugin-datalabels';
-import * as pluginColorschemes from 'chartjs-plugin-colorschemes';
+import * as Chart from 'chart.js';
+import { ChartDataSets, ChartType } from 'chart.js';
+import 'chartjs-plugin-datalabels';
+import 'chartjs-plugin-colorschemes';
+import { ElementRef } from '@angular/core';
 
 export abstract class ChartAbstract extends WidgetAbstract {
-    public plugins: PluginServiceGlobalRegistrationAndOptions[] = [
-        pluginDataLabels as PluginServiceGlobalRegistrationAndOptions,
-        pluginColorschemes as PluginServiceGlobalRegistrationAndOptions
-    ];
-    public labels: Label[] = [];
+    abstract canvas: ElementRef;
+    abstract type: ChartType;
+    public labels: string[] = [];
     public datasets: ChartDataSets[] = [];
+    public chart: Chart;
+
+    mountChart() {
+        if (this.chart) {
+            this.chart.destroy();
+        }
+        this.chart = new Chart(this.canvas.nativeElement, {
+            type: this.type,
+            data: {
+                labels: this.labels,
+                datasets: this.datasets
+            },
+            options: this.options
+        });
+    }
 
     setOptions(options: WidgetOptions): void {
+        const scheme = options?.plugins?.colorschemes?.scheme || PresetColors();
         super.setOptions({
             ...{
                 plugins: {
                     colorschemes: {
                         override: true,
-                        scheme: PresetColors(),
-                        ...options.colorschemes
+                        scheme
                     },
                     ...options.plugins
                 },
@@ -34,5 +48,6 @@ export abstract class ChartAbstract extends WidgetAbstract {
                 ...options
             }
         });
+        this.mountChart();
     }
 }

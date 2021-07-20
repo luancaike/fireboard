@@ -85,6 +85,11 @@ export class FireboardComponent {
         this.cdr.detectChanges();
     }
 
+    toggleVisualizationMode(): void {
+        this.visualizationMode = !this.visualizationMode;
+        setTimeout(() => this.craftable.setScaleByScreen());
+    }
+
     showSelectedLegoOptionsEditor(): void {
         this.isLoading = true;
         setTimeout(() => {

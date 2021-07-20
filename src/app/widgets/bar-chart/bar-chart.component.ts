@@ -1,11 +1,19 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, Input } from '@angular/core';
+import {
+    AfterViewInit,
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    ElementRef,
+    Input,
+    ViewChild
+} from '@angular/core';
 import { WidgetComponent } from '../widget.interface';
 import { BarChartDefault } from './bar-chart.default';
 import { DataSourceKey } from 'src/app/models/data-source.dtos';
-import { ChartDataSets } from 'chart.js';
+import { ChartDataSets, ChartType } from 'chart.js';
 import { ChartAbstract } from '../chart.abstract';
-import { Label } from 'ng2-charts/lib/base-chart.directive';
 import { ExternalDataService } from '../../service/external-data.service';
+import { ChartScrollableComponent } from '../../components/chart-scrollable/chart-scrollable.component';
 
 @Component({
     selector: 'fb-bar-chart',
@@ -13,25 +21,20 @@ import { ExternalDataService } from '../../service/external-data.service';
     template: `
         <fb-loading-widget [show]="isLoading"></fb-loading-widget>
         <div style="display: block; height: 100%">
-            <canvas
-                baseChart
-                [plugins]="plugins"
-                [options]="options"
-                [datasets]="datasets"
-                [labels]="labels"
-                chartType="bar"
-            >
-            </canvas>
+            <canvas #canvas></canvas>
         </div>
     `
 })
 export class BarChartComponent extends ChartAbstract implements WidgetComponent, AfterViewInit {
+    @ViewChild('canvas') canvas: ElementRef;
+    @ViewChild('scroll') scroll: ChartScrollableComponent;
     @Input() public legoData;
 
     public dataSourceBindOptions = BarChartDefault.dataSourceBindOptions();
     public options = BarChartDefault.options();
     public fieldsEditor = BarChartDefault.fieldsEditor();
-    public labels: Label[] = ['Example 1', 'Example 2'];
+    public type: ChartType = 'bar';
+    public labels: string[] = ['Example 1', 'Example 2'];
     public datasets: ChartDataSets[] = [
         { data: [20, 15], label: 'Serie 1' },
         { data: [5, 30], label: 'Serie 2' },
@@ -42,12 +45,18 @@ export class BarChartComponent extends ChartAbstract implements WidgetComponent,
         super(cdr);
     }
 
+    mountChart() {
+        super.mountChart();
+        this.scroll.initChartConfig(this.chart);
+    }
+
     ngAfterViewInit() {
         if (this.legoData.data) {
             this.setConfig(this.legoData.data);
         } else {
             this.legoData.data = this.getOptions();
         }
+        this.mountChart();
     }
 
     applyComponentData(): void {
@@ -59,6 +68,7 @@ export class BarChartComponent extends ChartAbstract implements WidgetComponent,
                 this.mountDatasets(value.data);
             }
         });
+        this.mountChart();
         this.cdr.detectChanges();
     }
 

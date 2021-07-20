@@ -59,6 +59,7 @@ export class DataSourceSelectorComponent {
             this.externalDataService.filtersGetter(this.dataSourceSelected).then((data) => {
                 this.filters = data;
                 this.loadingBarService.hide();
+                this.cdr.detectChanges();
             });
         }
     }

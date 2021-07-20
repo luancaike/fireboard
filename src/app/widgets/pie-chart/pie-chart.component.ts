@@ -1,10 +1,17 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, Input } from '@angular/core';
+import {
+    AfterViewInit,
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    ElementRef,
+    Input,
+    ViewChild
+} from '@angular/core';
 import { WidgetComponent } from '../widget.interface';
 import { PieChartDefault } from './pie-chart.default';
 import { DataSourceKey } from 'src/app/models/data-source.dtos';
-import { ChartDataSets } from 'chart.js';
+import { ChartDataSets, ChartType } from 'chart.js';
 import { ChartAbstract } from '../chart.abstract';
-import { Label } from 'ng2-charts/lib/base-chart.directive';
 import { ExternalDataService } from '../../service/external-data.service';
 
 @Component({
@@ -13,25 +20,19 @@ import { ExternalDataService } from '../../service/external-data.service';
     template: `
         <fb-loading-widget [show]="isLoading"></fb-loading-widget>
         <div style="display: block; height: 100%">
-            <canvas
-                baseChart
-                [plugins]="plugins"
-                [options]="options"
-                [datasets]="datasets"
-                [labels]="labels"
-                chartType="pie"
-            >
-            </canvas>
+            <canvas #canvas></canvas>
         </div>
     `
 })
 export class PieChartComponent extends ChartAbstract implements WidgetComponent, AfterViewInit {
+    @ViewChild('canvas', { read: ElementRef }) canvas: ElementRef;
     @Input() public legoData;
 
     public dataSourceBindOptions = PieChartDefault.dataSourceBindOptions();
     public options = PieChartDefault.options();
+    public type: ChartType = 'pie';
     public fieldsEditor = PieChartDefault.fieldsEditor();
-    public labels: Label[] = ['Red', 'Blue', 'Yellow'];
+    public labels: string[] = ['Red', 'Blue', 'Yellow'];
     public datasets: ChartDataSets[] = [
         {
             label: 'My First Dataset',
@@ -49,6 +50,7 @@ export class PieChartComponent extends ChartAbstract implements WidgetComponent,
         } else {
             this.legoData.data = this.getOptions();
         }
+        this.mountChart();
     }
 
     applyComponentData(): void {
@@ -60,6 +62,7 @@ export class PieChartComponent extends ChartAbstract implements WidgetComponent,
                 this.mountDatasets(value.data);
             }
         });
+        this.mountChart();
         this.cdr.detectChanges();
     }
 

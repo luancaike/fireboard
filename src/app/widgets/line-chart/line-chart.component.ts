@@ -1,10 +1,17 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, Input } from '@angular/core';
+import {
+    AfterViewInit,
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    ElementRef,
+    Input,
+    ViewChild
+} from '@angular/core';
 import { WidgetComponent } from '../widget.interface';
 import { LineChartDefault } from './line-chart.default';
 import { DataSourceKey } from 'src/app/models/data-source.dtos';
-import { ChartDataSets } from 'chart.js';
+import { ChartDataSets, ChartType } from 'chart.js';
 import { ChartAbstract } from '../chart.abstract';
-import { Label } from 'ng2-charts/lib/base-chart.directive';
 import { ExternalDataService } from '../../service/external-data.service';
 
 @Component({
@@ -13,25 +20,19 @@ import { ExternalDataService } from '../../service/external-data.service';
     template: `
         <fb-loading-widget [show]="isLoading"></fb-loading-widget>
         <div style="display: block; height: 100%">
-            <canvas
-                baseChart
-                [plugins]="plugins"
-                [options]="options"
-                [datasets]="datasets"
-                [labels]="labels"
-                chartType="line"
-            >
-            </canvas>
+            <canvas #canvas></canvas>
         </div>
     `
 })
 export class LineChartComponent extends ChartAbstract implements WidgetComponent, AfterViewInit {
+    @ViewChild('canvas', { read: ElementRef }) canvas: ElementRef;
     @Input() public legoData;
 
     public dataSourceBindOptions = LineChartDefault.dataSourceBindOptions();
     public options = LineChartDefault.options();
     public fieldsEditor = LineChartDefault.fieldsEditor();
-    public labels: Label[] = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
+    public type: ChartType = 'line';
+    public labels: string[] = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
     public datasets: ChartDataSets[] = [
         { data: [65, 59, 80, 81, 56, 55, 40], label: 'Series A' },
         { data: [70, 20, 10, 80, 40, 40, 20], label: 'Series B' },
@@ -48,6 +49,7 @@ export class LineChartComponent extends ChartAbstract implements WidgetComponent
         } else {
             this.legoData.data = this.getOptions();
         }
+        this.mountChart();
     }
 
     applyComponentData(): void {
@@ -59,6 +61,7 @@ export class LineChartComponent extends ChartAbstract implements WidgetComponent
                 this.mountDatasets(value.data);
             }
         });
+        this.mountChart();
         this.cdr.detectChanges();
     }
 
