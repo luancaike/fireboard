@@ -57,7 +57,7 @@
                         [id]="'color-pick' + i"
                         class="color-change"
                         [(ngModel)]="form[item.key][i]"
-                        (ngModelChange)="setValueColor(item.key, form[item.key], i)"
+                        (ngModelChange)="setValueColor(item.key, form[item.key])"
                         type="color"
                     />
                 </div>
