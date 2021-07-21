@@ -16,14 +16,6 @@ export class ToolbarMenuComponent {
             title: 'Arquivo',
             children: [
                 {
-                    disabled: false,
-                    title: 'Salvar',
-                    icon: 'save',
-                    short: 'Ctrl+S',
-                    action: (): any => console.log('Salvar'),
-                    separator: true
-                },
-                {
                     title: 'Exportar',
                     icon: 'file-download',
                     action: (): any => this.dashboard.exportData()
@@ -31,12 +23,7 @@ export class ToolbarMenuComponent {
                 {
                     title: 'Importar',
                     icon: 'file-upload',
-                    separator: true,
                     action: (): any => this.dashboard.importData()
-                },
-                {
-                    title: 'Sair',
-                    icon: 'sign-out-alt'
                 }
             ]
         },

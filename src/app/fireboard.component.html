@@ -3,7 +3,7 @@
     <div class="toolbar" [class.visualization]="visualizationMode">
         <div class="toolbar-menu">
             <div class="label-editable">
-                <input class="name-board" [(ngModel)]="nameBoard"/>
+                <input class="name-board" [(ngModel)]="nameBoard" />
             </div>
             <div class="menu-container" [hidden]="visualizationMode">
                 <fb-toolbar-menu [dashboard]="this"></fb-toolbar-menu>
@@ -15,12 +15,32 @@
                 <button [hidden]="!visualizationMode" class="btn" (click)="toggleVisualizationMode()">
                     Editar <fa-icon icon="pencil-alt"></fa-icon>
                 </button>
-                <button class="btn outline">
-                    Salvar <fa-icon icon="save"></fa-icon>
-                </button>
+                <button class="btn outline">Salvar <fa-icon icon="save"></fa-icon></button>
             </div>
         </div>
         <div class="toolbar-tools" [hidden]="visualizationMode">
+            <div class="btn-toolbar-dropdown">
+                <button class="dropdown-button">
+                    <fa-icon class="btn-icon" icon="paperclip"></fa-icon>
+                    Página {{ pageSelected + 1 }} de {{ pages.length }}
+                    <fa-icon class="btn-icon-arrow" icon="chevron-down"></fa-icon>
+                </button>
+                <div class="dropdown-options">
+                    <button class="dropdown-options-list-item" (click)="addPage()">
+                        <fa-icon [fixedWidth]="true" [icon]="['far', 'plus-square']" class="btn-icon"></fa-icon>
+                        Adicionar Página
+                    </button>
+                    <div *ngFor="let page of pages; let i = index" class="dropdown-options-page-item">
+                        <button class="page-item" (click)="selectPage(i)">
+                            <span class="page-counter">{{i+1}}.</span> {{ page.name }}
+                        </button>
+                        <button class="page-remove-item" *ngIf="pages.length - 1">
+                            <fa-icon [fixedWidth]="true" icon="times" (click)="deletePage($event, i)"></fa-icon>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="toolbar-separator"></div>
             <button
                 type="button"
                 title="Redo"
@@ -86,26 +106,10 @@
     <div class="workspace" [class.visualization]="visualizationMode">
         <ng-craftable #craftable (selectionChange)="selectionChange($event)" [visualizationMode]="visualizationMode">
             <ng-template #template let-data>
-                <fb-bar-chart
-                    #chart
-                    *ngIf="data.type === 'bar-chart'"
-                    [legoData]="data"
-                ></fb-bar-chart>
-                <fb-pie-chart
-                    #chart
-                    *ngIf="data.type === 'pie-chart'"
-                    [legoData]="data">
-                </fb-pie-chart>
-                <fb-line-chart
-                    #chart
-                    *ngIf="data.type === 'line-chart'"
-                    [legoData]="data">
-                </fb-line-chart>
-                <fb-table
-                    #chart
-                    *ngIf="data.type === 'table'"
-                    [legoData]="data">
-                </fb-table>
+                <fb-bar-chart #chart *ngIf="data.type === 'bar-chart'" [legoData]="data"></fb-bar-chart>
+                <fb-pie-chart #chart *ngIf="data.type === 'pie-chart'" [legoData]="data"> </fb-pie-chart>
+                <fb-line-chart #chart *ngIf="data.type === 'line-chart'" [legoData]="data"> </fb-line-chart>
+                <fb-table #chart *ngIf="data.type === 'table'" [legoData]="data"> </fb-table>
             </ng-template>
         </ng-craftable>
     </div>

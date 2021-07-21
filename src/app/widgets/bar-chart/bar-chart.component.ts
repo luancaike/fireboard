@@ -45,11 +45,6 @@ export class BarChartComponent extends ChartAbstract implements WidgetComponent,
         super(cdr);
     }
 
-    mountChart() {
-        super.mountChart();
-        this.scroll.initChartConfig(this.chart);
-    }
-
     ngAfterViewInit() {
         if (this.legoData.data) {
             this.setConfig(this.legoData.data);

@@ -131,6 +131,16 @@ $size-toolbar-visualization: 70px;
 
         &.visualization {
             height: $size-toolbar-visualization;
+            .toolbar-menu {
+                .label-editable {
+                    .name-board {
+                        pointer-events: none;
+                        user-select: none;
+                        font-size: 20px;
+                        height: 40px;
+                    }
+                }
+            }
         }
 
         .toolbar-separator {
@@ -242,6 +252,7 @@ $size-toolbar-visualization: 70px;
                     flex-direction: row;
                     flex-wrap: wrap;
                     align-content: flex-start;
+                    @include scroll-style;
 
                     .dropdown-options-item {
                         outline: 0;
@@ -273,9 +284,61 @@ $size-toolbar-visualization: 70px;
                         }
 
                         .btn-icon {
-                            width: 20px!important;
-                            height: 20px!important;
+                            width: 20px !important;
+                            height: 20px !important;
                             margin: 0 5px;
+                        }
+                    }
+
+                    .dropdown-options-page-item {
+                        position: relative;
+                        outline: 0;
+                        background: white;
+                        color: #6c757d;
+                        height: 40px;
+                        cursor: pointer;
+                        flex: 0 0 100%;
+                        border: none;
+                        text-align: start;
+                        vertical-align: middle;
+
+                        .page-item, .page-remove-item {
+                            height: 100%;
+                            outline: 0;
+                            background: white;
+                            color: #6c757d;
+                            cursor: pointer;
+                            flex: 0 0 100%;
+                            border: none;
+                            text-align: start;
+                            vertical-align: middle;
+
+                            &:hover {
+                                background: rgba(108, 117, 125, 0.1);
+                            }
+                        }
+
+                        .page-remove-item {
+                            position: absolute;
+                            text-align:center;
+                            top: 0;
+                            right: 0;
+                            width: 30px;
+                            color: #dc3545;
+                        }
+
+                        .page-item {
+                            width: 100%;
+                            .page-counter {
+                                font-weight: bold;
+                                margin: 0 6px;
+                            }
+                        }
+
+                        .btn-icon {
+                            width: 20px !important;
+                            height: 20px !important;
+                            margin: 0 6px;
                         }
                     }
                 }
