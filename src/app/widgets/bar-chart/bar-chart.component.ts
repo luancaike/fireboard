@@ -4,7 +4,9 @@ import {
     ChangeDetectorRef,
     Component,
     ElementRef,
+    EventEmitter,
     Input,
+    Output,
     ViewChild
 } from '@angular/core';
 import { WidgetComponent } from '../widget.interface';
@@ -29,6 +31,7 @@ export class BarChartComponent extends ChartAbstract implements WidgetComponent,
     @ViewChild('canvas') canvas: ElementRef;
     @ViewChild('scroll') scroll: ChartScrollableComponent;
     @Input() public legoData;
+    @Output() public updateLegoData = new EventEmitter();
 
     public dataSourceBindOptions = BarChartDefault.dataSourceBindOptions();
     public options = BarChartDefault.options();

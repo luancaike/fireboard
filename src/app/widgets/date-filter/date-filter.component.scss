@@ -1,0 +1,66 @@
+.date-picker {
+    position: relative;
+    pointer-events: auto;
+    margin: 0;
+    text-transform: none;
+    -webkit-appearance: button;
+    display: inline-block;
+    font-weight: 400;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    user-select: none;
+    border: 1px solid #6c757d;
+    padding: 5px 10px;
+    font-size: 18px;
+    line-height: 18px;
+    border-radius: 3px;
+    color: #6c757d;
+    background-color: transparent;
+    background-image: none;
+    box-sizing: border-box;
+    cursor: pointer;
+    height: 100%;
+    width: 100%;
+
+    &:focus {
+        outline: none;
+        box-shadow: none;
+    }
+
+
+    .btn-icon {
+        position: absolute;
+        left: 10px;
+    }
+
+    .btn-icon-drop {
+        position: absolute;
+        right: 10px;
+    }
+}
+.ngb-dp-week {
+    justify-content: space-between;
+}
+.interval-selector {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    padding: 10px;
+
+    .picker {
+        text-align: center;
+        flex: 0 0 50%;
+        max-width: 50%;
+    }
+}
+
+.close-modal {
+    border: none;
+
+    &:focus {
+        outline: none;
+        box-shadow: none;
+    }
+}

@@ -15,7 +15,7 @@
                 <button [hidden]="!visualizationMode" class="btn" (click)="toggleVisualizationMode()">
                     Editar <fa-icon icon="pencil-alt"></fa-icon>
                 </button>
-                <button class="btn outline">Salvar <fa-icon icon="save"></fa-icon></button>
+                <button [hidden]="visualizationMode" class="btn outline">Salvar <fa-icon icon="save"></fa-icon></button>
             </div>
         </div>
         <div class="toolbar-tools" [hidden]="visualizationMode">
@@ -87,13 +87,17 @@
                     <fa-icon class="btn-icon-arrow" icon="chevron-down"></fa-icon>
                 </button>
                 <div class="dropdown-options list">
-                    <button class="dropdown-options-list-item">
+                    <button class="dropdown-options-list-item" (click)="drawNewLego({ type: 'date-filter' })">
                         <fa-icon [fixedWidth]="true" icon="calendar-alt" class="btn-icon"></fa-icon>
                         Intervalo de Datas
                     </button>
                     <button class="dropdown-options-list-item">
-                        <fa-icon [fixedWidth]="true" icon="list" class="btn-icon"></fa-icon>
+                        <fa-icon [fixedWidth]="true" icon="list-ul" class="btn-icon"></fa-icon>
                         Lista de Seleção
+                    </button>
+                    <button class="dropdown-options-list-item">
+                        <fa-icon [fixedWidth]="true" icon="list-alt" class="btn-icon"></fa-icon>
+                        Caixa de Seleção
                     </button>
                     <button class="dropdown-options-list-item">
                         <fa-icon [fixedWidth]="true" icon="font" class="btn-icon"></fa-icon>
@@ -106,10 +110,13 @@
     <div class="workspace" [class.visualization]="visualizationMode">
         <ng-craftable #craftable (selectionChange)="selectionChange($event)" [visualizationMode]="visualizationMode">
             <ng-template #template let-data>
+                <!-- Charts -->
                 <fb-bar-chart #chart *ngIf="data.type === 'bar-chart'" [legoData]="data"></fb-bar-chart>
                 <fb-pie-chart #chart *ngIf="data.type === 'pie-chart'" [legoData]="data"> </fb-pie-chart>
                 <fb-line-chart #chart *ngIf="data.type === 'line-chart'" [legoData]="data"> </fb-line-chart>
                 <fb-table #chart *ngIf="data.type === 'table'" [legoData]="data"> </fb-table>
+                <!-- Filters -->
+                <fb-date-filter #filter *ngIf="data.type === 'date-filter'" [legoData]="data"> </fb-date-filter>
             </ng-template>
         </ng-craftable>
     </div>

@@ -24,6 +24,7 @@ import { LoadingBarComponent } from './components/loading-bar/loading-bar.compon
 import { LoadingBarService } from './service/loading-bar.service';
 import { AgGridModule } from 'ag-grid-angular';
 import { TableComponent } from './widgets/table/table.component';
+import { DateFilterComponent } from './widgets/date-filter/date-filter.component';
 
 @NgModule({
     imports: [
@@ -50,7 +51,8 @@ import { TableComponent } from './widgets/table/table.component';
         SelectColumnComponent,
         FilterSelectorComponent,
         LoadingBarComponent,
-        TableComponent
+        TableComponent,
+        DateFilterComponent
     ],
     bootstrap: [FireboardComponent]
 })

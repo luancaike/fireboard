@@ -30,6 +30,7 @@ type DashboardPage = {
 })
 export class FireboardComponent implements AfterViewInit {
     @ViewChildren('chart') widgetsList: QueryList<WidgetAbstract>;
+    @ViewChildren('filter') filtersList: QueryList<WidgetAbstract>;
     @ViewChild('craftable') craftable: CraftableComponent;
     @ViewChild('datasourceSelector') datasourceSelector: DataSourceSelectorComponent;
     @ViewChild('styleEditorComponent') styleEditorComponent: StyleEditorComponent;
@@ -164,16 +165,20 @@ export class FireboardComponent implements AfterViewInit {
             const lego = this.craftable.getSelectedLegos().find(() => true);
             if (lego) {
                 const component = this.widgetsList.find((el) => el.legoData.key === lego.key);
+                const filter = this.filtersList.find((el) => el.legoData.key === lego.key);
                 if (component) {
                     this.isLoading = false;
                     this.showLegoOptionsEditor = true;
                     this.datasourceSelector.editLego(component?.getConfig());
                     this.styleEditorComponent.fieldsEditor = component.fieldsEditor;
-                    this.styleEditorComponent.editLego(component.getOptions());
-                    this.detectChanges();
+                    this.styleEditorComponent.editLego(component?.getOptions());
+                } else if (filter) {
+                    this.isLoading = false;
+                    console.log(filter);
                 } else {
                     this.showSelectedLegoOptionsEditor();
                 }
+                this.detectChanges();
             }
         }, 300);
     }
