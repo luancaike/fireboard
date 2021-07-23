@@ -26,6 +26,7 @@ import { AgGridModule } from 'ag-grid-angular';
 import { TableComponent } from './widgets/table/table.component';
 import { DateFilterComponent } from './widgets/date-filter/date-filter.component';
 import { InputSelectComponent } from './widgets/input-select/input-select.component';
+import { InputTextComponent } from './widgets/input-text/input-text.component';
 
 @NgModule({
     imports: [
@@ -54,7 +55,8 @@ import { InputSelectComponent } from './widgets/input-select/input-select.compon
         LoadingBarComponent,
         TableComponent,
         DateFilterComponent,
-        InputSelectComponent
+        InputSelectComponent,
+        InputTextComponent
     ],
     bootstrap: [FireboardComponent]
 })
