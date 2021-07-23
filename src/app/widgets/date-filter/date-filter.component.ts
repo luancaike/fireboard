@@ -3,10 +3,8 @@ import {
     ChangeDetectionStrategy,
     ChangeDetectorRef,
     Component,
-    EventEmitter,
     Input,
     NgZone,
-    Output,
     ViewChild,
     ViewEncapsulation
 } from '@angular/core';
@@ -58,7 +56,7 @@ import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap/modal/modal-ref';
                 <div class="card-footer text-muted d-flex justify-content-end">
                     <button
                         type="button"
-                        class="btn btn-primary"
+                        class="btn btn-sm btn-apply"
                         [disabled]="!checkIsDateValid()"
                         (click)="applyFilter(modal)"
                     >
@@ -78,7 +76,6 @@ export class DateFilterComponent extends FilterAbstract implements WidgetCompone
     @ViewChild('fromPicker') fromPickerRef: NgbDatepicker;
     @ViewChild('toPicker') toPickerRef: NgbDatepicker;
     @Input() public legoData;
-    @Output() public updateLegoData = new EventEmitter();
 
     public from: NgbDateStruct;
     public to: NgbDateStruct;
