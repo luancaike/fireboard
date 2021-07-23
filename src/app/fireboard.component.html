@@ -95,7 +95,7 @@
                         <fa-icon [fixedWidth]="true" icon="list-ul" class="btn-icon"></fa-icon>
                         Lista de Seleção
                     </button>
-                    <button class="dropdown-options-list-item" (click)="drawNewLego({ type: 'input-text' })">
+                    <button class="dropdown-options-list-item" (click)="drawNewLego({ type: 'card-select' })">
                         <fa-icon [fixedWidth]="true" icon="list-alt" class="btn-icon"></fa-icon>
                         Caixa de Seleção
                     </button>
@@ -123,6 +123,7 @@
                 <fb-date-filter #filter *ngIf="data.type === 'date-filter'" [legoData]="data"> </fb-date-filter>
                 <fb-input-select #filter *ngIf="data.type === 'input-select'" [legoData]="data"> </fb-input-select>
                 <fb-input-text #filter *ngIf="data.type === 'input-text'" [legoData]="data"></fb-input-text>
+                <fb-card-select #filter *ngIf="data.type === 'card-select'" [legoData]="data"></fb-card-select>
             </ng-template>
         </ng-craftable>
     </div>

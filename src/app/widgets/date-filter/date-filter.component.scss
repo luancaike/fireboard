@@ -35,6 +35,10 @@ ngb-datepicker {
     height: 100%;
     width: 100%;
 
+    &:hover {
+        background-color: rgba(119, 119, 119, 0.1);
+    }
+
     &:focus {
         outline: none;
         box-shadow: none;

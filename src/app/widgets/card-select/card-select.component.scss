@@ -1,0 +1,40 @@
+@import '../../style/scrollbar';
+@import '../../style/checkbox';
+
+.card-select {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+
+    .icon {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        color: #777777;
+    }
+
+    .column-list {
+        margin-top: -1px;
+        flex: 0 0 calc(100% - 40px);
+        height: calc(100% - 40px);
+        overflow: auto;
+        border-left: 1px solid #ccc;
+        border-bottom: 1px solid #ccc;
+        border-right: 1px solid #ccc;
+        @include scroll-style;
+
+        .column-item {
+            padding: 10px;
+            border-bottom: 1px solid #ccc;
+        }
+    }
+
+    .input-search {
+        flex: 0 0 40px;
+        height: 40px;
+        border-radius: 0;
+        color: #777777;
+    }
+}
