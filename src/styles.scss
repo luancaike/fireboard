@@ -3,7 +3,8 @@ body {
   margin: 0;
   background: rgb(226, 226, 226);
 }
-@import "~@ng-select/ng-select/themes/default.theme.css";
+
+@import "./assets/ng-select";
 
 @import "~ag-grid-community/dist/styles/ag-grid.css";
 @import "~ag-grid-community/dist/styles/ag-theme-fresh.css";

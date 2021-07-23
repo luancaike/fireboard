@@ -95,26 +95,26 @@
                     placeholder="De"
                     (ngModelChange)="setBetweenModel(model, 'from', $event)"
                     [ngModel]="getBetweenModel(model, 'from')"
-                    class="form-control"
+                    class="form-control form-control-sm"
                 />
                 <input
                     type="number"
                     placeholder="Até"
                     (ngModelChange)="setBetweenModel(model, 'to', $event)"
                     [ngModel]="getBetweenModel(model, 'to')"
-                    class="form-control"
+                    class="form-control form-control-sm"
                 />
             </div>
             <input
                 *ngIf="showNumberParams(model)"
-                class="form-control"
+                class="form-control form-control-sm"
                 type="number"
                 [(ngModel)]="model.selectedParameters"
             />
             <input
                 *ngIf="showStringParams(model)"
                 type="text"
-                class="form-control"
+                class="form-control form-control-sm"
                 [(ngModel)]="model.selectedParameters"
             />
         </div>

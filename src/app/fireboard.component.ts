@@ -29,18 +29,29 @@ type DashboardPage = {
     templateUrl: './fireboard.component.html'
 })
 export class FireboardComponent implements AfterViewInit {
-    @ViewChildren('chart') widgetsList: QueryList<WidgetAbstract>;
-    @ViewChildren('filter') filtersList: QueryList<WidgetAbstract>;
-    @ViewChild('craftable') craftable: CraftableComponent;
-    @ViewChild('datasourceSelector') datasourceSelector: DataSourceSelectorComponent;
-    @ViewChild('styleEditorComponent') styleEditorComponent: StyleEditorComponent;
-    pages: DashboardPage[] = [];
-    pageSelected = 0;
-    nameBoard = 'Nome do Dashboard';
-    isLoading = false;
-    showLegoOptionsEditor = false;
-    dataSources: DataSource[] = DataSourceMockList;
-    visualizationMode = false;
+    @ViewChildren('chart')
+    public widgetsList: QueryList<WidgetAbstract>;
+    @ViewChildren('filter')
+    public filtersList: QueryList<WidgetAbstract>;
+    @ViewChild('craftable')
+    public craftable: CraftableComponent;
+    @ViewChild('datasourceSelector')
+    public datasourceSelector: DataSourceSelectorComponent;
+    @ViewChild('optionsConfiguration')
+    public optionsConfiguration: DataSourceSelectorComponent;
+    @ViewChild('styleEditorWidget')
+    public styleEditorWidget: StyleEditorComponent;
+    @ViewChild('styleEditorFilter')
+    public styleEditorFilter: StyleEditorComponent;
+
+    public pages: DashboardPage[] = [];
+    public pageSelected = 0;
+    public nameBoard = 'Nome do Dashboard';
+    public isLoading = false;
+    public showLegoOptionsEditor = false;
+    public dataSources: DataSource[] = DataSourceMockList;
+    public visualizationMode = false;
+    public showTabsWidget = null;
 
     constructor(private cdr: ChangeDetectorRef, public externalDataService: ExternalDataService) {}
 
@@ -105,6 +116,7 @@ export class FireboardComponent implements AfterViewInit {
         if (data.length === 1) {
             this.showSelectedLegoOptionsEditor();
         } else {
+            this.showTabsWidget = null;
             this.showGeneralOptionsEditor();
         }
     }
@@ -170,11 +182,16 @@ export class FireboardComponent implements AfterViewInit {
                     this.isLoading = false;
                     this.showLegoOptionsEditor = true;
                     this.datasourceSelector.editLego(component?.getConfig());
-                    this.styleEditorComponent.fieldsEditor = component.fieldsEditor;
-                    this.styleEditorComponent.editLego(component?.getOptions());
+                    this.styleEditorWidget.fieldsEditor = component.fieldsEditor;
+                    this.styleEditorWidget.editLego(component?.getOptions());
+                    this.showTabsWidget = true;
                 } else if (filter) {
                     this.isLoading = false;
-                    console.log(filter);
+                    this.showLegoOptionsEditor = true;
+                    this.datasourceSelector.editLego(filter?.getConfig());
+                    this.styleEditorFilter.fieldsEditor = filter.fieldsEditor;
+                    this.styleEditorFilter.editLego(filter?.getOptions());
+                    this.showTabsWidget = false;
                 } else {
                     this.showSelectedLegoOptionsEditor();
                 }

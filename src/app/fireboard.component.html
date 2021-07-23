@@ -91,7 +91,7 @@
                         <fa-icon [fixedWidth]="true" icon="calendar-alt" class="btn-icon"></fa-icon>
                         Intervalo de Datas
                     </button>
-                    <button class="dropdown-options-list-item">
+                    <button class="dropdown-options-list-item" (click)="drawNewLego({ type: 'input-select' })">
                         <fa-icon [fixedWidth]="true" icon="list-ul" class="btn-icon"></fa-icon>
                         Lista de Seleção
                     </button>
@@ -108,7 +108,11 @@
         </div>
     </div>
     <div class="workspace" [class.visualization]="visualizationMode">
-        <ng-craftable #craftable (selectionChange)="selectionChange($event)" [visualizationMode]="visualizationMode">
+        <ng-craftable #craftable
+                      [minHeight]="30"
+                      [minWidth]="30"
+                      (selectionChange)="selectionChange($event)"
+                      [visualizationMode]="visualizationMode">
             <ng-template #template let-data>
                 <!-- Charts -->
                 <fb-bar-chart #chart *ngIf="data.type === 'bar-chart'" [legoData]="data"></fb-bar-chart>
@@ -117,11 +121,12 @@
                 <fb-table #chart *ngIf="data.type === 'table'" [legoData]="data"> </fb-table>
                 <!-- Filters -->
                 <fb-date-filter #filter *ngIf="data.type === 'date-filter'" [legoData]="data"> </fb-date-filter>
+                <fb-input-select #filter *ngIf="data.type === 'input-select'" [legoData]="data"> </fb-input-select>
             </ng-template>
         </ng-craftable>
     </div>
     <div class="sidebar" [hidden]="visualizationMode">
-        <ul ngbNav #nav="ngbNav" class="nav-tabs" [destroyOnHide]="false">
+        <ul ngbNav #nav="ngbNav" class="nav-tabs"  [hidden]="!showTabsWidget || showTabsWidget === null" [destroyOnHide]="false">
             <li [ngbNavItem]="1">
                 <a ngbNavLink>
                     <fa-icon [fixedWidth]="true" class="tab-icon" icon="database"></fa-icon>
@@ -144,13 +149,40 @@
                 <ng-template ngbNavContent>
                     <fb-style-editor
                         [hidden]="!showLegoOptionsEditor"
-                        #styleEditorComponent
+                        #styleEditorWidget
                         (changedOptions)="updateLegoOptions($event)"
                     ></fb-style-editor>
                 </ng-template>
             </li>
         </ul>
-
-        <div [ngbNavOutlet]="nav"></div>
+        <ul ngbNav #nav1="ngbNav" class="nav-tabs" [hidden]="showTabsWidget || showTabsWidget === null" [destroyOnHide]="false">
+            <li [ngbNavItem]="1">
+                <a ngbNavLink>
+                    <fa-icon [fixedWidth]="true" class="tab-icon" icon="filter"></fa-icon>
+                    <span class="tab-label">Opções</span>
+                </a>
+                <ng-template ngbNavContent>
+                    <span
+                        #optionsConfiguration>
+                        Teste
+                    </span>
+                </ng-template>
+            </li>
+            <li [ngbNavItem]="2">
+                <a ngbNavLink>
+                    <fa-icon [fixedWidth]="true" class="tab-icon" icon="swatchbook"></fa-icon>
+                    <span class="tab-label">Estilo</span>
+                </a>
+                <ng-template ngbNavContent>
+                    <fb-style-editor
+                        [hidden]="!showLegoOptionsEditor"
+                        #styleEditorFilter
+                        (changedOptions)="updateLegoOptions($event)"
+                    ></fb-style-editor>
+                </ng-template>
+            </li>
+        </ul>
+        <div [ngbNavOutlet]="nav" [hidden]="!showTabsWidget || showTabsWidget === null"></div>
+        <div [ngbNavOutlet]="nav1" [hidden]="showTabsWidget || showTabsWidget === null"></div>
     </div>
 </div>
