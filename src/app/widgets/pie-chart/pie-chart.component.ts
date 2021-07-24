@@ -12,7 +12,7 @@ import { PieChartDefault } from './pie-chart.default';
 import { DataSourceKey } from 'src/app/models/data-source.dtos';
 import { ChartDataSets, ChartType } from 'chart.js';
 import { ChartAbstract } from '../chart.abstract';
-import { ExternalDataService } from '../../service/external-data.service';
+import { FireboardDataService } from '../../service/fireboard-data.service';
 
 @Component({
     selector: 'fb-pie-chart',
@@ -40,7 +40,7 @@ export class PieChartComponent extends ChartAbstract implements WidgetComponent,
         }
     ];
 
-    constructor(protected cdr: ChangeDetectorRef, public externalDataService: ExternalDataService) {
+    constructor(protected cdr: ChangeDetectorRef, public fireboardDataService: FireboardDataService) {
         super(cdr);
     }
 

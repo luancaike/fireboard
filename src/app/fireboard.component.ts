@@ -13,7 +13,7 @@ import { WidgetAbstract, WidgetConfig, WidgetOptions } from './widgets/widget.ab
 import { DataSource } from './models/data-source.dtos';
 import { DataSourceMockList } from './models/mocks';
 import { StyleEditorComponent } from './components/style-editor/style-editor.component';
-import { ExternalDataService } from './service/external-data.service';
+import { FireboardDataService } from './service/fireboard-data.service';
 import { debounce } from './utils/effects';
 import { LegoConfig } from 'ng-craftable/lib/model';
 
@@ -53,7 +53,7 @@ export class FireboardComponent implements AfterViewInit {
     public visualizationMode = false;
     public showTabsWidget = null;
 
-    constructor(private cdr: ChangeDetectorRef, public externalDataService: ExternalDataService) {}
+    constructor(private cdr: ChangeDetectorRef, public fireboardDataService: FireboardDataService) {}
 
     ngAfterViewInit(): void {
         this.addPage();
@@ -78,13 +78,13 @@ export class FireboardComponent implements AfterViewInit {
     deletePage(event: MouseEvent, pageIndex: number): void {
         event.preventDefault();
         this.pages.splice(pageIndex, 1);
+        this.saveSelectedPage();
         this.selectPage(0);
     }
 
     selectPage(pageIndex: number): void {
         this.isLoading = true;
         this.blurDropdown();
-        this.saveSelectedPage();
         if (this.pages[pageIndex]) {
             this.pageSelected = pageIndex;
             this.setCraftableData(this.pages[pageIndex].data);
@@ -155,15 +155,15 @@ export class FireboardComponent implements AfterViewInit {
     }
 
     exportData() {
-        const dataSave = this.getCraftableData();
-        localStorage.setItem('localData', JSON.stringify(dataSave));
-        console.log(dataSave);
+        this.saveSelectedPage();
+        localStorage.setItem('localData', JSON.stringify(this.pages));
+        console.log(this.pages);
     }
 
     @debounce()
     importData() {
-        const dataImport = JSON.parse(localStorage.getItem('localData'));
-        this.setCraftableData(dataImport);
+        this.pages = JSON.parse(localStorage.getItem('localData'));
+        this.selectPage(0);
     }
 
     toggleVisualizationMode(): void {

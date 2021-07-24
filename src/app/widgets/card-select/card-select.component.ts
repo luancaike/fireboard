@@ -8,7 +8,7 @@ import {
 } from '@angular/core';
 import { WidgetComponent } from '../widget.interface';
 import { CardSelectDefault } from './card-select.default';
-import { ExternalDataService } from '../../service/external-data.service';
+import { FireboardDataService } from '../../service/fireboard-data.service';
 import { FilterAbstract } from '../filter.abstract';
 
 @Component({
@@ -53,14 +53,17 @@ export class CardSelectComponent extends FilterAbstract implements WidgetCompone
             checked: true
         }
     ];
+    public filterKey = 'card-select';
     public dataSourceBindOptions = CardSelectDefault.dataSourceBindOptions();
     public options = CardSelectDefault.options();
     public fieldsEditor = CardSelectDefault.fieldsEditor();
 
-    constructor(protected cdr: ChangeDetectorRef, public externalDataService: ExternalDataService) {
+    constructor(protected cdr: ChangeDetectorRef, public fireboardDataService: FireboardDataService) {
         super(cdr);
     }
-
+    public filterAction(...any: any[]): any[] {
+        throw new Error('Method not implemented.');
+    }
     ngAfterViewInit() {
         if (this.legoData.data) {
             this.setConfig(this.legoData.data);

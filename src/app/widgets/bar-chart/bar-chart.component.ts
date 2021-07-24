@@ -14,7 +14,7 @@ import { BarChartDefault } from './bar-chart.default';
 import { DataSourceKey } from 'src/app/models/data-source.dtos';
 import { ChartDataSets, ChartType } from 'chart.js';
 import { ChartAbstract } from '../chart.abstract';
-import { ExternalDataService } from '../../service/external-data.service';
+import { FireboardDataService } from '../../service/fireboard-data.service';
 import { ChartScrollableComponent } from '../../components/chart-scrollable/chart-scrollable.component';
 
 @Component({
@@ -44,7 +44,7 @@ export class BarChartComponent extends ChartAbstract implements WidgetComponent,
         { data: [10, 20], label: 'Serie 3' }
     ];
 
-    constructor(protected cdr: ChangeDetectorRef, public externalDataService: ExternalDataService) {
+    constructor(protected cdr: ChangeDetectorRef, public fireboardDataService: FireboardDataService) {
         super(cdr);
     }
 

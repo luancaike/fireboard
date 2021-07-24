@@ -12,7 +12,7 @@ import { LineChartDefault } from './line-chart.default';
 import { DataSourceKey } from 'src/app/models/data-source.dtos';
 import { ChartDataSets, ChartType } from 'chart.js';
 import { ChartAbstract } from '../chart.abstract';
-import { ExternalDataService } from '../../service/external-data.service';
+import { FireboardDataService } from '../../service/fireboard-data.service';
 
 @Component({
     selector: 'fb-line-chart',
@@ -39,7 +39,7 @@ export class LineChartComponent extends ChartAbstract implements WidgetComponent
         { data: [10, 20, 30, 35, 25, 20, 40], label: 'Series C' }
     ];
 
-    constructor(protected cdr: ChangeDetectorRef, public externalDataService: ExternalDataService) {
+    constructor(protected cdr: ChangeDetectorRef, public fireboardDataService: FireboardDataService) {
         super(cdr);
     }
 

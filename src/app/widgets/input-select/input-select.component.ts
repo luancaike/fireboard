@@ -8,7 +8,7 @@ import {
 } from '@angular/core';
 import { WidgetComponent } from '../widget.interface';
 import { InputSelectDefault } from './input-select.default';
-import { ExternalDataService } from '../../service/external-data.service';
+import { FireboardDataService } from '../../service/fireboard-data.service';
 import { FilterAbstract } from '../filter.abstract';
 
 @Component({
@@ -52,9 +52,14 @@ export class InputSelectComponent extends FilterAbstract implements WidgetCompon
     public dataSourceBindOptions = InputSelectDefault.dataSourceBindOptions();
     public options = InputSelectDefault.options();
     public fieldsEditor = InputSelectDefault.fieldsEditor();
+    public filterKey = 'input-select';
 
-    constructor(protected cdr: ChangeDetectorRef, public externalDataService: ExternalDataService) {
+    constructor(protected cdr: ChangeDetectorRef, public fireboardDataService: FireboardDataService) {
         super(cdr);
+    }
+
+    filterAction(...any): any[] {
+        return [];
     }
 
     ngAfterViewInit() {

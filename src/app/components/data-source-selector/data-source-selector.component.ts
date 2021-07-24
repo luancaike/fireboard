@@ -12,7 +12,7 @@ import { DataSourceBindOption, DataSourceSelectedKey, WidgetConfig } from '../..
 import { DataSource, DataSourceKey, FilterModel } from '../../models/data-source.dtos';
 import { FilterSelectorComponent } from '../filter-selector/filter-selector.component';
 import { LoadingBarService } from '../../service/loading-bar.service';
-import { ExternalDataService } from '../../service/external-data.service';
+import { FireboardDataService } from '../../service/fireboard-data.service';
 
 @Component({
     selector: 'fb-data-source-selector',
@@ -40,7 +40,7 @@ export class DataSourceSelectorComponent {
     constructor(
         protected cdr: ChangeDetectorRef,
         public loadingBarService: LoadingBarService,
-        public externalDataService: ExternalDataService
+        public fireboardDataService: FireboardDataService
     ) {}
 
     showFilterPanel() {
@@ -54,9 +54,9 @@ export class DataSourceSelectorComponent {
     }
 
     getAndSetFilters() {
-        if (this.externalDataService.filtersGetter && this.dataSourceSelected) {
+        if (this.fireboardDataService.getExternalFilters && this.dataSourceSelected) {
             this.loadingBarService.show();
-            this.externalDataService.filtersGetter(this.dataSourceSelected).then((data) => {
+            this.fireboardDataService.getExternalFilters(this.dataSourceSelected).then((data) => {
                 this.filters = data;
                 this.loadingBarService.hide();
                 this.cdr.detectChanges();

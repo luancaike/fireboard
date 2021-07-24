@@ -10,7 +10,7 @@ import {
 } from '@angular/core';
 import { WidgetComponent } from '../widget.interface';
 import { DateFilterDefault } from './date-filter.default';
-import { ExternalDataService } from '../../service/external-data.service';
+import { FireboardDataService } from '../../service/fireboard-data.service';
 import { FilterAbstract } from '../filter.abstract';
 import { NgbDatepicker, NgbDateStruct, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap/modal/modal-ref';
@@ -66,9 +66,8 @@ import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap/modal/modal-ref';
             </div>
         </ng-template>
         <button class="date-picker" (click)="open(content)">
-            <fa-icon [fixedWidth]="true" [icon]="['far', 'calendar']" class="btn-icon"></fa-icon>
             {{ fromPlaceholder }} - {{ toPlaceholder }}
-            <fa-icon [fixedWidth]="true" icon="caret-down" class="btn-icon-drop"></fa-icon>
+            <fa-icon [fixedWidth]="true" [icon]="['far', 'calendar']" class="btn-icon-drop"></fa-icon>
         </button>
     `
 })
@@ -77,6 +76,7 @@ export class DateFilterComponent extends FilterAbstract implements WidgetCompone
     @ViewChild('toPicker') toPickerRef: NgbDatepicker;
     @Input() public legoData;
 
+    public filterKey = 'date-filter';
     public from: NgbDateStruct;
     public to: NgbDateStruct;
     public fromPlaceholder: string;
@@ -87,11 +87,15 @@ export class DateFilterComponent extends FilterAbstract implements WidgetCompone
 
     constructor(
         protected cdr: ChangeDetectorRef,
-        public externalDataService: ExternalDataService,
+        public fireboardDataService: FireboardDataService,
         public zone: NgZone,
         private modalService: NgbModal
     ) {
         super(cdr);
+    }
+
+    filterAction(...any: any[]): any[] {
+        throw new Error('Method not implemented.');
     }
 
     checkIsDateValid() {

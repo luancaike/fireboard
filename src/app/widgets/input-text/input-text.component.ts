@@ -8,7 +8,7 @@ import {
 } from '@angular/core';
 import { WidgetComponent } from '../widget.interface';
 import { InputTextDefault } from './input-text.default';
-import { ExternalDataService } from '../../service/external-data.service';
+import { FireboardDataService } from '../../service/fireboard-data.service';
 import { FilterAbstract } from '../filter.abstract';
 
 @Component({
@@ -18,32 +18,23 @@ import { FilterAbstract } from '../filter.abstract';
     styleUrls: ['./input-text.component.scss'],
     template: `
         <fb-loading-widget [show]="isLoading"></fb-loading-widget>
-        <input type="text" class="form-control input-text" placeholder="Text" />
+        <input type="text" class="form-control input-text" [placeholder]="placeholder" />
     `
 })
 export class InputTextComponent extends FilterAbstract implements WidgetComponent, AfterViewInit {
     @Input() public legoData;
-    public placeholder = 'placeholder';
-    public items = [
-        {
-            text: 'Teste 1',
-            value: 1
-        },
-        {
-            text: 'Teste 2',
-            value: 2
-        },
-        {
-            text: 'Teste 3',
-            value: 3
-        }
-    ];
+    public placeholder = 'Text';
+    public filterKey = 'input-text';
     public dataSourceBindOptions = InputTextDefault.dataSourceBindOptions();
     public options = InputTextDefault.options();
     public fieldsEditor = InputTextDefault.fieldsEditor();
 
-    constructor(protected cdr: ChangeDetectorRef, public externalDataService: ExternalDataService) {
+    constructor(protected cdr: ChangeDetectorRef, public fireboardDataService: FireboardDataService) {
         super(cdr);
+    }
+
+    filterAction(...any: any[]): any[] {
+        throw new Error('Method not implemented.');
     }
 
     ngAfterViewInit() {

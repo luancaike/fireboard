@@ -3,7 +3,7 @@ import { LegoConfig } from 'ng-craftable/lib/model';
 import { ChangeDetectorRef } from '@angular/core';
 import { DataSourceKey, DataSourceKeyTypes, FilterModel } from '../models/data-source.dtos';
 import { WidgetComponent } from './widget.interface';
-import { ExternalDataService } from '../service/external-data.service';
+import { FireboardDataService } from '../service/fireboard-data.service';
 
 export interface DataSourceBindOptionRules {
     max?: number;
@@ -39,7 +39,7 @@ export interface DataGetter {
 
 export abstract class WidgetAbstract implements WidgetComponent {
     abstract legoData: LegoConfig;
-    abstract externalDataService: ExternalDataService;
+    abstract fireboardDataService: FireboardDataService;
     public isLoading: boolean;
     public dataSource: number = null;
     public dataSourceBindOptions: DataSourceBindOption[] = [];
@@ -102,8 +102,8 @@ export abstract class WidgetAbstract implements WidgetComponent {
     }
 
     async getData(): Promise<any[]> {
-        if (this.dataSource && this.externalDataService.dataGetter) {
-            return await this.externalDataService.dataGetter({ id: this.dataSource, filters: this.filters });
+        if (this.dataSource && this.fireboardDataService.dataGetter) {
+            return await this.fireboardDataService.dataGetter({ id: this.dataSource, filters: this.filters });
         }
         return [];
     }

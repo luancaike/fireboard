@@ -10,7 +10,7 @@ import {
     TypeExpression
 } from './filter-maker.model';
 import { DataSourceKey } from '../../models/data-source.dtos';
-import { ExternalDataService } from '../../service/external-data.service';
+import { FireboardDataService } from '../../service/fireboard-data.service';
 
 @Component({
     selector: 'fb-filter-maker',
@@ -45,7 +45,7 @@ export class FilterMakerComponent {
         model.selectedColumn = value;
     };
 
-    constructor(public externalDataService: ExternalDataService) {}
+    constructor(public fireboardDataService: FireboardDataService) {}
 
     moveReturn = (event: CdkDragDrop<string[]>, data) => {
         moveItemInArray(data, event.previousIndex, event.currentIndex);
@@ -160,7 +160,7 @@ export class FilterMakerComponent {
 
     async saveExpression() {
         try {
-            const newFilter = await this.externalDataService.addFilter(this.customFilter);
+            const newFilter = await this.fireboardDataService.addExternalFilter(this.customFilter);
             this.addFilter.emit(newFilter);
             this.customFilter = DefaultFilterConfig();
             this.showPanel = false;

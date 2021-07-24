@@ -1,7 +1,7 @@
 import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, Input } from '@angular/core';
 import { WidgetComponent } from '../widget.interface';
 import { TableDefault } from './table.default';
-import { ExternalDataService } from '../../service/external-data.service';
+import { FireboardDataService } from '../../service/fireboard-data.service';
 import { WidgetAbstract, WidgetOptions } from '../widget.abstract';
 import { DataSourceKey } from '../../models/data-source.dtos';
 import { GridOptions, ColDef, ColGroupDef } from 'ag-grid-community';
@@ -24,7 +24,7 @@ export class TableComponent extends WidgetAbstract implements WidgetComponent, A
     public options: GridOptions = TableDefault.options();
     public fieldsEditor = TableDefault.fieldsEditor();
 
-    constructor(protected cdr: ChangeDetectorRef, public externalDataService: ExternalDataService) {
+    constructor(protected cdr: ChangeDetectorRef, public fireboardDataService: FireboardDataService) {
         super(cdr);
     }
 

@@ -7,6 +7,7 @@ $ng-select-border: #ccc !default;
 $ng-select-arrow: #777777 !default;
 $ng-select-border-radius: 0 !default;
 $ng-select-bg: transparent !default;
+$ng-select-dropdown-bg: #fff !default;
 $ng-select-selected: lighten($ng-select-highlight, 46) !default;
 $ng-select-marked: lighten($ng-select-highlight, 48) !default;
 $ng-select-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 0 3px rgba(0, 126, 255, 0.1) !default;
@@ -240,7 +241,7 @@ $ng-select-auto: 100% !default;
 }
 
 .ng-dropdown-panel {
-    background-color: $ng-select-bg;
+    background-color: $ng-select-dropdown-bg;
     border: 1px solid $ng-select-border;
     box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06);
     left: 0;
