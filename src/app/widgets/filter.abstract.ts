@@ -6,7 +6,9 @@ export abstract class FilterAbstract extends WidgetAbstract {
 
     getKeySelected(): DataSourceKey {
         const sourceKey = this.dataSourceSelectedKeys.find(() => true);
-        return sourceKey.data.find(() => true);
+        if (sourceKey) {
+            return sourceKey.data.find(() => true);
+        }
     }
 
     modelUpdate(event: any): void {

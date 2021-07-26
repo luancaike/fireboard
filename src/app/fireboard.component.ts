@@ -139,9 +139,8 @@ export class FireboardComponent implements AfterViewInit {
     updateLegoDataSource(legoConfig: WidgetConfig): void {
         const lego = this.craftable.getSelectedLegos().find(() => true);
         if (lego) {
-            const widget = this.widgetsList.find((el) => el.legoData.key === lego.key);
-            const filter = this.filtersList.find((el) => el.legoData.key === lego.key);
-            const component = widget || filter;
+            const allLegos = [...this.filtersList, ...this.widgetsList];
+            const component = allLegos.find((el) => el.legoData.key === lego.key);
             component.setConfig(legoConfig);
         }
     }
@@ -149,17 +148,17 @@ export class FireboardComponent implements AfterViewInit {
     updateLegoOptions(legoOptions: WidgetOptions): void {
         const lego = this.craftable.getSelectedLegos().find(() => true);
         if (lego) {
-            const widget = this.widgetsList.find((el) => el.legoData.key === lego.key);
-            const filter = this.filtersList.find((el) => el.legoData.key === lego.key);
-            const component = widget || filter;
+            const allLegos = [...this.filtersList, ...this.widgetsList];
+            const component = allLegos.find((el) => el.legoData.key === lego.key);
             component.setOptions(legoOptions);
         }
     }
 
     getCraftableData(): LegoConfig[] {
+        const allLegos = [...this.filtersList, ...this.widgetsList];
         return this.craftable.legoData.map((lego) => ({
             ...lego,
-            data: this.widgetsList.find((w) => w.legoData.key === lego.key)?.getConfig()
+            data: allLegos.find((w) => w.legoData.key === lego.key)?.getConfig()
         }));
     }
 
@@ -191,10 +190,9 @@ export class FireboardComponent implements AfterViewInit {
         setTimeout(() => {
             const lego = this.craftable.getSelectedLegos().find(() => true);
             if (lego) {
-                const widget = this.widgetsList.find((el) => el.legoData.key === lego.key);
-                const filter = this.filtersList.find((el) => el.legoData.key === lego.key);
-                if (widget || filter) {
-                    const component = widget || filter;
+                const allLegos = [...this.filtersList, ...this.widgetsList];
+                const component = allLegos.find((el) => el.legoData.key === lego.key);
+                if (component) {
                     this.isLoading = false;
                     this.showLegoOptionsEditor = true;
                     this.datasourceSelector.editLego(component?.getConfig());

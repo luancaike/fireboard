@@ -45,13 +45,15 @@ export class InputTextComponent extends FilterAbstract implements WidgetComponen
     filterAction(data): any[] {
         console.log(this.model);
         const keySelected = this.getKeySelected();
-        return data.filter(
-            (el) =>
-                !this.model ||
-                (typeof this.model === 'string' &&
-                    this.model.length &&
-                    !!~el[keySelected.key].toUpperCase().indexOf(this.model.toUpperCase()))
-        );
+        return keySelected
+            ? data.filter(
+                  (el) =>
+                      !this.model ||
+                      (typeof this.model === 'string' &&
+                          this.model.length &&
+                          !!~el[keySelected.key].toUpperCase().indexOf(this.model.toUpperCase()))
+              )
+            : data;
     }
 
     ngAfterViewInit() {
@@ -64,8 +66,10 @@ export class InputTextComponent extends FilterAbstract implements WidgetComponen
 
     applyComponentData(): void {
         const keyData = this.getKeySelected();
-        this.placeholder = keyData.name;
-        this.cdr.detectChanges();
+        if (keyData) {
+            this.placeholder = keyData.name;
+            this.cdr.detectChanges();
+        }
     }
 
     @debounce()

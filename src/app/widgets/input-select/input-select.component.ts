@@ -67,7 +67,7 @@ export class InputSelectComponent extends FilterAbstract implements WidgetCompon
 
     filterAction(data): any[] {
         const keySelected = this.getKeySelected();
-        return data.filter((el) => !this.model || el[keySelected.key] === this.model);
+        return keySelected ? data.filter((el) => !this.model || el[keySelected.key] === this.model) : data;
     }
 
     ngAfterViewInit() {
@@ -80,10 +80,12 @@ export class InputSelectComponent extends FilterAbstract implements WidgetCompon
 
     applyComponentData(): void {
         const keyData = this.getKeySelected();
-        const key = keyData.key;
-        this.placeholder = keyData.name;
-        this.items = this.data.map((el) => ({ text: el[key], value: el[key] }));
-        this.cdr.detectChanges();
+        if (keyData) {
+            const key = keyData.key;
+            this.placeholder = keyData.name;
+            this.items = this.data.map((el) => ({ text: el[key], value: el[key] }));
+            this.cdr.detectChanges();
+        }
     }
 
     @debounce()
