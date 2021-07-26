@@ -5,7 +5,7 @@ import { FilterModel } from '../models/data-source.dtos';
 import { CustomFilterDto } from '../components/filter-maker/filter-maker.model';
 import { FilterDto, FilterHandlerDto } from '../models/filter.dtos';
 
-const randomTimer = () => Math.random() * (3000 - 300) + 300;
+const randomTimer = () => Math.random() * (1000 - 100) + 100;
 
 @Injectable({ providedIn: 'root' })
 export class FireboardDataService {
@@ -16,9 +16,10 @@ export class FireboardDataService {
         return new Promise((resolve) => {
             const result = DataSourceDataMockList.find((value) => value.id === data.id);
             const dataList = result ? result.data : [];
-            const dataResult = this.filtersControl
-                .filter((filter) => filter.dataSource === data.id)
-                .reduce((acc, item) => item.filterAction(acc), dataList);
+            const dataFilter = this.filtersControl.filter((filter) => filter.dataSource === data.id);
+            const dataResult = dataFilter.reduce((acc, item) => {
+                return item.filterAction(acc);
+            }, dataList);
             setTimeout(() => resolve(dataResult), randomTimer());
         });
     };

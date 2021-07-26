@@ -13,7 +13,7 @@ import { InputSelectDefault } from './input-select.default';
 import { FireboardDataService } from '../../service/fireboard-data.service';
 import { FilterAbstract } from '../filter.abstract';
 import { NgSelectComponent } from '@ng-select/ng-select';
-import { DataSourceKey } from '../../models/data-source.dtos';
+import { debounce } from '../../utils/effects';
 
 @Component({
     selector: 'fb-input-select',
@@ -66,7 +66,6 @@ export class InputSelectComponent extends FilterAbstract implements WidgetCompon
     }
 
     filterAction(data): any[] {
-        console.log(this.model);
         const keySelected = this.getKeySelected();
         return data.filter((el) => !this.model || el[keySelected.key] === this.model);
     }
@@ -79,25 +78,18 @@ export class InputSelectComponent extends FilterAbstract implements WidgetCompon
         }
     }
 
-    modelUpdate(event): void {
-        console.log(event);
-        this.select.close();
-        this.cdr.detectChanges();
-
-        this.fireboardDataService.handlerFilter({ sourceKey: this.dataSource });
-    }
-
-    getKeySelected(): DataSourceKey {
-        const sourceKey = this.dataSourceSelectedKeys.find(() => true);
-        return sourceKey.data.find(() => true);
-    }
-
     applyComponentData(): void {
         const keyData = this.getKeySelected();
         const key = keyData.key;
         this.placeholder = keyData.name;
         this.items = this.data.map((el) => ({ text: el[key], value: el[key] }));
         this.cdr.detectChanges();
+    }
+
+    @debounce()
+    modelUpdate(event: any) {
+        this.select.close();
+        super.modelUpdate(event);
     }
 
     ngOnDestroy(): void {
