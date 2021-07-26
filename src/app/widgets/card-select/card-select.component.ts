@@ -4,6 +4,7 @@ import {
     ChangeDetectorRef,
     Component,
     Input,
+    OnDestroy,
     ViewEncapsulation
 } from '@angular/core';
 import { WidgetComponent } from '../widget.interface';
@@ -33,7 +34,7 @@ import { FilterAbstract } from '../filter.abstract';
         </div>
     `
 })
-export class CardSelectComponent extends FilterAbstract implements WidgetComponent, AfterViewInit {
+export class CardSelectComponent extends FilterAbstract implements WidgetComponent, AfterViewInit, OnDestroy {
     @Input() public legoData;
     public placeholder = 'placeholder';
     public items = [
@@ -61,9 +62,11 @@ export class CardSelectComponent extends FilterAbstract implements WidgetCompone
     constructor(protected cdr: ChangeDetectorRef, public fireboardDataService: FireboardDataService) {
         super(cdr);
     }
-    public filterAction(...any: any[]): any[] {
-        throw new Error('Method not implemented.');
+
+    filterAction(any: any[]): any[] {
+        return [];
     }
+
     ngAfterViewInit() {
         if (this.legoData.data) {
             this.setConfig(this.legoData.data);
@@ -74,5 +77,9 @@ export class CardSelectComponent extends FilterAbstract implements WidgetCompone
 
     applyComponentData(): void {
         //
+    }
+
+    ngOnDestroy(): void {
+        this.fireboardDataService.removeFilterControl(this.legoData.key);
     }
 }

@@ -4,6 +4,7 @@ import {
     ChangeDetectorRef,
     Component,
     Input,
+    OnDestroy,
     ViewChild,
     ViewEncapsulation
 } from '@angular/core';
@@ -36,7 +37,7 @@ import { DataSourceKey } from '../../models/data-source.dtos';
         ></ng-select>
     `
 })
-export class InputSelectComponent extends FilterAbstract implements WidgetComponent, AfterViewInit {
+export class InputSelectComponent extends FilterAbstract implements WidgetComponent, AfterViewInit, OnDestroy {
     @ViewChild('select') select: NgSelectComponent;
     @Input() public legoData;
     public model = null;
@@ -97,5 +98,9 @@ export class InputSelectComponent extends FilterAbstract implements WidgetCompon
         this.placeholder = keyData.name;
         this.items = this.data.map((el) => ({ text: el[key], value: el[key] }));
         this.cdr.detectChanges();
+    }
+
+    ngOnDestroy(): void {
+        this.fireboardDataService.removeFilterControl(this.legoData.key);
     }
 }

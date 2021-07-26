@@ -4,6 +4,7 @@ import {
     ChangeDetectorRef,
     Component,
     Input,
+    OnDestroy,
     ViewEncapsulation
 } from '@angular/core';
 import { WidgetComponent } from '../widget.interface';
@@ -21,7 +22,7 @@ import { FilterAbstract } from '../filter.abstract';
         <input type="text" class="form-control input-text" [placeholder]="placeholder" />
     `
 })
-export class InputTextComponent extends FilterAbstract implements WidgetComponent, AfterViewInit {
+export class InputTextComponent extends FilterAbstract implements WidgetComponent, AfterViewInit, OnDestroy {
     @Input() public legoData;
     public placeholder = 'Text';
     public filterKey = 'input-text';
@@ -33,8 +34,8 @@ export class InputTextComponent extends FilterAbstract implements WidgetComponen
         super(cdr);
     }
 
-    filterAction(...any: any[]): any[] {
-        throw new Error('Method not implemented.');
+    filterAction(any: any[]): any[] {
+        return [];
     }
 
     ngAfterViewInit() {
@@ -47,5 +48,9 @@ export class InputTextComponent extends FilterAbstract implements WidgetComponen
 
     applyComponentData(): void {
         //
+    }
+
+    ngOnDestroy(): void {
+        this.fireboardDataService.removeFilterControl(this.legoData.key);
     }
 }

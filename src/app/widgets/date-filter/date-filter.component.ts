@@ -5,6 +5,7 @@ import {
     Component,
     Input,
     NgZone,
+    OnDestroy,
     ViewChild,
     ViewEncapsulation
 } from '@angular/core';
@@ -71,7 +72,7 @@ import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap/modal/modal-ref';
         </button>
     `
 })
-export class DateFilterComponent extends FilterAbstract implements WidgetComponent, AfterViewInit {
+export class DateFilterComponent extends FilterAbstract implements WidgetComponent, AfterViewInit, OnDestroy {
     @ViewChild('fromPicker') fromPickerRef: NgbDatepicker;
     @ViewChild('toPicker') toPickerRef: NgbDatepicker;
     @Input() public legoData;
@@ -154,5 +155,9 @@ export class DateFilterComponent extends FilterAbstract implements WidgetCompone
     applyComponentData(): void {
         console.log(this.dataSourceSelectedKeys);
         this.cdr.detectChanges();
+    }
+
+    ngOnDestroy(): void {
+        this.fireboardDataService.removeFilterControl(this.legoData.key);
     }
 }
