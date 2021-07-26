@@ -7,52 +7,62 @@ export const DataSourceDataMockList: any[] = [
             {
                 id_risco: 1,
                 qtd_associado: 41,
-                nm_risco: 'Brown'
+                nm_risco: 'Brown',
+                dt_create: '2021-07-20T18:04:17.033Z'
             },
             {
                 id_risco: 2,
                 qtd_associado: 16,
-                nm_risco: 'McDonald'
+                nm_risco: 'McDonald',
+                dt_create: '2021-07-21T18:04:17.033Z'
             },
             {
                 id_risco: 3,
                 qtd_associado: 7,
-                nm_risco: 'Curry'
+                nm_risco: 'Curry',
+                dt_create: '2021-07-22T18:04:17.033Z'
             },
             {
                 id_risco: 4,
                 qtd_associado: 38,
-                nm_risco: 'Floyd'
+                nm_risco: 'Floyd',
+                dt_create: '2021-07-23T18:04:17.033Z'
             },
             {
                 id_risco: 5,
                 qtd_associado: 17,
-                nm_risco: 'Jiang'
+                nm_risco: 'Jiang',
+                dt_create: '2021-07-24T18:04:17.033Z'
             },
             {
                 id_risco: 6,
                 qtd_associado: 5,
-                nm_risco: 'Barry'
+                nm_risco: 'Barry',
+                dt_create: '2021-07-25T18:04:17.033Z'
             },
             {
                 id_risco: 7,
                 qtd_associado: 34,
-                nm_risco: 'Pittman'
+                nm_risco: 'Pittman',
+                dt_create: '2021-07-26T18:04:17.033Z'
             },
             {
                 id_risco: 8,
                 qtd_associado: 10,
-                nm_risco: 'Harrington'
+                nm_risco: 'Harrington',
+                dt_create: '2021-07-27T18:04:17.033Z'
             },
             {
                 id_risco: 9,
                 qtd_associado: 23,
-                nm_risco: 'Glover'
+                nm_risco: 'Glover',
+                dt_create: '2021-07-28T18:04:17.033Z'
             },
             {
                 id_risco: 10,
                 qtd_associado: 38,
-                nm_risco: 'Chu'
+                nm_risco: 'Chu',
+                dt_create: '2021-07-29T18:04:17.033Z'
             }
         ]
     },
@@ -134,6 +144,12 @@ export const DataSourceMockList: DataSource[] = [
                 key: 'qtd_associado',
                 name: 'Quantidade',
                 type: DataSourceKeyTypes.Number
+            },
+            {
+                id: 4,
+                key: 'dt_create',
+                name: 'Data de Criação',
+                type: DataSourceKeyTypes.Date
             }
         ]
     },

@@ -5,3 +5,7 @@ export interface FilterDto {
     dataSource?: number;
     filterAction: FilterAction;
 }
+
+export interface FilterHandlerDto {
+    sourceKey?: number;
+}

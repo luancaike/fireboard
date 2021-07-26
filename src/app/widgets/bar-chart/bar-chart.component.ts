@@ -11,7 +11,7 @@ import {
 } from '@angular/core';
 import { WidgetComponent } from '../widget.interface';
 import { BarChartDefault } from './bar-chart.default';
-import { DataSourceKey } from 'src/app/models/data-source.dtos';
+import { DataSourceKey, DataSourceKeyTypes } from 'src/app/models/data-source.dtos';
 import { ChartDataSets, ChartType } from 'chart.js';
 import { ChartAbstract } from '../chart.abstract';
 import { FireboardDataService } from '../../service/fireboard-data.service';
@@ -73,6 +73,10 @@ export class BarChartComponent extends ChartAbstract implements WidgetComponent,
     mountLabels(labelKeys: DataSourceKey[]): void {
         const labelConfig = labelKeys.find(() => true);
         this.labels = labelConfig ? this.data.map((el) => el[labelConfig.key]) : [];
+        const isDate = labelConfig.type === DataSourceKeyTypes.Date;
+        if (isDate) {
+            this.labels = this.labels.map((date) => new Date(date).toLocaleDateString('pt-Br'));
+        }
     }
 
     mountDatasets(labelKeys: DataSourceKey[]): void {

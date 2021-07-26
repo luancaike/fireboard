@@ -1,6 +1,7 @@
 import { ChartOptions } from 'chart.js';
 import { FieldEditor } from '../field-editor.dtos';
 import { DataSourceBindOption } from '../widget.abstract';
+import { DataSourceKeyTypes } from '../../models/data-source.dtos';
 
 export class DateFilterDefault {
     static options(): ChartOptions {
@@ -17,7 +18,9 @@ export class DateFilterDefault {
                 label: 'Dados',
                 key: 'datasets',
                 rules: {
-                    required: true
+                    required: true,
+                    max: 1,
+                    allowTypes: [DataSourceKeyTypes.Date]
                 }
             }
         ];

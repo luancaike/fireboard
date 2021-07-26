@@ -94,8 +94,8 @@ export class DateFilterComponent extends FilterAbstract implements WidgetCompone
         super(cdr);
     }
 
-    filterAction(...any: any[]): any[] {
-        throw new Error('Method not implemented.');
+    filterAction(any: any[]): any[] {
+        return any;
     }
 
     checkIsDateValid() {
@@ -152,6 +152,7 @@ export class DateFilterComponent extends FilterAbstract implements WidgetCompone
     }
 
     applyComponentData(): void {
-        //
+        console.log(this.dataSourceSelectedKeys);
+        this.cdr.detectChanges();
     }
 }

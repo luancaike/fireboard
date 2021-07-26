@@ -1,20 +1,18 @@
 import { WidgetAbstract } from './widget.abstract';
 
 export abstract class FilterAbstract extends WidgetAbstract {
-    abstract filterKey: string;
-
-    abstract filterAction(...any): any[];
+    abstract filterAction(data: any[]): any[];
 
     updateFilterOnServiceData() {
         this.fireboardDataService.addFilterControl({
-            key: this.filterKey,
-            filterAction: (...args) => this.filterAction(...args),
+            key: this.legoData.key,
+            filterAction: (data) => this.filterAction(data),
             dataSource: this.dataSource
         });
     }
 
     setDataSource(dataSource: number) {
-        this.updateFilterOnServiceData();
         super.setDataSource(dataSource);
+        this.updateFilterOnServiceData();
     }
 }

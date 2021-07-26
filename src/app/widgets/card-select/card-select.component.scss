@@ -1,6 +1,8 @@
 @import '../../style/scrollbar';
 @import '../../style/checkbox';
 
+$input-size-diff: 40px !default;
+
 .card-select {
     position: relative;
     width: 100%;
@@ -16,8 +18,9 @@
     }
 
     .column-list {
-        flex: 0 0 calc(100% - 40px);
-        height: calc(100% - 40px);
+        flex: 0 0 calc(100% - #{$input-size-diff});
+        height: calc(100% - #{$input-size-diff});
+        min-height: $input-size-diff;
         overflow: auto;
         border-left: 1px solid #ccc;
         border-bottom: 1px solid #ccc;
@@ -31,8 +34,8 @@
     }
 
     .input-search {
-        flex: 0 0 40px;
-        height: 40px;
+        flex: 0 0 $input-size-diff;
+        height: $input-size-diff;
         border-radius: 0;
         color: #777777;
     }

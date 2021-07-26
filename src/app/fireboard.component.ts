@@ -16,6 +16,7 @@ import { StyleEditorComponent } from './components/style-editor/style-editor.com
 import { FireboardDataService } from './service/fireboard-data.service';
 import { debounce } from './utils/effects';
 import { LegoConfig } from 'ng-craftable/lib/model';
+import { FilterHandlerDto } from './models/filter.dtos';
 
 type DashboardPage = {
     name: string;
@@ -51,12 +52,22 @@ export class FireboardComponent implements AfterViewInit {
     public showLegoOptionsEditor = false;
     public dataSources: DataSource[] = DataSourceMockList;
     public visualizationMode = false;
-    public showTabsWidget = null;
+    public showTabsWidget = false;
 
-    constructor(private cdr: ChangeDetectorRef, public fireboardDataService: FireboardDataService) {}
+    constructor(private cdr: ChangeDetectorRef, public fireboardDataService: FireboardDataService) {
+        this.fireboardDataService.filterEventEmitter.subscribe((data) => this.handlerFilter(data));
+    }
 
     ngAfterViewInit(): void {
         this.addPage();
+    }
+
+    handlerFilter(filter: FilterHandlerDto) {
+        this.widgetsList.forEach((widget) => {
+            if (widget.dataSource === filter.sourceKey) {
+                widget.updateDataAndApplyComponent();
+            }
+        });
     }
 
     addPage(): void {
@@ -113,10 +124,10 @@ export class FireboardComponent implements AfterViewInit {
 
     selectionChange(data: string[]): void {
         this.showLegoOptionsEditor = false;
+        this.showTabsWidget = false;
         if (data.length === 1) {
             this.showSelectedLegoOptionsEditor();
         } else {
-            this.showTabsWidget = null;
             this.showGeneralOptionsEditor();
         }
     }
@@ -128,7 +139,9 @@ export class FireboardComponent implements AfterViewInit {
     updateLegoDataSource(legoConfig: WidgetConfig): void {
         const lego = this.craftable.getSelectedLegos().find(() => true);
         if (lego) {
-            const component = this.widgetsList.find((el) => el.legoData.key === lego.key);
+            const widget = this.widgetsList.find((el) => el.legoData.key === lego.key);
+            const filter = this.filtersList.find((el) => el.legoData.key === lego.key);
+            const component = widget || filter;
             component.setConfig(legoConfig);
         }
     }
@@ -136,7 +149,9 @@ export class FireboardComponent implements AfterViewInit {
     updateLegoOptions(legoOptions: WidgetOptions): void {
         const lego = this.craftable.getSelectedLegos().find(() => true);
         if (lego) {
-            const component = this.widgetsList.find((el) => el.legoData.key === lego.key);
+            const widget = this.widgetsList.find((el) => el.legoData.key === lego.key);
+            const filter = this.filtersList.find((el) => el.legoData.key === lego.key);
+            const component = widget || filter;
             component.setOptions(legoOptions);
         }
     }
@@ -176,22 +191,16 @@ export class FireboardComponent implements AfterViewInit {
         setTimeout(() => {
             const lego = this.craftable.getSelectedLegos().find(() => true);
             if (lego) {
-                const component = this.widgetsList.find((el) => el.legoData.key === lego.key);
+                const widget = this.widgetsList.find((el) => el.legoData.key === lego.key);
                 const filter = this.filtersList.find((el) => el.legoData.key === lego.key);
-                if (component) {
+                if (widget || filter) {
+                    const component = widget || filter;
                     this.isLoading = false;
                     this.showLegoOptionsEditor = true;
                     this.datasourceSelector.editLego(component?.getConfig());
                     this.styleEditorWidget.fieldsEditor = component.fieldsEditor;
                     this.styleEditorWidget.editLego(component?.getOptions());
                     this.showTabsWidget = true;
-                } else if (filter) {
-                    this.isLoading = false;
-                    this.showLegoOptionsEditor = true;
-                    this.datasourceSelector.editLego(filter?.getConfig());
-                    this.styleEditorFilter.fieldsEditor = filter.fieldsEditor;
-                    this.styleEditorFilter.editLego(filter?.getOptions());
-                    this.showTabsWidget = false;
                 } else {
                     this.showSelectedLegoOptionsEditor();
                 }

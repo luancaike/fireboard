@@ -27,6 +27,7 @@ export class DataSourceSelectorComponent {
 
     @Output() public changedDataSource = new EventEmitter<WidgetConfig>();
 
+    public showFilters = true;
     public stateFilterPanel = false;
     public dataSourceKeys: DataSourceKey[] = [];
     public dataSourceSelected: number = null;

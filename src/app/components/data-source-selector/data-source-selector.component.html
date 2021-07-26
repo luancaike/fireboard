@@ -49,6 +49,7 @@
                 </div>
             </div>
             <div
+                [hidden]="!showFilters"
                 cdkDropList
                 [cdkDropListData]="filtersSelected"
                 class="field-bindings"
