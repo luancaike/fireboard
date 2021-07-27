@@ -2,6 +2,8 @@ import { WidgetAbstract } from './widget.abstract';
 import { DataSourceKey } from '../models/data-source.dtos';
 
 export abstract class FilterAbstract extends WidgetAbstract {
+    isFilter = true;
+
     abstract filterAction(data: any[]): any[];
 
     getKeySelected(): DataSourceKey {

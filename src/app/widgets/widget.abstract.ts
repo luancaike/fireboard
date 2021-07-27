@@ -40,6 +40,7 @@ export interface DataGetter {
 export abstract class WidgetAbstract implements WidgetComponent {
     abstract legoData: LegoConfig;
     abstract fireboardDataService: FireboardDataService;
+    public isFilter = false;
     public isLoading: boolean;
     public dataSource: number = null;
     public dataSourceBindOptions: DataSourceBindOption[] = [];
@@ -103,7 +104,8 @@ export abstract class WidgetAbstract implements WidgetComponent {
 
     async getData(): Promise<any[]> {
         if (this.dataSource && this.fireboardDataService.dataGetter) {
-            return await this.fireboardDataService.dataGetter({ id: this.dataSource, filters: this.filters });
+            const model = { id: this.dataSource, filters: this.filters };
+            return await this.fireboardDataService.dataGetter(model, this.isFilter);
         }
         return [];
     }

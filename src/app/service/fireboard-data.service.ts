@@ -12,14 +12,16 @@ export class FireboardDataService {
     private filtersControl: FilterDto[] = [];
     public filterEventEmitter = new EventEmitter<FilterHandlerDto>();
 
-    dataGetter = (data: DataGetter): Promise<any[]> => {
+    dataGetter = (data: DataGetter, notInternalFilter = false): Promise<any[]> => {
         return new Promise((resolve) => {
             const result = DataSourceDataMockList.find((value) => value.id === data.id);
             const dataList = result ? result.data : [];
             const dataFilter = this.filtersControl.filter((filter) => filter.dataSource === data.id);
-            const dataResult = dataFilter.reduce((acc, item) => {
-                return item.filterAction(acc);
-            }, dataList);
+            const dataResult = notInternalFilter
+                ? dataList
+                : dataFilter.reduce((acc, item) => {
+                      return item.filterAction(acc);
+                  }, dataList);
             setTimeout(() => resolve(dataResult), randomTimer());
         });
     };

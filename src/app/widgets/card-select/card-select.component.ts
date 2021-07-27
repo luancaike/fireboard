@@ -11,6 +11,7 @@ import { WidgetComponent } from '../widget.interface';
 import { CardSelectDefault } from './card-select.default';
 import { FireboardDataService } from '../../service/fireboard-data.service';
 import { FilterAbstract } from '../filter.abstract';
+import { debounce } from 'src/app/utils/effects';
 
 @Component({
     selector: 'fb-card-select',
@@ -20,13 +21,26 @@ import { FilterAbstract } from '../filter.abstract';
     template: `
         <fb-loading-widget [show]="isLoading"></fb-loading-widget>
         <div class="card-select">
-            <input type="text" class="form-control input-search" placeholder="Pesquisar" />
+            <input
+                type="text"
+                class="form-control input-search"
+                placeholder="Pesquisar"
+                [(ngModel)]="filterText"
+                (ngModelChange)="filterTextAction()"
+            />
             <fa-icon icon="search" class="icon"></fa-icon>
+            <!--            <div class="select-all">-->
+            <!--                <label class="container-checkbox">-->
+            <!--                    Selecionar Todos-->
+            <!--                    <input type="checkbox" [(ngModel)]="selectAll" />-->
+            <!--                    <span class="checkmark"></span>-->
+            <!--                </label>-->
+            <!--            </div>-->
             <div class="column-list">
-                <div class="column-item" *ngFor="let item of items">
+                <div class="column-item" *ngFor="let item of getItems">
                     <label class="container-checkbox">
                         {{ item.text }}
-                        <input type="checkbox" [(ngModel)]="item.checked" />
+                        <input type="checkbox" [(ngModel)]="item.checked" (ngModelChange)="modelUpdate($event)" />
                         <span class="checkmark"></span>
                     </label>
                 </div>
@@ -36,7 +50,15 @@ import { FilterAbstract } from '../filter.abstract';
 })
 export class CardSelectComponent extends FilterAbstract implements WidgetComponent, AfterViewInit, OnDestroy {
     @Input() public legoData;
+    public selectAll = true;
+    public filterText = '';
     public placeholder = 'placeholder';
+
+    public get getItems() {
+        return this.itemsFilter.length ? this.itemsFilter : this.items;
+    }
+
+    public itemsFilter = [];
     public items = [
         {
             text: 'Teste 1',
@@ -63,8 +85,21 @@ export class CardSelectComponent extends FilterAbstract implements WidgetCompone
         super(cdr);
     }
 
-    filterAction(any: any[]): any[] {
-        return [];
+    @debounce()
+    filterTextAction() {
+        this.itemsFilter = this.items.filter(
+            (item) =>
+                !this.filterText ||
+                !this.filterText.length ||
+                !!~item.text.toUpperCase().indexOf(this.filterText.toUpperCase())
+        );
+        this.cdr.detectChanges();
+    }
+
+    filterAction(data): any[] {
+        const keySelected = this.getKeySelected();
+        const selected = this.items.filter((item) => item.checked);
+        return keySelected ? data.filter((el) => selected.find((sl) => el[keySelected.key] === sl.value)) : data;
     }
 
     ngAfterViewInit() {
@@ -76,7 +111,13 @@ export class CardSelectComponent extends FilterAbstract implements WidgetCompone
     }
 
     applyComponentData(): void {
-        //
+        const keyData = this.getKeySelected();
+        if (keyData) {
+            const key = keyData.key;
+            this.placeholder = keyData.name;
+            this.items = this.data.map((el) => ({ text: el[key], value: el[key], checked: true }));
+            this.cdr.detectChanges();
+        }
     }
 
     ngOnDestroy(): void {

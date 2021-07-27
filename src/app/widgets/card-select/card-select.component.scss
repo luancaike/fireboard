@@ -17,6 +17,14 @@ $input-size-diff: 40px !default;
         color: #777777;
     }
 
+    .select-all {
+        padding: 8px;
+        border-bottom: 1px solid #ccc;
+        border-left: 1px solid #ccc;
+        border-right: 1px solid #ccc;
+        width: 100%;
+    }
+
     .column-list {
         flex: 0 0 calc(100% - #{$input-size-diff});
         height: calc(100% - #{$input-size-diff});
