@@ -11,7 +11,7 @@ export abstract class FilterAbstract extends WidgetAbstract {
         }
     }
 
-    modelUpdate(event: any): void {
+    modelUpdate(event: any = {}): void {
         this.fireboardDataService.handlerFilter({ sourceKey: this.dataSource });
         this.cdr.detectChanges();
     }

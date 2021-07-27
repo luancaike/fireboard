@@ -12,7 +12,7 @@
             <option [ngValue]="item.id" *ngFor="let item of dataSources">{{ item.name }}</option>
         </select>
     </div>
-    <div class="field-selector-container">
+    <div class="field-selector-container" [hidden]="!dataSourceSelected">
         <div class="field-selector">
             <div
                 *ngFor="let item of dataSourceBindOptions"

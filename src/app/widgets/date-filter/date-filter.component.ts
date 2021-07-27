@@ -95,8 +95,18 @@ export class DateFilterComponent extends FilterAbstract implements WidgetCompone
         super(cdr);
     }
 
-    filterAction(any: any[]): any[] {
-        return any;
+    filterAction(data): any[] {
+        const keySelected = this.getKeySelected();
+        return keySelected
+            ? data.filter((el) => !this.from || !this.to || this.checkDateInRanger(el[keySelected.key]))
+            : data;
+    }
+
+    checkDateInRanger(dateString: string) {
+        const dateToCompare = new Date(dateString);
+        const fromCompare = this.modelToDate(this.from);
+        const toCompare = this.modelToDate(this.to);
+        return fromCompare <= dateToCompare && dateToCompare <= toCompare;
     }
 
     checkIsDateValid() {
@@ -113,6 +123,7 @@ export class DateFilterComponent extends FilterAbstract implements WidgetCompone
     applyFilter(modal: NgbModalRef) {
         modal.close();
         this.setModelToPlaceholder();
+        this.modelUpdate();
     }
 
     setModelToPlaceholder() {

@@ -127,7 +127,7 @@
             </ng-template>
         </ng-craftable>
     </div>
-    <div class="sidebar" [hidden]="visualizationMode">
+    <div class="sidebar" [hidden]="visualizationMode || !showTabsWidget">
         <ul ngbNav #nav="ngbNav" class="nav-tabs"  [hidden]="!showTabsWidget" [destroyOnHide]="false">
             <li [ngbNavItem]="1">
                 <a ngbNavLink>

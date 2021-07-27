@@ -29,14 +29,13 @@ $size-toolbar-visualization: 70px;
         height: calc(100vh - #{$size-toolbar});
         background-color: #e2e2e2;
         max-width: $size-sidebar;
-        border-left: solid 1px #4444;
-        box-shadow: 0 0 10px 0 rgba(99, 99, 99, 0.3);
         -webkit-user-select: none;
         -moz-user-select: none;
         -ms-user-select: none;
         user-select: none;
 
         .tab-content {
+            box-shadow: 0 0 10px 0 rgba(99, 99, 99, 0.3);
             height: calc(100% - 43px);
             overflow-x: hidden;
             overflow-y: auto;
@@ -56,47 +55,50 @@ $size-toolbar-visualization: 70px;
         }
 
         ul.nav-tabs {
-            .nav-link {
-                &:not(.active) {
-                    border: none;
-                }
+            .nav-item {
+                .nav-link {
+                    border-radius: 0;
+                    &:not(.active) {
+                        border: none;
+                    }
 
-                &.active {
-                    position: relative;
-                    border-width: 1px;
-                    border-color: #fff #fff #dee2e6 !important;
+                    &.active {
+                        position: relative;
+                        border-width: 1px;
+                        border-color: #fff #fff #dee2e6 !important;
 
-                    &:after {
-                        display: block;
-                        width: 25px;
-                        content: '';
-                        border-bottom: #dc3545 4px solid !important;
-                        left: 12px;
-                        position: absolute;
-                        bottom: -3px;
+                        &:after {
+                            display: block;
+                            width: 25px;
+                            content: '';
+                            border-bottom: #dc3545 4px solid !important;
+                            left: 12px;
+                            position: absolute;
+                            bottom: -3px;
+                        }
+
+                        .tab-icon,
+                        .tab-label {
+                            color: #2c3e50;
+                        }
+
+                        .tab-label {
+                            display: inline-block;
+                        }
                     }
 
                     .tab-icon,
                     .tab-label {
-                        color: #2c3e50;
+                        color: #6c757d;
                     }
 
                     .tab-label {
+                        margin-left: 5px;
+                    }
+
+                    .tab-icon {
                         display: inline-block;
                     }
-                }
-
-                .tab-icon,
-                .tab-label {
-                    color: #6c757d;
-                }
-
-                .tab-label {
-                    margin-left: 5px;
-                }
-
-                .tab-icon {
-                    display: inline-block;
                 }
             }
         }
