@@ -13,6 +13,7 @@ import { DataSource, DataSourceKey, FilterModel } from '../../models/data-source
 import { FilterSelectorComponent } from '../filter-selector/filter-selector.component';
 import { LoadingBarService } from '../../service/loading-bar.service';
 import { FireboardDataService } from '../../service/fireboard-data.service';
+import { CdkDragEnter, CdkDragExit } from '@angular/cdk/drag-drop/drag-events';
 
 @Component({
     selector: 'fb-data-source-selector',
@@ -52,6 +53,38 @@ export class DataSourceSelectorComponent {
             this.fbFilter.columnsData = dataSource.keys;
             this.getAndSetFilters();
         }
+    }
+
+    checkEnterItem(drag: CdkDragEnter<DataSourceKey[], DataSourceKey>) {
+        console.log(drag);
+        const allowed = this.checkRules(drag);
+        if (!allowed) {
+            console.log(drag.container.element.nativeElement.classList.toString());
+            drag.container.element.nativeElement.classList.add('not-allowed');
+        }
+    }
+
+    checkRules(drag: CdkDragEnter<DataSourceKey[], DataSourceKey>) {
+        let max = true;
+        let allowTypes = true;
+        const bind = this.dataSourceBindOptions.find((el) => el.key === drag.container.id);
+        if (bind && bind.rules) {
+            if (bind.rules.max) {
+                max = drag.container.data.length < bind.rules.max;
+            }
+            if (bind.rules.allowTypes) {
+                allowTypes = !!bind.rules.allowTypes.find((type) => type === drag.item.data.type);
+            }
+        }
+        return max && allowTypes;
+    }
+
+    checkExitItem(drag: CdkDragExit<DataSourceKey[], DataSourceKey>) {
+        this.resetDropAreaStyle(drag.container.element.nativeElement);
+    }
+
+    resetDropAreaStyle(element: HTMLElement) {
+        element.classList.remove('not-allowed');
     }
 
     getAndSetFilters() {
@@ -176,6 +209,12 @@ export class DataSourceSelectorComponent {
     }
 
     drop(event: CdkDragDrop<DataSourceKey[]>): void {
+        console.log(event);
+        this.resetDropAreaStyle(event.container.element.nativeElement);
+        const allowed = this.checkRules(event);
+        if (!allowed) {
+            return;
+        }
         if (event.previousContainer === event.container) {
             moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
         } else {

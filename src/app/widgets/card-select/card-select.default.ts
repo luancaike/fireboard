@@ -17,6 +17,7 @@ export class CardSelectDefault {
                 label: 'Dados',
                 key: 'datasets',
                 rules: {
+                    max: 1,
                     required: true
                 }
             }

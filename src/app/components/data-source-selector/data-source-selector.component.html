@@ -21,6 +21,8 @@
                 [id]="item.key"
                 [cdkDropListData]="dataSourceSelectedKeys.get(item.key)?.data"
                 class="field-bindings"
+                (cdkDropListExited)="checkExitItem($event)"
+                (cdkDropListEntered)="checkEnterItem($event)"
                 (cdkDropListDropped)="drop($event)"
             >
                 <span class="field-bindings-label">{{ item.label }}</span>
@@ -30,10 +32,12 @@
                     [class.number]="key.type === 'number'"
                     [class.text]="key.type === 'string'"
                     [class.date]="key.type === 'date'"
+                    [cdkDragData]="item"
                     class="field"
                     cdkDragBoundary=".field-bindings"
                     cdkDrag
                 >
+                    <div *cdkDragPlaceholder></div>
                     <div class="field-text">
                         <fa-icon *ngIf="key.type === 'number'" class="column-icon" icon="calculator"></fa-icon>
                         <fa-icon *ngIf="key.type === 'string'" class="column-icon" icon="font"></fa-icon>
@@ -98,6 +102,7 @@
                     [class.number]="item.type === 'number'"
                     [class.text]="item.type === 'string'"
                     [class.date]="item.type === 'date'"
+                    [cdkDragData]="item"
                     class="field"
                     cdkDragBoundary=".field-selector-container"
                     cdkDrag
