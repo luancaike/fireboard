@@ -4,7 +4,8 @@ import { TableDefault } from './table.default';
 import { FireboardDataService } from '../../service/fireboard-data.service';
 import { WidgetAbstract, WidgetOptions } from '../widget.abstract';
 import { DataSourceKey } from '../../models/data-source.dtos';
-import { GridOptions, ColDef, ColGroupDef } from 'ag-grid-community';
+import { ColDef, ColGroupDef, GridOptions } from 'ag-grid-community';
+import { FieldEditorTypes } from '../field-editor.dtos';
 
 @Component({
     selector: 'fb-table',
@@ -23,6 +24,7 @@ export class TableComponent extends WidgetAbstract implements WidgetComponent, A
     public dataSourceBindOptions = TableDefault.dataSourceBindOptions();
     public options: GridOptions = TableDefault.options();
     public fieldsEditor = TableDefault.fieldsEditor();
+    public columnDefs: (ColDef | ColGroupDef)[] = [];
 
     constructor(protected cdr: ChangeDetectorRef, public fireboardDataService: FireboardDataService) {
         super(cdr);
@@ -45,7 +47,8 @@ export class TableComponent extends WidgetAbstract implements WidgetComponent, A
     }
 
     setOptions(options: GridOptions) {
-        this.setColumns(options.columnDefs);
+        this.columnDefs = options.columnDefs;
+        this.setColumns();
         this.cdr.detectChanges();
     }
 
@@ -59,15 +62,25 @@ export class TableComponent extends WidgetAbstract implements WidgetComponent, A
     }
 
     mountColumns(labelKeys: DataSourceKey[]): void {
-        const columnDefs = labelKeys.map((el) => ({ headerName: el.name, field: el.key, width: 100 }));
-        this.setColumns(columnDefs);
+        this.columnDefs = labelKeys.map((el) => ({ headerName: el.name, field: el.key, width: 100 }));
+        this.setColumns();
+        this.mountColumnsEditors();
     }
 
-    setColumns(columnDefs: (ColDef | ColGroupDef)[]) {
+    mountColumnsEditors() {
+        this.fieldsEditor = this.columnDefs.map((el, i) => ({
+            key: `columnDefs[${i}].width`,
+            label: `Coluna (${el.headerName})`,
+            type: FieldEditorTypes.Range,
+            max: 400
+        }));
+    }
+
+    setColumns() {
         if (this.options.api) {
-            this.options.api.setColumnDefs(columnDefs);
+            this.options.api.setColumnDefs(this.columnDefs);
         }
-        this.options.columnDefs = columnDefs;
+        this.options.columnDefs = this.columnDefs;
     }
 
     mountRows(): void {
