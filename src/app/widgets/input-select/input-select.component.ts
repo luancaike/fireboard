@@ -3,6 +3,7 @@ import {
     ChangeDetectionStrategy,
     ChangeDetectorRef,
     Component,
+    ElementRef,
     Input,
     OnDestroy,
     ViewChild,
@@ -14,6 +15,8 @@ import { FireboardDataService } from '../../service/fireboard-data.service';
 import { FilterAbstract } from '../filter.abstract';
 import { NgSelectComponent } from '@ng-select/ng-select';
 import { debounce } from '../../utils/effects';
+import { WidgetOptions } from '../widget.abstract';
+import { DateFilterDefault } from '../date-filter/date-filter.default';
 
 @Component({
     selector: 'fb-input-select',
@@ -22,22 +25,25 @@ import { debounce } from '../../utils/effects';
     styleUrls: ['./input-select.component.scss'],
     template: `
         <fb-loading-widget [show]="isLoading"></fb-loading-widget>
-        <ng-select
-            #select
-            [(ngModel)]="model"
-            (ngModelChange)="modelUpdate($event)"
-            class="ng-select-auto"
-            [appendTo]="'.canvas-container'"
-            [placeholder]="placeholder"
-            [bindLabel]="'text'"
-            [bindValue]="'value'"
-            [searchable]="true"
-            [clearable]="true"
-            [items]="items"
-        ></ng-select>
+        <div class="select-wrapper" #selectWrapper>
+            <ng-select
+                #select
+                [(ngModel)]="model"
+                (ngModelChange)="modelUpdate($event)"
+                class="ng-select-auto"
+                [appendTo]="'.canvas-container'"
+                [placeholder]="placeholder"
+                [bindLabel]="'text'"
+                [bindValue]="'value'"
+                [searchable]="true"
+                [clearable]="true"
+                [items]="items"
+            ></ng-select>
+        </div>
     `
 })
 export class InputSelectComponent extends FilterAbstract implements WidgetComponent, AfterViewInit, OnDestroy {
+    @ViewChild('selectWrapper') selectWrapper: ElementRef<HTMLDivElement>;
     @ViewChild('select') select: NgSelectComponent;
     @Input() public legoData;
     public model = null;
@@ -77,7 +83,19 @@ export class InputSelectComponent extends FilterAbstract implements WidgetCompon
             this.legoData.data = this.getOptions();
         }
     }
+    setOptions(options: WidgetOptions) {
+        const defaultOptions = DateFilterDefault.options();
+        const newOptions = { ...defaultOptions, ...options };
+        super.setOptions(newOptions);
+        this.applyStyleOptions();
+    }
 
+    applyStyleOptions() {
+        const style = this.selectWrapper.nativeElement.style;
+        style.setProperty('--dp-border-color', this.options.borderColor);
+        style.setProperty('--dp-font-color', this.options.fontColor);
+        style.setProperty('--dp-font-size', `${this.options.fontSize}px`);
+    }
     applyComponentData(): void {
         const keyData = this.getKeySelected();
         if (keyData) {

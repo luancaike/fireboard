@@ -1,3 +1,30 @@
 .ng-dropdown-panel .ng-dropdown-panel-items .ng-option {
     text-align: left;
 }
+
+.select-wrapper {
+    --dp-border-color: #ccc;
+    --dp-font-color: #777777;
+    --dp-font-size: 16px;
+
+    height: 100%;
+    width: 100%;
+
+    .ng-select {
+        font-size: var(--dp-font-size, 16px);
+
+        .ng-arrow-wrapper .ng-arrow {
+            border-color: var(--dp-font-color, #777777) transparent transparent;
+        }
+
+        .ng-select-container {
+            border-color: var(--dp-border-color, #ccc);
+
+            .ng-value-container .ng-placeholder {
+                color: var(--dp-font-color, #777777);
+
+            }
+        }
+    }
+}
+

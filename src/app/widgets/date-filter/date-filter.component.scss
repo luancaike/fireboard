@@ -14,6 +14,7 @@ ngb-datepicker {
     --dp-border-color: #ccc;
     --dp-font-color: #777777;
     --dp-font-size: 16px;
+
     position: relative;
     pointer-events: auto;
     margin: 0;
@@ -30,7 +31,7 @@ ngb-datepicker {
     font-size: var(--dp-font-size, 16px);
     line-height: 18px;
     border-radius: 0;
-    color: var(--dp-text-color, #777777);
+    color: var(--dp-font-color, #777777);
     background-color: transparent;
     background-image: none;
     box-sizing: border-box;
