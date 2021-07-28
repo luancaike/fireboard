@@ -164,8 +164,6 @@ export class FilterMakerComponent {
             this.addFilter.emit(newFilter);
             this.customFilter = DefaultFilterConfig();
             this.showPanel = false;
-        } catch (e) {
-            console.log(e);
-        }
+        } catch (e) {}
     }
 }

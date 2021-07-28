@@ -3,6 +3,7 @@ import {
     ChangeDetectionStrategy,
     ChangeDetectorRef,
     Component,
+    ElementRef,
     Input,
     NgZone,
     OnDestroy,
@@ -15,6 +16,7 @@ import { FireboardDataService } from '../../service/fireboard-data.service';
 import { FilterAbstract } from '../filter.abstract';
 import { NgbDatepicker, NgbDateStruct, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap/modal/modal-ref';
+import { WidgetOptions } from '../widget.abstract';
 
 @Component({
     selector: 'fb-date-filter',
@@ -66,13 +68,14 @@ import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap/modal/modal-ref';
                 </div>
             </div>
         </ng-template>
-        <button class="date-picker" (click)="open(content)">
+        <button class="date-picker" #datePicker (click)="open(content)">
             {{ fromPlaceholder }} - {{ toPlaceholder }}
             <fa-icon [fixedWidth]="true" [icon]="['far', 'calendar']" class="btn-icon-drop"></fa-icon>
         </button>
     `
 })
 export class DateFilterComponent extends FilterAbstract implements WidgetComponent, AfterViewInit, OnDestroy {
+    @ViewChild('datePicker') datePicker: ElementRef<HTMLButtonElement>;
     @ViewChild('fromPicker') fromPickerRef: NgbDatepicker;
     @ViewChild('toPicker') toPickerRef: NgbDatepicker;
     @Input() public legoData;
@@ -100,6 +103,20 @@ export class DateFilterComponent extends FilterAbstract implements WidgetCompone
         return keySelected
             ? data.filter((el) => !this.from || !this.to || this.checkDateInRanger(el[keySelected.key]))
             : data;
+    }
+
+    setOptions(options: WidgetOptions) {
+        const defaultOptions = DateFilterDefault.options();
+        const newOptions = { ...defaultOptions, ...options };
+        super.setOptions(newOptions);
+        this.applyStyleOptions();
+    }
+
+    applyStyleOptions() {
+        const style = this.datePicker.nativeElement.style;
+        style.setProperty('--dp-border-color', this.options.borderColor);
+        style.setProperty('--dp-font-color', this.options.fontColor);
+        style.setProperty('--dp-font-size', `${this.options.fontSize}px`);
     }
 
     checkDateInRanger(dateString: string) {

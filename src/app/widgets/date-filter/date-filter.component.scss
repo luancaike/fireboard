@@ -11,6 +11,9 @@ ngb-datepicker {
 }
 
 .date-picker {
+    --dp-border-color: #ccc;
+    --dp-font-color: #777777;
+    --dp-font-size: 16px;
     position: relative;
     pointer-events: auto;
     margin: 0;
@@ -22,12 +25,12 @@ ngb-datepicker {
     white-space: nowrap;
     vertical-align: middle;
     user-select: none;
-    border: 1px solid #ccc;
+    border: 1px solid var(--dp-border-color, #ccc);
     padding: 5px 10px;
-    font-size: 16px;
+    font-size: var(--dp-font-size, 16px);
     line-height: 18px;
     border-radius: 0;
-    color: #777777;
+    color: var(--dp-text-color, #777777);
     background-color: transparent;
     background-image: none;
     box-sizing: border-box;

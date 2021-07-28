@@ -43,7 +43,6 @@ export class InputTextComponent extends FilterAbstract implements WidgetComponen
     }
 
     filterAction(data): any[] {
-        console.log(this.model);
         const keySelected = this.getKeySelected();
         return keySelected
             ? data.filter(
