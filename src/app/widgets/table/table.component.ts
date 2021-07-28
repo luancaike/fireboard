@@ -4,7 +4,7 @@ import { TableDefault } from './table.default';
 import { FireboardDataService } from '../../service/fireboard-data.service';
 import { WidgetAbstract, WidgetOptions } from '../widget.abstract';
 import { DataSourceKey } from '../../models/data-source.dtos';
-import { ColDef, ColGroupDef, GridOptions } from 'ag-grid-community';
+import { ColDef, GridOptions } from 'ag-grid-community';
 import { FieldEditorTypes } from '../field-editor.dtos';
 
 @Component({
@@ -13,7 +13,12 @@ import { FieldEditorTypes } from '../field-editor.dtos';
     template: `
         <fb-loading-widget [show]="isLoading"></fb-loading-widget>
         <div style="display: block; height: 100%">
-            <ag-grid-angular [gridOptions]="options" class="ag-theme-fresh" style="height: 100%; width: 100%;">
+            <ag-grid-angular
+                *ngIf="showGrid"
+                [gridOptions]="options"
+                class="ag-theme-fresh"
+                style="height: 100%; width: 100%;"
+            >
             </ag-grid-angular>
         </div>
     `
@@ -21,10 +26,11 @@ import { FieldEditorTypes } from '../field-editor.dtos';
 export class TableComponent extends WidgetAbstract implements WidgetComponent, AfterViewInit {
     @Input() public legoData;
 
+    public showGrid = true;
     public dataSourceBindOptions = TableDefault.dataSourceBindOptions();
     public options: GridOptions = TableDefault.options();
     public fieldsEditor = TableDefault.fieldsEditor();
-    public columnDefs: (ColDef | ColGroupDef)[] = [];
+    public columnDefs: ColDef[] = [];
 
     constructor(protected cdr: ChangeDetectorRef, public fireboardDataService: FireboardDataService) {
         super(cdr);
@@ -33,6 +39,7 @@ export class TableComponent extends WidgetAbstract implements WidgetComponent, A
     ngAfterViewInit() {
         if (this.legoData.data) {
             this.setConfig(this.legoData.data);
+            this.updateDataAndApplyComponent();
         }
     }
 
@@ -47,9 +54,9 @@ export class TableComponent extends WidgetAbstract implements WidgetComponent, A
     }
 
     setOptions(options: GridOptions) {
+        console.log(options);
         this.columnDefs = options.columnDefs;
         this.setColumns();
-        this.cdr.detectChanges();
     }
 
     getOptions(): WidgetOptions {
@@ -62,7 +69,11 @@ export class TableComponent extends WidgetAbstract implements WidgetComponent, A
     }
 
     mountColumns(labelKeys: DataSourceKey[]): void {
-        this.columnDefs = labelKeys.map((el) => ({ headerName: el.name, field: el.key, width: 100 }));
+        this.columnDefs = labelKeys.map((el, i) => ({
+            headerName: el.name,
+            field: el.key,
+            width: this.columnDefs[i]?.width || 100
+        }));
         this.setColumns();
         this.mountColumnsEditors();
     }
