@@ -1,6 +1,17 @@
 .input-text {
+    --dp-border-color: #ccc;
+    --dp-font-color: #777777;
+    --dp-font-size: 16px;
+
     height: 100%;
     border-radius: 0;
-    color: #777777;
     background-color: transparent;
+
+    color: var(--dp-font-color, #777777);
+    border-color: var(--dp-border-color, #ccc);
+    font-size: var(--dp-font-size, 16px);
+
+    &::placeholder {
+        color: var(--dp-font-color, #777777);
+    }
 }

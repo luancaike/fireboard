@@ -83,6 +83,7 @@ export class InputSelectComponent extends FilterAbstract implements WidgetCompon
             this.legoData.data = this.getOptions();
         }
     }
+
     setOptions(options: WidgetOptions) {
         const defaultOptions = DateFilterDefault.options();
         const newOptions = { ...defaultOptions, ...options };
@@ -96,6 +97,7 @@ export class InputSelectComponent extends FilterAbstract implements WidgetCompon
         style.setProperty('--dp-font-color', this.options.fontColor);
         style.setProperty('--dp-font-size', `${this.options.fontSize}px`);
     }
+
     applyComponentData(): void {
         const keyData = this.getKeySelected();
         if (keyData) {

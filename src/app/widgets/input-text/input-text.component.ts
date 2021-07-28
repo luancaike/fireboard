@@ -3,8 +3,10 @@ import {
     ChangeDetectionStrategy,
     ChangeDetectorRef,
     Component,
+    ElementRef,
     Input,
     OnDestroy,
+    ViewChild,
     ViewEncapsulation
 } from '@angular/core';
 import { WidgetComponent } from '../widget.interface';
@@ -12,6 +14,8 @@ import { InputTextDefault } from './input-text.default';
 import { FireboardDataService } from '../../service/fireboard-data.service';
 import { FilterAbstract } from '../filter.abstract';
 import { debounce } from '../../utils/effects';
+import { WidgetOptions } from '../widget.abstract';
+import { DateFilterDefault } from '../date-filter/date-filter.default';
 
 @Component({
     selector: 'fb-input-text',
@@ -21,6 +25,7 @@ import { debounce } from '../../utils/effects';
     template: `
         <fb-loading-widget [show]="isLoading"></fb-loading-widget>
         <input
+            #input
             type="text"
             class="form-control input-text"
             [(ngModel)]="model"
@@ -30,6 +35,7 @@ import { debounce } from '../../utils/effects';
     `
 })
 export class InputTextComponent extends FilterAbstract implements WidgetComponent, AfterViewInit, OnDestroy {
+    @ViewChild('input') input: ElementRef<HTMLInputElement>;
     @Input() public legoData;
     public model = null;
     public placeholder = 'Texto';
@@ -61,6 +67,20 @@ export class InputTextComponent extends FilterAbstract implements WidgetComponen
         } else {
             this.legoData.data = this.getOptions();
         }
+    }
+
+    setOptions(options: WidgetOptions) {
+        const defaultOptions = DateFilterDefault.options();
+        const newOptions = { ...defaultOptions, ...options };
+        super.setOptions(newOptions);
+        this.applyStyleOptions();
+    }
+
+    applyStyleOptions() {
+        const style = this.input.nativeElement.style;
+        style.setProperty('--dp-border-color', this.options.borderColor);
+        style.setProperty('--dp-font-color', this.options.fontColor);
+        style.setProperty('--dp-font-size', `${this.options.fontSize}px`);
     }
 
     applyComponentData(): void {
