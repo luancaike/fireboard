@@ -82,8 +82,8 @@
             <div class="toolbar-separator"></div>
             <div class="btn-toolbar-dropdown">
                 <button class="dropdown-button">
-                    <fa-icon class="btn-icon" icon="sliders-h"></fa-icon>
-                    Adicionar controle
+                    <fa-icon class="btn-icon" icon="filter"></fa-icon>
+                    Adicionar Filtro
                     <fa-icon class="btn-icon-arrow" icon="chevron-down"></fa-icon>
                 </button>
                 <div class="dropdown-options list">
@@ -104,6 +104,13 @@
                         Caixa de Entrada
                     </button>
                 </div>
+            </div>
+            <div class="toolbar-separator"></div>
+            <div class="btn-toolbar-dropdown">
+                <button class="dropdown-button" (click)="filterModal = !filterModal">
+                    <fa-icon class="btn-icon" icon="database"></fa-icon>
+                    Adicionar Dados
+                </button>
             </div>
         </div>
     </div>
@@ -160,3 +167,6 @@
         <div [ngbNavOutlet]="nav" [hidden]="!showTabsWidget"></div>
     </div>
 </div>
+<fb-modal-panel [showPainel]="filterModal">
+    <fb-sql-builder></fb-sql-builder>
+</fb-modal-panel>
