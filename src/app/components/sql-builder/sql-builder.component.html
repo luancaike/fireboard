@@ -1,0 +1,43 @@
+<ng-template #tablesList>
+    <ul class="sb-list-group">
+        <li *ngFor="let sb of tables" class="sb-list-group-item" (click)="selectTable(sb)">
+            {{ sb.name }}
+        </li>
+    </ul>
+</ng-template>
+<div class="sql-build-container">
+    <div class="from-box">
+        <span class="box-title">Dados</span>
+        <div class="box-container">
+            <div class="item" [hidden]="model?.table">
+                <button (click)="popoverFirst.show()" class="btn option outline">Selecione uma Tabela</button>
+                <fb-popover #popoverFirst title="Tabelas">
+                    <ng-container *ngTemplateOutlet="tablesList"></ng-container>
+                </fb-popover>
+            </div>
+            <div class="item" [hidden]="!model?.table">
+                <button (click)="popoverTable.show()" class="btn option">
+                    {{ model?.table?.name }}
+                </button>
+                <fb-popover #popoverTable title="Tabelas">
+                    <ng-container *ngTemplateOutlet="tablesList"></ng-container>
+                </fb-popover>
+            </div>
+        </div>
+    </div>
+    <div class="groupby-box" [hidden]="!model?.table">
+        <span class="box-title">Agrupar</span>
+    </div>
+    <div class="select-box" [hidden]="!model?.table">
+        <span class="box-title">Colunas</span>
+    </div>
+    <div class="filter-box" [hidden]="!model?.table">
+        <span class="box-title">Filtrar</span>
+    </div>
+    <div class="orderby-box" [hidden]="!model?.table">
+        <span class="box-title">Ordernar</span>
+    </div>
+    <div class="top-box" [hidden]="!model?.table">
+        <span class="box-title">Limite</span>
+    </div>
+</div>

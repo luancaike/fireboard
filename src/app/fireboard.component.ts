@@ -53,6 +53,7 @@ export class FireboardComponent implements AfterViewInit {
     public dataSources: DataSource[] = DataSourceMockList;
     public visualizationMode = false;
     public showTabsWidget = false;
+    public filterModal = false;
 
     constructor(private cdr: ChangeDetectorRef, public fireboardDataService: FireboardDataService) {
         this.fireboardDataService.filterEventEmitter.subscribe((data) => this.handlerFilter(data));

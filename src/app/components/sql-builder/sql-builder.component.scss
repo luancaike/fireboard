@@ -1,0 +1,135 @@
+:host {
+    display: block;
+    height: 100%;
+    width: 100%;
+}
+
+.sql-build-container {
+    box-sizing: border-box;
+    margin: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-start;
+    align-content: flex-start;
+
+    .sb-list-group {
+        display: flex;
+        flex-direction: column;
+        padding-left: 0;
+        margin-bottom: 0;
+
+        .sb-list-group-item {
+            position: relative;
+            display: block;
+            padding: 10px 20px;
+            margin-bottom: -1px;
+            background-color: #fff;
+            font-size: 16px;
+            font-weight: 500;
+            color: #6c757d;
+
+            &:hover {
+                cursor: pointer;
+                color: white;
+                background-color: var(--sb-color-base, #ccc);
+            }
+        }
+    }
+
+
+    .btn {
+        background: transparent;
+        border: none;
+        cursor: pointer;
+
+        &:hover {
+            opacity: 0.7;
+        }
+    }
+
+    .from-box,
+    .groupby-box,
+    .select-box,
+    .orderby-box,
+    .filter-box,
+    .top-box {
+        color: var(--sb-color-base);
+        background-color: var(--sb-color-base-alpha);
+        margin-top: 30px;
+        flex: 0 0 100%;
+        position: relative;
+        border-radius: 5px;
+        padding: 15px;
+        min-height: 40px;
+
+        .box-title {
+            font-weight: 600;
+            font-size: 14px;
+            position: absolute;
+            top: -20px;
+            left: 5px;
+        }
+
+        .box-container {
+            display: flex;
+            justify-content: flex-start;
+            height: 100%;
+            width: 100%;
+
+            .item {
+                margin-right: 10px;
+                flex: 0 0 100px;
+                width: 100%;
+                height: 100%;
+
+                .option {
+                    background-color: var(--sb-color-base);
+                    height: 100%;
+                    color: white;
+                    vertical-align: middle;
+                    text-align: center;
+                    min-width: 60px;
+                    border-radius: 5px;
+
+                    &.outline {
+                        color: var(--sb-color-base);
+                        border: 1px solid var(--sb-color-base);
+                        background-color: transparent;
+
+                    }
+                }
+            }
+        }
+    }
+
+    .from-box {
+        --sb-color-base: rgb(80, 158, 227);
+        --sb-color-base-alpha: rgba(80, 158, 227, 0.1);
+    }
+
+    .groupby-box {
+        --sb-color-base: rgb(80, 158, 227);
+        --sb-color-base-alpha: rgba(80, 158, 227, 0.1);
+    }
+
+    .select-box {
+        --sb-color-base: rgb(49, 192, 68);
+        --sb-color-base-alpha: rgba(49, 192, 68, 0.1);
+    }
+
+    .filter-box {
+        --sb-color-base: rgb(49, 192, 68);
+        --sb-color-base-alpha: rgba(49, 192, 68, 0.1);
+    }
+
+    .orderby-box {
+        --sb-color-base: rgb(108, 108, 108);
+        --sb-color-base-alpha: rgba(108, 108, 108, 0.1);
+    }
+
+    .top-box {
+        --sb-color-base: rgb(108, 108, 108);
+        --sb-color-base-alpha: rgba(108, 108, 108, 0.1);
+    }
+}

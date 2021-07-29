@@ -28,6 +28,9 @@ import { DateFilterComponent } from './widgets/date-filter/date-filter.component
 import { InputSelectComponent } from './widgets/input-select/input-select.component';
 import { InputTextComponent } from './widgets/input-text/input-text.component';
 import { CardSelectComponent } from './widgets/card-select/card-select.component';
+import { SqlBuilderComponent } from './components/sql-builder/sql-builder.component';
+import { PopoverComponent } from './components/popover/popover.component';
+import { FaCustomIcons } from './icons/icons';
 
 @NgModule({
     imports: [
@@ -58,12 +61,15 @@ import { CardSelectComponent } from './widgets/card-select/card-select.component
         DateFilterComponent,
         InputSelectComponent,
         InputTextComponent,
-        CardSelectComponent
+        CardSelectComponent,
+        SqlBuilderComponent,
+        PopoverComponent
     ],
     bootstrap: [FireboardComponent]
 })
 export class FireboardModule {
     constructor(library: FaIconLibrary) {
         library.addIconPacks(far, fas, fab);
+        library.addIcons(...FaCustomIcons);
     }
 }
