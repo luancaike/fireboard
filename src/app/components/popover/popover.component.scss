@@ -1,0 +1,48 @@
+@import '../../style/scrollbar';
+
+.fb-popover {
+    border-radius: 5px;
+    display: none;
+    min-height: 100px;
+    max-width: 400px;
+    min-width: 200px;
+    position: absolute;
+    background: white;
+    z-index: 1;
+    box-shadow: 0 0 10px 0 rgba(99, 99, 99, 0.3);
+
+    * {
+        user-select: none;
+    }
+
+    &.show {
+        display: block;
+    }
+
+    .close-popover {
+        position: absolute;
+        right: 10px;
+        top: 10px;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        color: #6c757d;
+    }
+
+    .title-popover {
+        font-weight: 600;
+        position: absolute;
+        left: 10px;
+        top: 10px;
+    }
+
+    .body-popover {
+        color: #000;
+        margin-top: 40px;
+        top: 40px;
+        max-height: 400px;
+        overflow: auto;
+        width: 100%;
+        @include scroll-style;
+    }
+}
