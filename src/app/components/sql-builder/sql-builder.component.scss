@@ -1,23 +1,33 @@
+@import '../../style/scrollbar';
+
 :host {
     display: block;
     height: 100%;
     width: 100%;
 }
 
+$sb-border-radius: 5px !default;
+
 .sql-build-container {
+    height: 100%;
+    width: 100%;
     box-sizing: border-box;
-    margin: 20px;
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
     align-items: flex-start;
     align-content: flex-start;
 
+    * {
+        user-select: none;
+    }
+
     .sb-list-group {
         display: flex;
         flex-direction: column;
         padding-left: 0;
         margin-bottom: 0;
+        text-align: left;
 
         .sb-list-group-item {
             position: relative;
@@ -59,9 +69,9 @@
         margin-top: 30px;
         flex: 0 0 100%;
         position: relative;
-        border-radius: 5px;
+        border-radius: $sb-border-radius;
         padding: 15px;
-        min-height: 40px;
+        min-height: 60px;
 
         .box-title {
             font-weight: 600;
@@ -72,31 +82,57 @@
         }
 
         .box-container {
-            display: flex;
-            justify-content: flex-start;
             height: 100%;
             width: 100%;
+            display: flex;
+            justify-content: flex-start;
+            align-content: center;
+            align-items: center;
 
             .item {
                 margin-right: 10px;
-                flex: 0 0 100px;
+                flex: 0 0 50px;
                 width: 100%;
                 height: 100%;
+                vertical-align: middle;
+                text-align: center;
 
-                .option {
+                .item-option-icon {
+                    font-size: 24px;
+                    border-radius: $sb-border-radius;
+                    cursor: pointer;
+                    padding: 0 10px;
+                    &:hover {
+                        color: white;
+                        background-color: var(--sb-color-base);
+                    }
+                }
+
+                .item-icon {
+                    font-size: 24px;
+                    border-radius: $sb-border-radius;
+                    color: #6c6c6c;
+                }
+
+                .item-option {
+                    padding: .375rem .75rem;
+                    white-space: nowrap;
                     background-color: var(--sb-color-base);
                     height: 100%;
                     color: white;
                     vertical-align: middle;
                     text-align: center;
-                    min-width: 60px;
-                    border-radius: 5px;
+                    min-width: 100px;
+                    border-radius: $sb-border-radius;
+
+                    &.add {
+                        min-width: 50px;
+                    }
 
                     &.outline {
                         color: var(--sb-color-base);
-                        border: 1px solid var(--sb-color-base);
+                        border: 2px solid var(--sb-color-base);
                         background-color: transparent;
-
                     }
                 }
             }
@@ -104,23 +140,23 @@
     }
 
     .from-box {
-        --sb-color-base: rgb(80, 158, 227);
-        --sb-color-base-alpha: rgba(80, 158, 227, 0.1);
+        --sb-color-base: rgb(66, 133, 244);
+        --sb-color-base-alpha: rgba(66, 133, 244, 0.1);
     }
 
     .groupby-box {
-        --sb-color-base: rgb(80, 158, 227);
-        --sb-color-base-alpha: rgba(80, 158, 227, 0.1);
+        --sb-color-base: rgb(66, 133, 244);
+        --sb-color-base-alpha: rgba(66, 133, 244, 0.1);
     }
 
     .select-box {
-        --sb-color-base: rgb(49, 192, 68);
-        --sb-color-base-alpha: rgba(49, 192, 68, 0.1);
+        --sb-color-base: rgb(58, 217, 113);
+        --sb-color-base-alpha: rgba(58, 217, 113, 0.1);
     }
 
     .filter-box {
-        --sb-color-base: rgb(49, 192, 68);
-        --sb-color-base-alpha: rgba(49, 192, 68, 0.1);
+        --sb-color-base: rgb(58, 217, 113);
+        --sb-color-base-alpha: rgba(58, 217, 113, 0.1);
     }
 
     .orderby-box {

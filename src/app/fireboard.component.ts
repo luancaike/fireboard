@@ -44,7 +44,6 @@ export class FireboardComponent implements AfterViewInit {
     public styleEditorWidget: StyleEditorComponent;
     @ViewChild('styleEditorFilter')
     public styleEditorFilter: StyleEditorComponent;
-
     public pages: DashboardPage[] = [];
     public pageSelected = 0;
     public nameBoard = 'Nome do Dashboard';

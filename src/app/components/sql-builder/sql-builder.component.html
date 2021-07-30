@@ -1,43 +1,140 @@
 <ng-template #tablesList>
     <ul class="sb-list-group">
         <li *ngFor="let sb of tables" class="sb-list-group-item" (click)="selectTable(sb)">
+            <fa-icon icon="table" [fixedWidth]="true"></fa-icon>
             {{ sb.name }}
         </li>
     </ul>
 </ng-template>
-<div class="sql-build-container">
-    <div class="from-box">
-        <span class="box-title">Dados</span>
-        <div class="box-container">
-            <div class="item" [hidden]="model?.table">
-                <button (click)="popoverFirst.show()" class="btn option outline">Selecione uma Tabela</button>
-                <fb-popover #popoverFirst title="Tabelas">
-                    <ng-container *ngTemplateOutlet="tablesList"></ng-container>
-                </fb-popover>
+<div
+    class="card border-0"
+    style="display: flex;
+                                        justify-content: flex-start;
+                                        height: 100%;"
+>
+    <div class="card-header d-flex justify-content-between">
+        <h6 style="margin: .5rem;">
+            <fa-icon icon="database" class="mr-2"></fa-icon>
+            Criar Fonte de Dados
+        </h6>
+        <button class="btn btn-outline-dark btn-sm">
+            FECHAR
+            <fa-icon icon="times" class="ml-2"></fa-icon>
+        </button>
+    </div>
+    <div
+        class="card-body scroll-style"
+        style="max-height: calc(100% - 65px); overflow-x: hidden; overflow-y: auto;"
+    >
+        <div class="sql-build-container">
+            <div class="from-box">
+                <span class="box-title">Dados</span>
+                <div class="box-container">
+                    <div class="item" [hidden]="model?.table">
+                        <button (click)="popoverFirst.show()" class="btn item-option outline">Escolha uma Tabela
+                        </button>
+                        <fb-popover #popoverFirst title="Tabelas">
+                            <ng-container *ngTemplateOutlet="tablesList"></ng-container>
+                        </fb-popover>
+                    </div>
+                    <div class="item" [hidden]="!model?.table">
+                        <button (click)="popoverTable.show()" class="btn item-option">
+                            {{ model?.table?.name }}
+                        </button>
+                        <fb-popover #popoverTable title="Tabelas">
+                            <ng-container *ngTemplateOutlet="tablesList"></ng-container>
+                        </fb-popover>
+                    </div>
+                </div>
             </div>
-            <div class="item" [hidden]="!model?.table">
-                <button (click)="popoverTable.show()" class="btn option">
-                    {{ model?.table?.name }}
-                </button>
-                <fb-popover #popoverTable title="Tabelas">
-                    <ng-container *ngTemplateOutlet="tablesList"></ng-container>
-                </fb-popover>
+            <div class="groupby-box" [hidden]="!model?.table">
+                <span class="box-title">Agrupar</span>
+                <div class="box-container">
+                    <div class="item" [hidden]="!model?.table">
+                        <button class="btn item-option" disabled>
+                            {{ model?.table?.name }}
+                        </button>
+                    </div>
+                    <div class="item" [hidden]="!model?.table">
+                        <fa-icon class="item-option-icon" [icon]="['custom', 'left-join']"
+                                 [fixedWidth]="true"></fa-icon>
+                    </div>
+                    <div class="item">
+                        <button (click)="popoverFirst.show()" class="btn item-option outline">Escolha uma Tabela
+                        </button>
+                        <fb-popover #popoverFirst title="Tabelas">
+                            <ng-container *ngTemplateOutlet="tablesList"></ng-container>
+                        </fb-popover>
+                    </div>
+                    <div class="item" [hidden]="!model?.table">
+                        <fa-icon class="item-icon" icon="random" [fixedWidth]="true"></fa-icon>
+                    </div>
+                    <div class="item" [hidden]="!model?.table">
+                        <button class="btn item-option">Coluna 1</button>
+                    </div>
+                    <div class="item" [hidden]="!model?.table">
+                        <fa-icon class="item-icon" icon="equals" [fixedWidth]="true"></fa-icon>
+                    </div>
+                    <div class="item" [hidden]="!model?.table">
+                        <button class="btn item-option">Coluna 2</button>
+                    </div>
+                </div>
+            </div>
+            <div class="select-box" [hidden]="!model?.table">
+                <span class="box-title">Colunas</span>
+                <div class="box-container">
+                    <div class="item">
+                        <button class="btn item-option">Coluna 1</button>
+                    </div>
+                    <div class="item">
+                        <button class="btn item-option">Coluna 2</button>
+                    </div>
+                    <div class="item">
+                        <button class="btn item-option">Coluna 3</button>
+                    </div>
+                    <div class="item">
+                        <div class="item-option">
+                            Coluna 4
+                            <fa-icon icon="times"></fa-icon>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <button class="btn item-option outline readonly add">
+                            <fa-icon icon="plus"></fa-icon>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="filter-box" [hidden]="!model?.table">
+                <span class="box-title">Filtrar</span>
+                <div class="box-container">
+                    <div class="item">
+                        <div class="item-option">
+                            ID igual a 1
+                            <fa-icon icon="times"></fa-icon>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="orderby-box" [hidden]="!model?.table">
+                <span class="box-title">Ordernar</span>
+                <div class="box-container">
+                    <div class="item">
+                        <button class="btn item-option outline readonly add">
+                            <fa-icon icon="plus"></fa-icon>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="top-box" [hidden]="!model?.table">
+                <span class="box-title">Limite</span>
             </div>
         </div>
     </div>
-    <div class="groupby-box" [hidden]="!model?.table">
-        <span class="box-title">Agrupar</span>
-    </div>
-    <div class="select-box" [hidden]="!model?.table">
-        <span class="box-title">Colunas</span>
-    </div>
-    <div class="filter-box" [hidden]="!model?.table">
-        <span class="box-title">Filtrar</span>
-    </div>
-    <div class="orderby-box" [hidden]="!model?.table">
-        <span class="box-title">Ordernar</span>
-    </div>
-    <div class="top-box" [hidden]="!model?.table">
-        <span class="box-title">Limite</span>
+    <div class="card-footer text-muted d-flex justify-content-end">
+        <button class="btn btn-outline-primary mb-2">
+            Salvar
+            <fa-icon icon="save" class="mr-2"></fa-icon>
+        </button>
     </div>
 </div>

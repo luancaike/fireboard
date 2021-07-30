@@ -3,8 +3,7 @@
 .fb-popover {
     border-radius: 5px;
     display: none;
-    min-height: 100px;
-    max-width: 400px;
+    max-width: 600px;
     min-width: 200px;
     position: absolute;
     background: white;
@@ -39,10 +38,11 @@
     .body-popover {
         color: #000;
         margin-top: 40px;
+        height: 300px;
         top: 40px;
-        max-height: 400px;
-        overflow: auto;
         width: 100%;
+        overflow: auto;
+
         @include scroll-style;
     }
 }

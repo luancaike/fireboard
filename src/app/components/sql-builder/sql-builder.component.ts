@@ -1,5 +1,6 @@
 import { Component, QueryList, ViewChildren, ViewEncapsulation } from '@angular/core';
 import { PopoverComponent } from '../popover/popover.component';
+import { DataSourceMockList } from '../../models/mocks';
 
 @Component({
     selector: 'fb-sql-builder',
@@ -9,24 +10,7 @@ import { PopoverComponent } from '../popover/popover.component';
 })
 export class SqlBuilderComponent {
     @ViewChildren(PopoverComponent) popovers: QueryList<PopoverComponent>;
-    public tables = [
-        {
-            id: 1,
-            name: 'teste 1'
-        },
-        {
-            id: 2,
-            name: 'teste 2'
-        },
-        {
-            id: 3,
-            name: 'teste 3'
-        },
-        {
-            id: 4,
-            name: 'teste 4'
-        }
-    ];
+    public tables = DataSourceMockList;
 
     model: any = {
         table: null

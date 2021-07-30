@@ -4,6 +4,11 @@ $size-sidebar: 300px;
 $size-toolbar: 120px;
 $size-toolbar-visualization: 70px;
 
+::ng-deep {
+    .scroll-style {
+        @include scroll-style
+    }
+}
 
 :host {
     position: absolute;
@@ -19,10 +24,12 @@ $size-toolbar-visualization: 70px;
     box-shadow: none;
 }
 
+
 .ddd-area {
     display: flex;
     flex-wrap: wrap;
     position: relative;
+
 
     .sidebar {
         flex: 0 0 $size-sidebar;
@@ -226,6 +233,7 @@ $size-toolbar-visualization: 70px;
 
             .btn-toolbar-dropdown {
                 max-width: 100%;
+                border-radius: 5px;
 
                 &:hover {
                     background-color: rgba(108, 117, 125, 0.1);
@@ -240,6 +248,7 @@ $size-toolbar-visualization: 70px;
                 }
 
                 .dropdown-options {
+                    border-radius: 5px;
                     padding: 5px;
                     display: none;
                     position: absolute;
@@ -346,6 +355,7 @@ $size-toolbar-visualization: 70px;
                 }
 
                 .dropdown-button {
+                    border-radius: 5px;
                     height: 100%;
                     width: 100%;
                     display: inline-block;
