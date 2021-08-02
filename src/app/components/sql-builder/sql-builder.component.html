@@ -1,19 +1,45 @@
-<ng-template #tablesList>
+<ng-template #tablesList let-onselect="onselect" let-excludeList="excludeList">
     <ul class="sb-list-group">
-        <li *ngFor="let sb of tables" class="sb-list-group-item" (click)="selectTable(sb)">
-            <fa-icon icon="table" [fixedWidth]="true"></fa-icon>
-            {{ sb.name }}
-        </li>
+        <ng-container *ngFor="let table of tables">
+            <li class="sb-list-group-item" (click)="onselect(table)" [hidden]="excludeList?.includes(table)">
+                <fa-icon icon="table" [fixedWidth]="true"></fa-icon>
+                {{ table.name }}
+            </li>
+        </ng-container>
     </ul>
 </ng-template>
-<div
-    class="card border-0"
-    style="display: flex;
-                                        justify-content: flex-start;
-                                        height: 100%;"
->
+<ng-template #columnsList let-onselect="onselect" let-columns="columns" let-excludeList="excludeList">
+    <ul class="sb-list-group">
+        <ng-container *ngFor="let item of columns">
+            <li class="sb-list-group-item" (click)="onselect(item)" [hidden]="excludeList?.includes(item)">
+                <fa-icon *ngIf="item.type === 'custom'" icon="code" [fixedWidth]="true"></fa-icon>
+                <fa-icon *ngIf="item.type === 'number'" icon="calculator" [fixedWidth]="true"></fa-icon>
+                <fa-icon *ngIf="item.type === 'string'" icon="font" [fixedWidth]="true"></fa-icon>
+                <fa-icon *ngIf="item.type === 'date'" icon="calendar" [fixedWidth]="true"></fa-icon>
+                {{ item.name }}
+            </li>
+        </ng-container>
+    </ul>
+</ng-template>
+<ng-template #columnsGroupList let-onselect="onselect" let-columns="columns" let-excludeList="excludeList">
+    <ul class="sb-list-group" *ngFor="let item of columns">
+        <li class="sb-list-group-separator">
+            {{ item.name }}
+        </li>
+        <ng-container *ngFor="let el of item?.keys">
+            <li class="sb-list-group-item" (click)="onselect(el)" [hidden]="excludeList?.includes(el)">
+                <fa-icon *ngIf="el.type === 'custom'" icon="code" [fixedWidth]="true"></fa-icon>
+                <fa-icon *ngIf="el.type === 'number'" icon="calculator" [fixedWidth]="true"></fa-icon>
+                <fa-icon *ngIf="el.type === 'string'" icon="font" [fixedWidth]="true"></fa-icon>
+                <fa-icon *ngIf="el.type === 'date'" icon="calendar" [fixedWidth]="true"></fa-icon>
+                {{ el.name }}
+            </li>
+        </ng-container>
+    </ul>
+</ng-template>
+<div class="card border-0">
     <div class="card-header d-flex justify-content-between">
-        <h6 style="margin: .5rem;">
+        <h6 style="margin: 0.5rem">
             <fa-icon icon="database" class="mr-2"></fa-icon>
             Criar Fonte de Dados
         </h6>
@@ -22,19 +48,22 @@
             <fa-icon icon="times" class="ml-2"></fa-icon>
         </button>
     </div>
-    <div
-        class="card-body scroll-style"
-        style="max-height: calc(100% - 65px); overflow-x: hidden; overflow-y: auto;"
-    >
+    <div class="card-body scroll-style">
         <div class="sql-build-container">
             <div class="from-box">
                 <span class="box-title">Dados</span>
                 <div class="box-container">
                     <div class="item" [hidden]="model?.table">
-                        <button (click)="popoverFirst.show()" class="btn item-option outline">Escolha uma Tabela
+                        <button (click)="popoverFirst.show()" class="btn item-option outline">
+                            Escolha uma Tabela
                         </button>
                         <fb-popover #popoverFirst title="Tabelas">
-                            <ng-container *ngTemplateOutlet="tablesList"></ng-container>
+                            <ng-container
+                                *ngTemplateOutlet="
+                                    tablesList;
+                                    context: { onselect: selectTable, excludeList: [model?.table] }
+                                "
+                            ></ng-container>
                         </fb-popover>
                     </div>
                     <div class="item" [hidden]="!model?.table">
@@ -42,71 +71,220 @@
                             {{ model?.table?.name }}
                         </button>
                         <fb-popover #popoverTable title="Tabelas">
-                            <ng-container *ngTemplateOutlet="tablesList"></ng-container>
+                            <ng-container
+                                *ngTemplateOutlet="
+                                    tablesList;
+                                    context: { onselect: selectTable, excludeList: [model?.table] }
+                                "
+                            ></ng-container>
                         </fb-popover>
                     </div>
                 </div>
             </div>
-            <div class="groupby-box" [hidden]="!model?.table">
-                <span class="box-title">Agrupar</span>
-                <div class="box-container">
+            <div #forkBox class="fork-box collapsed" [hidden]="!model?.table" (click)="openBox(forkBox)">
+                <div class="box-close">
+                    <fa-icon icon="times"></fa-icon>
+                </div>
+                <span class="box-title">Unir</span>
+                <div class="box-icon">
+                    <fa-icon class="item-option-icon" [icon]="['custom', 'left-join']" [fixedWidth]="true"></fa-icon>
+                </div>
+                <div class="box-container" *ngFor="let item of model?.forks; let i = index">
                     <div class="item" [hidden]="!model?.table">
                         <button class="btn item-option" disabled>
                             {{ model?.table?.name }}
                         </button>
                     </div>
                     <div class="item" [hidden]="!model?.table">
-                        <fa-icon class="item-option-icon" [icon]="['custom', 'left-join']"
-                                 [fixedWidth]="true"></fa-icon>
+                        <fa-icon
+                            *ngIf="item?.joinType === 1"
+                            class="item-option-icon"
+                            (click)="toggleForkType(i)"
+                            [icon]="['custom', 'left-join']"
+                            [fixedWidth]="true"
+                        ></fa-icon>
+                        <fa-icon
+                            rotate="180"
+                            *ngIf="item?.joinType === 2"
+                            class="item-option-icon"
+                            (click)="toggleForkType(i)"
+                            [icon]="['custom', 'left-join']"
+                            [fixedWidth]="true"
+                        ></fa-icon>
+                        <fa-icon
+                            *ngIf="item?.joinType === 3"
+                            class="item-option-icon"
+                            (click)="toggleForkType(i)"
+                            [icon]="['custom', 'inner-join']"
+                            [fixedWidth]="true"
+                        ></fa-icon>
                     </div>
                     <div class="item">
-                        <button (click)="popoverFirst.show()" class="btn item-option outline">Escolha uma Tabela
+                        <button class="btn item-option" (click)="popoverForkTable.show()" [hidden]="!item?.table">
+                            {{ item?.table?.name }}
                         </button>
-                        <fb-popover #popoverFirst title="Tabelas">
-                            <ng-container *ngTemplateOutlet="tablesList"></ng-container>
+                        <button
+                            (click)="popoverForkTable.show()"
+                            class="btn item-option outline"
+                            [hidden]="item?.table"
+                        >
+                            Escolha uma Tabela
+                        </button>
+                        <fb-popover #popoverForkTable title="Tabelas">
+                            <ng-container
+                                *ngTemplateOutlet="
+                                    tablesList;
+                                    context: { onselect: selectForkKey(i, 'table'), excludeList: [model?.table] }
+                                "
+                            ></ng-container>
                         </fb-popover>
                     </div>
-                    <div class="item" [hidden]="!model?.table">
+                    <div class="item" [hidden]="!item?.table">
                         <fa-icon class="item-icon" icon="random" [fixedWidth]="true"></fa-icon>
                     </div>
-                    <div class="item" [hidden]="!model?.table">
-                        <button class="btn item-option">Coluna 1</button>
+                    <div class="item" [hidden]="!item?.table">
+                        <button
+                            class="btn item-option"
+                            (click)="popoverColumnPrimary.show()"
+                            [hidden]="!item?.columnPrimary"
+                        >
+                            {{ item?.columnPrimary?.name }}
+                        </button>
+                        <button
+                            (click)="popoverColumnPrimary.show()"
+                            class="btn item-option outline"
+                            [hidden]="item?.columnPrimary"
+                        >
+                            Escolha uma Coluna
+                        </button>
+                        <fb-popover #popoverColumnPrimary title="Colunas">
+                            <ng-container
+                                *ngTemplateOutlet="
+                                    columnsList;
+                                    context: {
+                                        onselect: selectForkKey(i, 'columnPrimary'),
+                                        columns: model?.table?.keys
+                                    }
+                                "
+                            ></ng-container>
+                        </fb-popover>
                     </div>
-                    <div class="item" [hidden]="!model?.table">
+                    <div class="item" [hidden]="!item?.table">
                         <fa-icon class="item-icon" icon="equals" [fixedWidth]="true"></fa-icon>
                     </div>
-                    <div class="item" [hidden]="!model?.table">
-                        <button class="btn item-option">Coluna 2</button>
+                    <div class="item" [hidden]="!item?.table">
+                        <button
+                            class="btn item-option"
+                            (click)="popoverColumnSecondary.show()"
+                            [hidden]="!item?.columnSecondary"
+                        >
+                            {{ item?.columnSecondary?.name }}
+                        </button>
+                        <button
+                            (click)="popoverColumnSecondary.show()"
+                            class="btn item-option outline"
+                            [hidden]="item?.columnSecondary"
+                        >
+                            Escolha uma Coluna
+                        </button>
+                        <fb-popover #popoverColumnSecondary title="Colunas">
+                            <ng-container
+                                *ngTemplateOutlet="
+                                    columnsList;
+                                    context: {
+                                        onselect: selectForkKey(i, 'columnSecondary'),
+                                        columns: item?.table?.keys
+                                    }
+                                "
+                            ></ng-container>
+                        </fb-popover>
                     </div>
                 </div>
             </div>
-            <div class="select-box" [hidden]="!model?.table">
+            <div #selectBox class="select-box collapsed" [hidden]="!model?.table" (click)="openBox(selectBox)">
+                <div class="box-close">
+                    <fa-icon icon="times"></fa-icon>
+                </div>
                 <span class="box-title">Colunas</span>
+                <div class="box-icon">
+                    <fa-icon class="item-option-icon" icon="columns" [fixedWidth]="true"></fa-icon>
+                </div>
                 <div class="box-container">
-                    <div class="item">
-                        <button class="btn item-option">Coluna 1</button>
-                    </div>
-                    <div class="item">
-                        <button class="btn item-option">Coluna 2</button>
-                    </div>
-                    <div class="item">
-                        <button class="btn item-option">Coluna 3</button>
-                    </div>
-                    <div class="item">
+                    <div class="item" *ngFor="let item of model?.select">
                         <div class="item-option">
-                            Coluna 4
-                            <fa-icon icon="times"></fa-icon>
+                            {{ item.name }}
+                            <fa-icon
+                                icon="times"
+                                class="item-option-button"
+                                (click)="removeItem(model?.select, item)"
+                            ></fa-icon>
                         </div>
                     </div>
                     <div class="item">
-                        <button class="btn item-option outline readonly add">
+                        <button class="btn item-option outline readonly add" (click)="popoverForkSelect.show()">
                             <fa-icon icon="plus"></fa-icon>
                         </button>
+                        <fb-popover #popoverForkSelect title="Colunas">
+                            <ng-container
+                                *ngTemplateOutlet="
+                                    columnsGroupList;
+                                    context: {
+                                        excludeList: model?.select,
+                                        onselect: addSelect,
+                                        columns: columnsOfModel
+                                    }
+                                "
+                            ></ng-container>
+                        </fb-popover>
                     </div>
                 </div>
             </div>
-            <div class="filter-box" [hidden]="!model?.table">
+            <div #groupByBox class="groupby-box collapsed" [hidden]="!model?.table" (click)="openBox(groupByBox)">
+                <div class="box-close">
+                    <fa-icon icon="times"></fa-icon>
+                </div>
+                <span class="box-title">Agrupar</span>
+                <div class="box-icon">
+                    <fa-icon class="item-option-icon" icon="layer-group" [fixedWidth]="true"></fa-icon>
+                </div>
+                <div class="box-container">
+                    <div class="item" *ngFor="let item of model?.group">
+                        <div class="item-option">
+                            {{ item.name }}
+                            <fa-icon
+                                icon="times"
+                                class="item-option-button"
+                                (click)="removeItem(model?.group, item)"
+                            ></fa-icon>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <button class="btn item-option outline readonly add" (click)="popoverForkGroup.show()">
+                            <fa-icon icon="plus"></fa-icon>
+                        </button>
+                        <fb-popover #popoverForkGroup title="Colunas">
+                            <ng-container
+                                *ngTemplateOutlet="
+                                    columnsGroupList;
+                                    context: {
+                                        excludeList: model?.group,
+                                        onselect: addGroup,
+                                        columns: columnsOfModel
+                                    }
+                                "
+                            ></ng-container>
+                        </fb-popover>
+                    </div>
+                </div>
+            </div>
+            <div #filterBox class="filter-box collapsed" [hidden]="!model?.table" (click)="openBox(filterBox)">
+                <div class="box-close">
+                    <fa-icon icon="times"></fa-icon>
+                </div>
                 <span class="box-title">Filtrar</span>
+                <div class="box-icon">
+                    <fa-icon class="item-option-icon" icon="filter" [fixedWidth]="true"></fa-icon>
+                </div>
                 <div class="box-container">
                     <div class="item">
                         <div class="item-option">
@@ -116,18 +294,62 @@
                     </div>
                 </div>
             </div>
-            <div class="orderby-box" [hidden]="!model?.table">
+            <div #orderByBox class="orderby-box collapsed" [hidden]="!model?.table" (click)="openBox(orderByBox)">
+                <div class="box-close">
+                    <fa-icon icon="times"></fa-icon>
+                </div>
                 <span class="box-title">Ordernar</span>
+                <div class="box-icon">
+                    <fa-icon class="item-option-icon" icon="exchange-alt" [fixedWidth]="true"></fa-icon>
+                </div>
                 <div class="box-container">
+                    <div class="item" *ngFor="let item of model?.order">
+                        <div class="item-option">
+                            <fa-icon
+                                [icon]="item.direction === 'up' ? 'long-arrow-alt-up' : 'long-arrow-alt-down'"
+                                class="item-option-button"
+                                (click)="toggleOrderDirection(item)"
+                            ></fa-icon>
+                            {{ item.name }}
+                            <fa-icon
+                                icon="times"
+                                class="item-option-button"
+                                (click)="removeItem(model?.order, item)"
+                            ></fa-icon>
+                        </div>
+                    </div>
                     <div class="item">
-                        <button class="btn item-option outline readonly add">
+                        <button class="btn item-option outline readonly add" (click)="popoverForkOrder.show()">
                             <fa-icon icon="plus"></fa-icon>
                         </button>
+                        <fb-popover #popoverForkOrder title="Colunas">
+                            <ng-container
+                                *ngTemplateOutlet="
+                                    columnsGroupList;
+                                    context: {
+                                        excludeList: model?.order,
+                                        onselect: addOrder,
+                                        columns: columnsOfModel
+                                    }
+                                "
+                            ></ng-container>
+                        </fb-popover>
                     </div>
                 </div>
             </div>
-            <div class="top-box" [hidden]="!model?.table">
+            <div #topBox class="top-box collapsed" [hidden]="!model?.table" (click)="openBox(topBox)">
+                <div class="box-close">
+                    <fa-icon icon="times"></fa-icon>
+                </div>
                 <span class="box-title">Limite</span>
+                <div class="box-icon">
+                    <fa-icon class="item-option-icon" icon="list" [fixedWidth]="true"></fa-icon>
+                </div>
+                <div class="box-container">
+                    <div class="item">
+                        <input class="item-option-input" [(ngModel)]="model.top" type="number"/>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

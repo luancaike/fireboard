@@ -3,10 +3,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { FireboardComponent } from './fireboard.component';
 import { CraftableModule } from 'ng-craftable';
-import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { far } from '@fortawesome/free-regular-svg-icons';
-import { fas } from '@fortawesome/free-solid-svg-icons';
-import { fab } from '@fortawesome/free-brands-svg-icons';
 import { IconsModule } from './icons/icons.module';
 import { WidgetsModule } from './widgets/widgets.module';
 import { DataSourceSelectorComponent } from './components/data-source-selector/data-source-selector.component';
@@ -28,9 +24,8 @@ import { DateFilterComponent } from './widgets/date-filter/date-filter.component
 import { InputSelectComponent } from './widgets/input-select/input-select.component';
 import { InputTextComponent } from './widgets/input-text/input-text.component';
 import { CardSelectComponent } from './widgets/card-select/card-select.component';
-import { SqlBuilderComponent } from './components/sql-builder/sql-builder.component';
-import { PopoverComponent } from './components/popover/popover.component';
-import { FaCustomIcons } from './icons/icons';
+import { SqlBuilderModule } from './components/sql-builder/sql-builder.module';
+import { PopoverModule } from './components/popover/popover.module';
 
 @NgModule({
     imports: [
@@ -40,10 +35,11 @@ import { FaCustomIcons } from './icons/icons';
         WidgetsModule,
         IconsModule,
         CraftableModule,
-        FontAwesomeModule,
         DragDropModule,
         NgbModule,
         NgSelectModule,
+        PopoverModule,
+        SqlBuilderModule,
         AgGridModule.withComponents([])
     ],
     providers: [LoadingBarService],
@@ -61,15 +57,8 @@ import { FaCustomIcons } from './icons/icons';
         DateFilterComponent,
         InputSelectComponent,
         InputTextComponent,
-        CardSelectComponent,
-        SqlBuilderComponent,
-        PopoverComponent
+        CardSelectComponent
     ],
     bootstrap: [FireboardComponent]
 })
-export class FireboardModule {
-    constructor(library: FaIconLibrary) {
-        library.addIconPacks(far, fas, fab);
-        library.addIcons(...FaCustomIcons);
-    }
-}
+export class FireboardModule {}
