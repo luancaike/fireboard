@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, Input, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, HostListener, Input, Output, ViewChild } from '@angular/core';
 
 @Component({
     selector: 'fb-popover',
@@ -8,9 +8,26 @@ import { Component, ElementRef, HostListener, Input, ViewChild } from '@angular/
 export class PopoverComponent {
     @ViewChild('popover') popover: ElementRef<HTMLDivElement>;
     @Input() title = '';
+    @Output() clickOutside = new EventEmitter();
     isShow = false;
+    openToTop = false;
+    rect;
 
-    show() {
+    get topDiff() {
+        if (this.openToTop && this.rect) {
+            this.popover.nativeElement.style.top = `-${
+                this.popover.nativeElement.getBoundingClientRect().height - this.rect.height
+            }px`;
+        } else {
+            return '0px';
+        }
+    }
+
+    show(event?: MouseEvent) {
+        console.log(event);
+        this.rect = (event.target as HTMLDivElement)?.getBoundingClientRect();
+        const maxHeight = window.screen.height / 2;
+        this.openToTop = this.rect.top >= maxHeight;
         this.isShow = true;
         this.popover.nativeElement.classList.add('show');
     }
@@ -18,6 +35,7 @@ export class PopoverComponent {
     hide() {
         this.isShow = false;
         this.popover.nativeElement.classList.remove('show');
+        this.clickOutside.emit();
     }
 
     @HostListener('document:mousedown', ['$event.target'])
