@@ -12,7 +12,6 @@ import { StyleEditorComponent } from './components/style-editor/style-editor.com
 import { ToolbarMenuComponent } from './components/toolbar-menu/toolbar-menu.component';
 import { ModalPanelComponent } from './components/modal-panel/modal-panel.component';
 import { FilterMakerComponent } from './components/filter-maker/filter-maker.component';
-import { SelectColumnComponent } from './components/select-column/select-column.component';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FilterSelectorComponent } from './components/filter-selector/filter-selector.component';
@@ -26,6 +25,7 @@ import { InputTextComponent } from './widgets/input-text/input-text.component';
 import { CardSelectComponent } from './widgets/card-select/card-select.component';
 import { SqlBuilderModule } from './components/sql-builder/sql-builder.module';
 import { PopoverModule } from './components/popover/popover.module';
+import { SelectColumnModule } from './components/select-column/select-column.module';
 
 @NgModule({
     imports: [
@@ -37,10 +37,11 @@ import { PopoverModule } from './components/popover/popover.module';
         CraftableModule,
         DragDropModule,
         NgbModule,
-        NgSelectModule,
         PopoverModule,
         SqlBuilderModule,
-        AgGridModule.withComponents([])
+        AgGridModule.withComponents([]),
+        SelectColumnModule,
+        NgSelectModule
     ],
     providers: [LoadingBarService],
     declarations: [
@@ -50,7 +51,6 @@ import { PopoverModule } from './components/popover/popover.module';
         ToolbarMenuComponent,
         ModalPanelComponent,
         FilterMakerComponent,
-        SelectColumnComponent,
         FilterSelectorComponent,
         LoadingBarComponent,
         TableComponent,

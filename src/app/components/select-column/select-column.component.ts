@@ -10,6 +10,7 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
                 class="ng-select-sm ng-select-column"
                 [placeholder]="placeholder"
                 [hideSelected]="true"
+                [appendTo]="appendTo"
                 [closeOnSelect]="!multiple"
                 (ngModelChange)="valueChange($event)"
                 [ngModel]="value"
@@ -63,6 +64,7 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 })
 export class SelectColumnComponent {
     @Input() items: any[];
+    @Input() appendTo = null;
     @Input() clearable: boolean;
     @Input() searchable: boolean;
     @Input() multiple: boolean;
