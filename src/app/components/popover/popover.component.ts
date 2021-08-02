@@ -24,7 +24,6 @@ export class PopoverComponent {
     }
 
     show(event?: MouseEvent) {
-        console.log(event);
         this.rect = (event.target as HTMLDivElement)?.getBoundingClientRect();
         const maxHeight = window.screen.height / 2;
         this.openToTop = this.rect.top >= maxHeight;

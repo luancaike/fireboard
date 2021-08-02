@@ -156,7 +156,6 @@ export class SqlBuilderComponent {
             operator: this.selectedOperator,
             column: this.selectedColumnFilter
         };
-        console.log(model);
         this.model.filters.push(model);
         this.resetFilterSelector();
     }
