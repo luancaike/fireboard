@@ -37,13 +37,56 @@
         </ng-container>
     </ul>
 </ng-template>
+<ng-template #columnsFilterBuild let-columns="columns" let-onselect="onselect">
+    <ul class="sb-list-group" *ngFor="let item of columns" [hidden]="selectedColumnFilter">
+        <li class="sb-list-group-separator">
+            {{ item.name }}
+        </li>
+        <ng-container *ngFor="let el of item?.keys">
+            <li class="sb-list-group-item" (click)="onSelectedFilter(el)">
+                <fa-icon *ngIf="el.type === 'custom'" icon="code" [fixedWidth]="true"></fa-icon>
+                <fa-icon *ngIf="el.type === 'number'" icon="calculator" [fixedWidth]="true"></fa-icon>
+                <fa-icon *ngIf="el.type === 'string'" icon="font" [fixedWidth]="true"></fa-icon>
+                <fa-icon *ngIf="el.type === 'date'" icon="calendar" [fixedWidth]="true"></fa-icon>
+                {{ el.name }}
+            </li>
+        </ng-container>
+    </ul>
+    <div class="filter-selector-container" [hidden]="!selectedColumnFilter">
+        <span class="filter-reset-selected" (click)="resetFilterSelector()">
+            <fa-icon icon="arrow-left"></fa-icon>
+        </span>
+        <span class="filter-column-selected">{{ selectedColumnFilter?.name }}</span>
+        <div class="form-group filter-type">
+            <label>Operador</label>
+            <select class="form-control" [(ngModel)]="selectedOperator" (ngModelChange)="onSelectedOperator($event)">
+                <option *ngFor="let operatorFilter of operatorsFilter" [ngValue]="operatorFilter">
+                    {{ operatorFilter.text }}
+                </option>
+            </select>
+        </div>
+        <div class="form-group filter-value"
+             *ngFor="let operatorValue of operatorsValues; let i = index; trackBy: trackByValorFilter">
+            <label *ngIf="i === 0">Valor</label>
+            <input *ngIf="operatorValue.type === 'string'" type="text" class="form-control"
+                   [ngModel]="operatorValue.value" (ngModelChange)="operatorsValues[i].value = $event"/>
+            <input *ngIf="operatorValue.type === 'number'" type="number" class="form-control"
+                   [ngModel]="operatorValue.value" (ngModelChange)="operatorsValues[i].value = $event"/>
+            <input *ngIf="operatorValue.type === 'date'" type="date" class="form-control"
+                   [ngModel]="operatorValue.value" (ngModelChange)="operatorsValues[i].value = $event"/>
+        </div>
+        <button class="filter-save btn" [disabled]="!filterIsValid" (click)="addFilter()">
+            Adicionar Filtro
+        </button>
+    </div>
+</ng-template>
 <div class="card border-0">
     <div class="card-header d-flex justify-content-between">
         <h6 style="margin: 0.5rem">
             <fa-icon icon="database" class="mr-2"></fa-icon>
             Criar Fonte de Dados
         </h6>
-        <button class="btn btn-outline-dark btn-sm">
+        <button class="btn btn-outline-dark btn-sm" (click)="closePanel()">
             FECHAR
             <fa-icon icon="times" class="ml-2"></fa-icon>
         </button>
@@ -54,7 +97,7 @@
                 <span class="box-title">Dados</span>
                 <div class="box-container">
                     <div class="item" [hidden]="model?.table">
-                        <button (click)="popoverFirst.show()" class="btn item-option outline">
+                        <button (click)="popoverFirst.show($event)" class="btn item-option outline">
                             Escolha uma Tabela
                         </button>
                         <fb-popover #popoverFirst title="Tabelas">
@@ -67,7 +110,7 @@
                         </fb-popover>
                     </div>
                     <div class="item" [hidden]="!model?.table">
-                        <button (click)="popoverTable.show()" class="btn item-option">
+                        <button (click)="popoverTable.show($event)" class="btn item-option">
                             {{ model?.table?.name }}
                         </button>
                         <fb-popover #popoverTable title="Tabelas">
@@ -81,12 +124,12 @@
                     </div>
                 </div>
             </div>
-            <div #forkBox class="fork-box collapsed" [hidden]="!model?.table" (click)="openBox(forkBox)">
-                <div class="box-close">
+            <div #forkBox class="fork-box collapsed" [hidden]="!model?.table">
+                <div class="box-close" (click)="clearModelField('forks', forkBox)">
                     <fa-icon icon="times"></fa-icon>
                 </div>
                 <span class="box-title">Unir</span>
-                <div class="box-icon">
+                <div class="box-icon" (click)="openBox(forkBox)">
                     <fa-icon class="item-option-icon" [icon]="['custom', 'left-join']" [fixedWidth]="true"></fa-icon>
                 </div>
                 <div class="box-container" *ngFor="let item of model?.forks; let i = index">
@@ -120,11 +163,11 @@
                         ></fa-icon>
                     </div>
                     <div class="item">
-                        <button class="btn item-option" (click)="popoverForkTable.show()" [hidden]="!item?.table">
+                        <button class="btn item-option" (click)="popoverForkTable.show($event)" [hidden]="!item?.table">
                             {{ item?.table?.name }}
                         </button>
                         <button
-                            (click)="popoverForkTable.show()"
+                            (click)="popoverForkTable.show($event)"
                             class="btn item-option outline"
                             [hidden]="item?.table"
                         >
@@ -145,13 +188,13 @@
                     <div class="item" [hidden]="!item?.table">
                         <button
                             class="btn item-option"
-                            (click)="popoverColumnPrimary.show()"
+                            (click)="popoverColumnPrimary.show($event)"
                             [hidden]="!item?.columnPrimary"
                         >
                             {{ item?.columnPrimary?.name }}
                         </button>
                         <button
-                            (click)="popoverColumnPrimary.show()"
+                            (click)="popoverColumnPrimary.show($event)"
                             class="btn item-option outline"
                             [hidden]="item?.columnPrimary"
                         >
@@ -175,13 +218,13 @@
                     <div class="item" [hidden]="!item?.table">
                         <button
                             class="btn item-option"
-                            (click)="popoverColumnSecondary.show()"
+                            (click)="popoverColumnSecondary.show($event)"
                             [hidden]="!item?.columnSecondary"
                         >
                             {{ item?.columnSecondary?.name }}
                         </button>
                         <button
-                            (click)="popoverColumnSecondary.show()"
+                            (click)="popoverColumnSecondary.show($event)"
                             class="btn item-option outline"
                             [hidden]="item?.columnSecondary"
                         >
@@ -200,13 +243,20 @@
                         </fb-popover>
                     </div>
                 </div>
+                <div class="box-container" *ngIf="!model?.forks?.length">
+                    <div class="item">
+                        <button class="btn item-option outline readonly add" (click)="addFork()">
+                            <fa-icon icon="plus"></fa-icon>
+                        </button>
+                    </div>
+                </div>
             </div>
-            <div #selectBox class="select-box collapsed" [hidden]="!model?.table" (click)="openBox(selectBox)">
-                <div class="box-close">
+            <div #selectBox class="select-box collapsed" [hidden]="!model?.table">
+                <div class="box-close" (click)="clearModelField('select', selectBox)">
                     <fa-icon icon="times"></fa-icon>
                 </div>
                 <span class="box-title">Colunas</span>
-                <div class="box-icon">
+                <div class="box-icon" (click)="openBox(selectBox)">
                     <fa-icon class="item-option-icon" icon="columns" [fixedWidth]="true"></fa-icon>
                 </div>
                 <div class="box-container">
@@ -221,7 +271,7 @@
                         </div>
                     </div>
                     <div class="item">
-                        <button class="btn item-option outline readonly add" (click)="popoverForkSelect.show()">
+                        <button class="btn item-option outline readonly add" (click)="popoverForkSelect.show($event)">
                             <fa-icon icon="plus"></fa-icon>
                         </button>
                         <fb-popover #popoverForkSelect title="Colunas">
@@ -231,7 +281,7 @@
                                     context: {
                                         excludeList: model?.select,
                                         onselect: addSelect,
-                                        columns: columnsOfModel
+                                        columns: tablesOfModel
                                     }
                                 "
                             ></ng-container>
@@ -239,12 +289,12 @@
                     </div>
                 </div>
             </div>
-            <div #groupByBox class="groupby-box collapsed" [hidden]="!model?.table" (click)="openBox(groupByBox)">
-                <div class="box-close">
+            <div #groupByBox class="groupby-box collapsed" [hidden]="!model?.table">
+                <div class="box-close" (click)="clearModelField('group', groupByBox)">
                     <fa-icon icon="times"></fa-icon>
                 </div>
                 <span class="box-title">Agrupar</span>
-                <div class="box-icon">
+                <div class="box-icon" (click)="openBox(groupByBox)">
                     <fa-icon class="item-option-icon" icon="layer-group" [fixedWidth]="true"></fa-icon>
                 </div>
                 <div class="box-container">
@@ -259,7 +309,7 @@
                         </div>
                     </div>
                     <div class="item">
-                        <button class="btn item-option outline readonly add" (click)="popoverForkGroup.show()">
+                        <button class="btn item-option outline readonly add" (click)="popoverForkGroup.show($event)">
                             <fa-icon icon="plus"></fa-icon>
                         </button>
                         <fb-popover #popoverForkGroup title="Colunas">
@@ -269,7 +319,7 @@
                                     context: {
                                         excludeList: model?.group,
                                         onselect: addGroup,
-                                        columns: columnsOfModel
+                                        columns: tablesOfModel
                                     }
                                 "
                             ></ng-container>
@@ -277,29 +327,51 @@
                     </div>
                 </div>
             </div>
-            <div #filterBox class="filter-box collapsed" [hidden]="!model?.table" (click)="openBox(filterBox)">
-                <div class="box-close">
+            <div #filterBox class="filter-box collapsed" [hidden]="!model?.table">
+                <div class="box-close" (click)="clearModelField('filters', filterBox)">
                     <fa-icon icon="times"></fa-icon>
                 </div>
                 <span class="box-title">Filtrar</span>
-                <div class="box-icon">
+                <div class="box-icon" (click)="openBox(filterBox)">
                     <fa-icon class="item-option-icon" icon="filter" [fixedWidth]="true"></fa-icon>
                 </div>
                 <div class="box-container">
-                    <div class="item">
+                    <div class="item" *ngFor="let item of model?.filters">
                         <div class="item-option">
-                            ID igual a 1
-                            <fa-icon icon="times"></fa-icon>
+                            <span><b>{{ item?.column?.name }}</b> {{ item?.operator?.text }}
+                                <b>{{ mapValuesToString(item?.values) }}</b></span>
+                            <fa-icon
+                                icon="times"
+                                class="item-option-button"
+                                (click)="removeItem(model?.filters, item)"
+                            ></fa-icon>
                         </div>
+                    </div>
+
+                    <div class="item">
+                        <button class="btn item-option outline readonly add" (click)="popoverFilter.show($event)">
+                            <fa-icon icon="plus"></fa-icon>
+                        </button>
+                        <fb-popover #popoverFilter title="Filtrar" (clickOutside)="resetFilterSelector()">
+                            <ng-container
+                                *ngTemplateOutlet="
+                                    columnsFilterBuild;
+                                    context: {
+                                        onselect: addGroup,
+                                        columns: tablesOfModel
+                                    }
+                                "
+                            ></ng-container>
+                        </fb-popover>
                     </div>
                 </div>
             </div>
-            <div #orderByBox class="orderby-box collapsed" [hidden]="!model?.table" (click)="openBox(orderByBox)">
-                <div class="box-close">
+            <div #orderByBox class="orderby-box collapsed" [hidden]="!model?.table">
+                <div class="box-close" (click)="clearModelField('order', orderByBox)">
                     <fa-icon icon="times"></fa-icon>
                 </div>
                 <span class="box-title">Ordernar</span>
-                <div class="box-icon">
+                <div class="box-icon" (click)="openBox(orderByBox)">
                     <fa-icon class="item-option-icon" icon="exchange-alt" [fixedWidth]="true"></fa-icon>
                 </div>
                 <div class="box-container">
@@ -319,7 +391,7 @@
                         </div>
                     </div>
                     <div class="item">
-                        <button class="btn item-option outline readonly add" (click)="popoverForkOrder.show()">
+                        <button class="btn item-option outline readonly add" (click)="popoverForkOrder.show($event)">
                             <fa-icon icon="plus"></fa-icon>
                         </button>
                         <fb-popover #popoverForkOrder title="Colunas">
@@ -329,7 +401,7 @@
                                     context: {
                                         excludeList: model?.order,
                                         onselect: addOrder,
-                                        columns: columnsOfModel
+                                        columns: tablesOfModel
                                     }
                                 "
                             ></ng-container>
@@ -337,12 +409,12 @@
                     </div>
                 </div>
             </div>
-            <div #topBox class="top-box collapsed" [hidden]="!model?.table" (click)="openBox(topBox)">
-                <div class="box-close">
+            <div #topBox class="top-box collapsed" [hidden]="!model?.table">
+                <div class="box-close" (click)="clearModelField('top', topBox)">
                     <fa-icon icon="times"></fa-icon>
                 </div>
                 <span class="box-title">Limite</span>
-                <div class="box-icon">
+                <div class="box-icon" (click)="openBox(topBox)">
                     <fa-icon class="item-option-icon" icon="list" [fixedWidth]="true"></fa-icon>
                 </div>
                 <div class="box-container">
@@ -354,7 +426,7 @@
         </div>
     </div>
     <div class="card-footer text-muted d-flex justify-content-end">
-        <button class="btn btn-outline-primary mb-2">
+        <button class="btn btn-outline-primary mb-2" (click)="saveThisModel()">
             Salvar
             <fa-icon icon="save" class="mr-2"></fa-icon>
         </button>

@@ -168,5 +168,7 @@
     </div>
 </div>
 <fb-modal-panel [showPainel]="filterModal">
-    <fb-sql-builder></fb-sql-builder>
+    <fb-sql-builder
+        [(showPanel)]="filterModal"
+    ></fb-sql-builder>
 </fb-modal-panel>
