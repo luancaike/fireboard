@@ -287,6 +287,14 @@
                             ></ng-container>
                         </fb-popover>
                     </div>
+                    <div class="item">
+                        <button class="btn item-option outline readonly add" (click)="popoverCustomColumn.show($event)">
+                            <fa-icon icon="code"></fa-icon>
+                        </button>
+                        <fb-popover #popoverCustomColumn title="Coluna Customizada">
+                            <fb-expression-builder></fb-expression-builder>
+                        </fb-popover>
+                    </div>
                 </div>
             </div>
             <div #groupByBox class="groupby-box collapsed" [hidden]="!model?.table">

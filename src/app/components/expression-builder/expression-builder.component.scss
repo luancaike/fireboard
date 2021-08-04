@@ -1,0 +1,108 @@
+@import '../../style/scrollbar';
+
+.expression-builder {
+    text-align: left;
+    padding: 5px;
+
+    .editor-expression {
+        padding: 10px;
+        font-family: Monaco, monospace;
+        color: #545454;
+        width: 400px;
+        height: 100px;
+        font-size: 14px;
+        white-space: pre-wrap;
+        background-color: #efeeee;
+        font-weight: 700;
+        overflow: auto;
+        @include scroll-style;
+
+        &:focus-visible {
+            outline-color: var(--sb-color-base);
+        }
+
+        .node {
+            display: inline-block;
+
+            &.function-name {
+                color: #a424ce;
+            }
+
+            &.open-paren, &.close-paren {
+                color: #a424ce;
+            }
+
+            &.number-literal {
+                color: #a424ce;
+            }
+
+            &.string-literal {
+                color: #41b2a2
+
+            }
+
+            &.identifier {
+                color: #409dcf
+            }
+        }
+
+
+    }
+
+    .suggestion-list {
+        display: flex;
+        flex-direction: column;
+        padding-left: 0;
+        margin-bottom: 0;
+        text-align: left;
+
+        .suggestion-item-separator,
+        .suggestion-item {
+            position: relative;
+            display: block;
+            padding: 10px 20px;
+            background-color: #fff;
+            font-size: 16px;
+            font-weight: 500;
+            color: rgba(108, 117, 125, 0.7);
+        }
+
+        .suggestion-item {
+            color: #6c757d;
+            padding: 10px;
+
+            &.function {
+                color: #a424ce;
+
+                &:hover {
+                    cursor: pointer;
+                    color: white;
+                    background-color: #a424ce;
+                }
+            }
+
+            &.column {
+                color: #409dcf;
+
+                &:hover {
+                    cursor: pointer;
+                    color: white;
+                    background-color: #409dcf;
+                }
+            }
+
+            &:hover {
+                cursor: pointer;
+                color: white;
+                background-color: #ccc;
+            }
+        }
+    }
+
+    .save-btn {
+        margin-top: 10px;
+        color: white;
+        background: var(--sb-color-base);
+    }
+}
+

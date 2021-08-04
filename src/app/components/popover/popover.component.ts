@@ -1,34 +1,42 @@
-import { Component, ElementRef, EventEmitter, HostListener, Input, Output, ViewChild } from '@angular/core';
+import {
+    Component,
+    ElementRef,
+    EventEmitter,
+    HostListener,
+    Input,
+    Output,
+    ViewChild,
+    ViewEncapsulation
+} from '@angular/core';
 
 @Component({
     selector: 'fb-popover',
+    encapsulation: ViewEncapsulation.None,
     templateUrl: './popover.component.html',
     styleUrls: ['./popover.component.scss']
 })
 export class PopoverComponent {
     @ViewChild('popover') popover: ElementRef<HTMLDivElement>;
     @Input() title = '';
+    @Input() hiddenHeader = false;
     @Output() clickOutside = new EventEmitter();
     isShow = false;
     openToTop = false;
-    rect;
-
-    get topDiff() {
-        if (this.openToTop && this.rect) {
-            this.popover.nativeElement.style.top = `-${
-                this.popover.nativeElement.getBoundingClientRect().height - this.rect.height
-            }px`;
-        } else {
-            return '0px';
-        }
-    }
 
     show(event?: MouseEvent) {
-        this.rect = (event.target as HTMLDivElement)?.getBoundingClientRect();
-        const maxHeight = window.screen.height / 2;
-        this.openToTop = this.rect.top >= maxHeight;
         this.isShow = true;
         this.popover.nativeElement.classList.add('show');
+
+        const rect = (event?.target as HTMLDivElement)?.getBoundingClientRect();
+        const popoverRect = this.popover.nativeElement?.getBoundingClientRect();
+        if (rect) {
+            const maxHeight = window.screen.height / 2;
+            this.openToTop = rect.top >= maxHeight;
+            this.popover.nativeElement.style.top = `${
+                this.openToTop ? Math.abs(rect.top - popoverRect.height) : rect.top + rect.height
+            }px`;
+            this.popover.nativeElement.style.left = `${rect.left}px`;
+        }
     }
 
     hide() {

@@ -1,0 +1,37 @@
+<div class="expression-builder" #editorContainer>
+    <div
+        #editor
+        spellcheck="false"
+        contenteditable="true"
+        id="editor"
+        class="editor-expression"
+        (input)="updateEditor()"
+        (mouseup)="showSuggestions()"
+        (keydown)="keydown($event)"
+    >
+        <span>case([teste]) > [tabela] = 'teste'</span>
+    </div>
+    <fb-popover #suggestionsPopover [hiddenHeader]="true">
+        <ul class="suggestion-list">
+            <li class="suggestion-item-separator">
+                Colunas
+            </li>
+            <li *ngFor="let item of suggestionResults" class="suggestion-item column" (click)="selectSuggestions($event, item)">
+                <fa-icon icon="columns"></fa-icon>
+                &nbsp;
+                {{ item }}
+            </li>
+            <li class="suggestion-item-separator">
+                Funções
+            </li>
+            <li *ngFor="let item of suggestionFunctions" class="suggestion-item function" (click)="selectSuggestions($event, item)">
+                <fa-icon icon="code-branch"></fa-icon>
+                &nbsp;
+                {{ item }}
+            </li>
+        </ul>
+    </fb-popover>
+    <button class="btn save-btn">Salvar</button>
+</div>
+
+

@@ -4,9 +4,10 @@ import { SqlBuilderComponent } from './sql-builder.component';
 import { PopoverModule } from '../popover/popover.module';
 import { IconsModule } from '../../icons/icons.module';
 import { FormsModule } from '@angular/forms';
+import { ExpressionBuilderModule } from '../expression-builder/expression-builder.module';
 
 @NgModule({
-    imports: [CommonModule, PopoverModule, IconsModule, FormsModule],
+    imports: [CommonModule, PopoverModule, IconsModule, FormsModule, ExpressionBuilderModule],
     declarations: [SqlBuilderComponent],
     exports: [SqlBuilderComponent]
 })

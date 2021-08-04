@@ -26,6 +26,7 @@ import { CardSelectComponent } from './widgets/card-select/card-select.component
 import { SqlBuilderModule } from './components/sql-builder/sql-builder.module';
 import { PopoverModule } from './components/popover/popover.module';
 import { SelectColumnModule } from './components/select-column/select-column.module';
+import { ExpressionBuilderModule } from './components/expression-builder/expression-builder.module';
 
 @NgModule({
     imports: [
@@ -41,7 +42,8 @@ import { SelectColumnModule } from './components/select-column/select-column.mod
         SqlBuilderModule,
         AgGridModule.withComponents([]),
         SelectColumnModule,
-        NgSelectModule
+        NgSelectModule,
+        ExpressionBuilderModule
     ],
     providers: [LoadingBarService],
     declarations: [
