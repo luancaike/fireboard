@@ -3,13 +3,17 @@ import {
     ChangeDetectionStrategy,
     Component,
     ElementRef,
+    EventEmitter,
+    Input,
+    Output,
     ViewChild,
     ViewEncapsulation
 } from '@angular/core';
 import { parse } from './models/parser';
 import { syntax } from './models/syntax';
-import { OPERATOR, tokenize } from './models/tokenizer';
+import { OPERATOR, TOKEN, tokenize } from './models/tokenizer';
 import { PopoverComponent } from '../popover/popover.component';
+import { DataSource, DataSourceKeyTypes } from '../../models/data-source.dtos';
 
 @Component({
     selector: 'fb-expression-builder',
@@ -22,9 +26,47 @@ export class ExpressionBuilderComponent implements AfterViewInit {
     @ViewChild('editorContainer') editorContainer: ElementRef<HTMLDivElement>;
     @ViewChild('editor') editor: ElementRef<HTMLDivElement>;
     @ViewChild('suggestionsPopover') suggestionsPopover: PopoverComponent;
-    public suggestionOptions = ['[teste]', '[tabela]', '[function]'];
-    public suggestionFunctions = ['abs()', 'case()', 'concat()', 'lower()', 'upper()'];
+    @Output() save = new EventEmitter();
+    @Input() columns: DataSource[] = [];
+
+    public get suggestionOptions() {
+        return this.columns.reduce((acc, item) => {
+            return [...acc, ...item.keys.map((el) => ({ text: `${el.name}` }))];
+        }, []);
+    }
+
+    public get isValid() {
+        return this.columnTitle.length && !this.errors.length;
+    }
+
+    public showErrors = false;
+    public errors = [];
+    public source = '';
+    public columnTitle = '';
+    public suggestionFunctions = [
+        {
+            text: 'abs',
+            value: 'abs'
+        },
+        {
+            text: 'case',
+            value: 'case'
+        },
+        {
+            text: 'concat',
+            value: 'concat'
+        },
+        {
+            text: 'lower',
+            tevaluet: 'lower'
+        },
+        {
+            text: 'upper',
+            value: 'upper'
+        }
+    ];
     public suggestionResults = [];
+    public suggestionFunctionsResults = [];
     public suggestionSelected: any = {};
 
     ngAfterViewInit(): void {
@@ -69,8 +111,14 @@ export class ExpressionBuilderComponent implements AfterViewInit {
         return { anchorIndex, focusIndex, textSegments };
     }
 
-    selectSuggestions(event: MouseEvent, suggestion) {
+    selectSuggestions(event: MouseEvent, suggestion, type: 'identifier' | 'function' = 'identifier') {
         event.preventDefault();
+        if (type === 'identifier') {
+            suggestion = `[${suggestion}]`;
+        }
+        if (type === 'function') {
+            suggestion = `${suggestion}()`;
+        }
         const { anchorIndex, focusIndex, textSegments } = this.getSelectIndex();
         const textContent = textSegments.map(({ text }) => text).join('');
         const start = this.suggestionSelected?.start || anchorIndex;
@@ -88,7 +136,7 @@ export class ExpressionBuilderComponent implements AfterViewInit {
 
         this.suggestionsPopover.hide();
         this.editor.nativeElement.focus();
-        const indexOfSuggestion = suggestion.length - postfix.length;
+        const indexOfSuggestion = suggestion.length + start - (type === 'function' ? 1 : 0);
         this.restoreSelection(indexOfSuggestion, indexOfSuggestion);
     }
 
@@ -114,7 +162,14 @@ export class ExpressionBuilderComponent implements AfterViewInit {
             const suggest = [];
             while (index < textContent.length) {
                 const char = textContent[anchorIndex - 1 - index];
-                if (char && char !== ' ' && Object.keys(OPERATOR).every((key) => OPERATOR[key] !== char)) {
+                if (
+                    char &&
+                    char !== `'` &&
+                    char !== '"' &&
+                    char !== ']' &&
+                    char !== ' ' &&
+                    Object.keys(OPERATOR).every((key) => OPERATOR[key] !== char)
+                ) {
                     if (end === null) {
                         end = anchorIndex - index;
                     }
@@ -133,13 +188,17 @@ export class ExpressionBuilderComponent implements AfterViewInit {
             end,
             text: textContent.slice(start, end)
         };
-        this.suggestionResults = this.suggestionOptions.filter(
-            (item) => !!~item.toLowerCase().indexOf(result.toLowerCase())
+
+        result = result.replace(/\[/g, '');
+        this.suggestionResults = this.suggestionOptions.filter((item) =>
+            item.text.toLowerCase().startsWith(result.toLowerCase())
         );
-        if (!this.suggestionResults.length) {
-            this.suggestionResults = this.suggestionOptions;
+        this.suggestionFunctionsResults = this.suggestionFunctions.filter((item) =>
+            item.text.toLowerCase().startsWith(result.toLowerCase())
+        );
+        if (this.suggestionResults.length || this.suggestionFunctionsResults.length) {
+            this.showSuggestionsPopover();
         }
-        this.showSuggestionsPopover();
     }
 
     showSuggestionsPopover() {
@@ -148,6 +207,10 @@ export class ExpressionBuilderComponent implements AfterViewInit {
 
     hiddenSuggestions() {
         this.suggestionsPopover.hide();
+    }
+
+    blurEditor() {
+        this.showErrors = true;
     }
 
     updateEditor() {
@@ -182,20 +245,29 @@ export class ExpressionBuilderComponent implements AfterViewInit {
         sel.setBaseAndExtent(anchorNode, anchorIndex, focusNode, focusIndex);
     }
 
+    renderHTML(html: string) {
+        this.editor.nativeElement.innerHTML = `<span>${html && html.length ? html : `<br>`}</span>`;
+    }
+
     renderText(source: string) {
-        const render = (html: string) =>
-            (this.editor.nativeElement.innerHTML = `<span>${html.length ? html : `<br>`}</span>`);
-        const tokenized = tokenize(source);
+        this.source = source;
+        this.errors = [];
+
+        const { tokens, errors } = tokenize(source);
         const options = {
             source
         };
+
+        this.checkTokensAndColumns(source, tokens);
+
         try {
-            const result = parse({
+            const { parserErrors, lexerErrors, typeErrors } = parse({
                 ...options
             });
-            console.log(result);
-        } catch (e) {
-            console.log(e);
+            console.log({ parserErrors, lexerErrors, typeErrors });
+            this.errors = [...this.errors, ...parserErrors, ...lexerErrors, ...typeErrors, ...errors];
+        } catch (errors) {
+            this.errors = [...this.errors, { message: 'Erro de Sintaxe' }];
         }
 
         const renderSyntaxTree = (node) => {
@@ -206,11 +278,41 @@ export class ExpressionBuilderComponent implements AfterViewInit {
 
         const syntaxTree = syntax({ ...options });
         if (!syntaxTree) {
-            render(source);
+            this.renderHTML(source);
         } else {
             this.showSuggestions();
-            render(renderSyntaxTree(syntaxTree));
-            console.log({ syntaxTree, tokenized });
+            this.renderHTML(renderSyntaxTree(syntaxTree));
         }
+    }
+
+    checkTokensAndColumns(source, tokens: any[]) {
+        const Identifiers = tokens
+            .filter((token) => token.type === TOKEN.Identifier)
+            .map((ed) => source.slice(ed.start, ed.end).replace(/[\[\]]/g, ''));
+        const columns = Identifiers.filter(
+            (ident) =>
+                !(
+                    this.suggestionOptions.find((o) => !!~o.text.indexOf(ident)) ||
+                    this.suggestionFunctions.find((o) => !!~o.text.indexOf(ident))
+                )
+        );
+        if (columns.length) {
+            this.errors.push({ message: `Coluna [${columns[0]}] não existe` });
+        }
+    }
+
+    resetExpression() {
+        this.renderHTML('');
+        this.errors = [];
+        this.columnTitle = '';
+    }
+
+    saveExpression() {
+        this.save.emit({
+            name: this.columnTitle,
+            type: DataSourceKeyTypes.Custom,
+            source: this.source
+        });
+        this.resetExpression();
     }
 }

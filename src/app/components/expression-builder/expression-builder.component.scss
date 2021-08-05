@@ -3,11 +3,11 @@
 .expression-builder {
     text-align: left;
     padding: 5px;
+    color: #545454;
 
     .editor-expression {
         padding: 10px;
         font-family: Monaco, monospace;
-        color: #545454;
         width: 400px;
         height: 100px;
         font-size: 14px;
@@ -97,6 +97,18 @@
                 background-color: #ccc;
             }
         }
+    }
+
+    .column-name {
+        margin: 15px 0;
+    }
+
+    .error-list {
+        margin: 10px 0;
+        color: red;
+        font-family: Monaco, monospace;
+        font-size: 14px;
+        font-weight: 700;
     }
 
     .save-btn {

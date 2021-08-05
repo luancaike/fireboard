@@ -292,7 +292,11 @@
                             <fa-icon icon="code"></fa-icon>
                         </button>
                         <fb-popover #popoverCustomColumn title="Coluna Customizada">
-                            <fb-expression-builder></fb-expression-builder>
+                            <fb-expression-builder
+                                 (save)="addCustomColumn($event)"
+                             [columns]="tablesOfModel"
+                            ></fb-expression-builder
+                                 >
                         </fb-popover>
                     </div>
                 </div>

@@ -51,6 +51,7 @@ export class SqlBuilderComponent {
                 }
                 return acc;
             }, []) || [];
+        // const customColumns = this.model?.select?.filter((el) => el.type === DataSourceKeyTypes.Custom);
         return [...baseColumns, ...forkColumns];
     }
 
@@ -60,7 +61,7 @@ export class SqlBuilderComponent {
 
     get columnsOfModel() {
         return this.tablesOfModel.reduce((acc, item) => {
-            return [...acc, ...item.keys.map((el) => ({ ...el, name: `${item.name} -> ${el.name}` }))];
+            return [...acc, ...item.keys.map((el) => ({ ...el, name: `${item.name} → ${el.name}` }))];
         }, []);
     }
 
@@ -74,6 +75,10 @@ export class SqlBuilderComponent {
         this.closeAllPopovers();
     };
     public addSelect = (table: DataSourceKey) => {
+        this.model.select.push(table);
+        this.closeAllPopovers();
+    };
+    public addCustomColumn = (table: any) => {
         this.model.select.push(table);
         this.closeAllPopovers();
     };

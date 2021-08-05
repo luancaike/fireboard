@@ -5,33 +5,43 @@
         contenteditable="true"
         id="editor"
         class="editor-expression"
+        (blur)="blurEditor()"
         (input)="updateEditor()"
         (mouseup)="showSuggestions()"
         (keydown)="keydown($event)"
     >
         <span>case([teste]) > [tabela] = 'teste'</span>
     </div>
+    <ul *ngIf="showErrors" class="error-list">
+        <li *ngFor="let error of errors">{{error.message}}</li>
+    </ul>
     <fb-popover #suggestionsPopover [hiddenHeader]="true">
         <ul class="suggestion-list">
-            <li class="suggestion-item-separator">
+            <li class="suggestion-item-separator" *ngIf="suggestionResults.length">
                 Colunas
             </li>
-            <li *ngFor="let item of suggestionResults" class="suggestion-item column" (click)="selectSuggestions($event, item)">
+            <li *ngFor="let item of suggestionResults" class="suggestion-item column"
+                (click)="selectSuggestions($event, item.text)">
                 <fa-icon icon="columns"></fa-icon>
                 &nbsp;
-                {{ item }}
+                {{ item.text }}
             </li>
-            <li class="suggestion-item-separator">
+            <li class="suggestion-item-separator" *ngIf="suggestionFunctionsResults.length">
                 Funções
             </li>
-            <li *ngFor="let item of suggestionFunctions" class="suggestion-item function" (click)="selectSuggestions($event, item)">
+            <li *ngFor="let item of suggestionFunctionsResults" class="suggestion-item function"
+                (click)="selectSuggestions($event, item.text, 'function')">
                 <fa-icon icon="code-branch"></fa-icon>
                 &nbsp;
-                {{ item }}
+                {{ item.text }}
             </li>
         </ul>
     </fb-popover>
-    <button class="btn save-btn">Salvar</button>
+    <div class="form-group column-name">
+        <label>Nome da Coluna</label>
+        <input class="form-control" [(ngModel)]="columnTitle"/>
+    </div>
+    <button class="btn save-btn" [disabled]="!isValid" (click)="saveExpression()">Salvar</button>
 </div>
 
 
