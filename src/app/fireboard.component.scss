@@ -8,6 +8,14 @@ $size-toolbar-visualization: 70px;
     .scroll-style {
         @include scroll-style
     }
+    .close-modal {
+        border: none;
+
+        &:focus {
+            outline: none;
+            box-shadow: none;
+        }
+    }
 }
 
 :host {
@@ -112,13 +120,11 @@ $size-toolbar-visualization: 70px;
     }
 
     .workspace {
-        flex: 0 0 calc(100% - #{$size-sidebar});
-        max-width: calc(100% - #{$size-sidebar});
+        flex: 0 0 100%;
+        max-width: 100%;
         height: calc(100vh - #{$size-toolbar});
 
         &.visualization {
-            flex: 0 0 100%;
-            max-width: 100%;
             height: calc(100vh - #{$size-toolbar-visualization});
         }
 

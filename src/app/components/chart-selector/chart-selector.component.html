@@ -1,0 +1,46 @@
+<ng-template #modalChartSelect let-modal>
+    <div class="card border-0">
+        <div class="card-header d-flex justify-content-between">
+            <h6 style="margin: 0.5rem">
+                <fa-icon icon="database" class="mr-2"></fa-icon>
+                Selecione Gráfico
+            </h6>
+            <button class="btn btn-sm btn-outline-dark close-modal" (click)="modal.close()">
+                <fa-icon icon="times"></fa-icon>
+            </button>
+        </div>
+        <div class="search-input">
+            <input
+                type="text"
+                class="form-control input-search"
+                placeholder="Pesquisar"
+                [(ngModel)]="filterText"
+                (ngModelChange)="filterTextAction()"
+            />
+            <fa-icon icon="search" class="icon"></fa-icon>
+        </div>
+        <div class="card-body scroll-style">
+            <ul class="list-group">
+                <ng-container *ngFor="let item of getItems">
+                    <li class="list-group-item chart-item">
+                        <div (click)="_selectChart(item)">
+                            <fb-icon class="icon-item" icon="bar-chart" *ngIf="item.type === 'bar-chart'"></fb-icon>
+                            <fb-icon class="icon-item" icon="line-chart" *ngIf="item.type === 'line-chart'"></fb-icon>
+                            <fb-icon class="icon-item" icon="pie-chart" *ngIf="item.type === 'pie-chart'"></fb-icon>
+                            <fb-icon class="icon-item" icon="table" *ngIf="item.type === 'table'"></fb-icon>
+                            <div class="label-item">{{ item.name }}</div>
+                        </div>
+                        <fa-icon class="icon-item-edit" icon="pen-square" [fixedWidth]="true"
+                                 (click)="_editChart(item)"></fa-icon>
+                    </li>
+                </ng-container>
+            </ul>
+        </div>
+        <div class="card-footer text-muted d-flex justify-content-end">
+            <button class="btn btn-outline-primary mb-2">
+                Criar Gráfico
+                <fa-icon icon="plus" class="mr-2"></fa-icon>
+            </button>
+        </div>
+    </div>
+</ng-template>

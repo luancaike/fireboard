@@ -1,4 +1,5 @@
 import { DataSource, DataSourceKeyTypes } from './data-source.dtos';
+import { ChartItemConfig } from './charts.dtos';
 
 export const DataSourceDataMockList: any[] = [
     {
@@ -176,5 +177,146 @@ export const DataSourceMockList: DataSource[] = [
                 type: DataSourceKeyTypes.Number
             }
         ]
+    }
+];
+export const ChartsMockList: ChartItemConfig[] = [
+    {
+        id: 1,
+        data: {
+            dataSourceSelectedKeys: [
+                {
+                    key: 'datasets',
+                    data: [
+                        {
+                            id: 3,
+                            key: 'qtd_associado',
+                            name: 'Quantidade',
+                            type: 'number'
+                        }
+                    ]
+                },
+                {
+                    key: 'labels',
+                    data: [
+                        {
+                            id: 2,
+                            key: 'nm_risco',
+                            name: 'Nome Risco',
+                            type: 'string'
+                        }
+                    ]
+                }
+            ],
+            dataSourceBindOptions: [
+                {
+                    label: 'Dados',
+                    key: 'datasets',
+                    rules: {
+                        required: true,
+                        allowTypes: ['custom', 'number']
+                    }
+                },
+                {
+                    label: 'Rótulos',
+                    key: 'labels',
+                    rules: {
+                        required: true
+                    }
+                }
+            ],
+            filters: [],
+            dataSource: 1,
+            options: {
+                plugins: {
+                    colorschemes: {
+                        override: true,
+                        scheme: ['#7243f4', '#F44242', '#42F480']
+                    },
+                    datalabels: {
+                        offset: -5,
+                        color: '#66686b',
+                        clamp: true,
+                        display: 'auto',
+                        anchor: 'end',
+                        align: 'end',
+                        clip: false,
+                        font: {
+                            size: 14
+                        }
+                    }
+                },
+                animation: {
+                    duration: 0
+                },
+                hover: {
+                    animationDuration: 0
+                },
+                responsiveAnimationDuration: 0,
+                layout: {
+                    padding: 31
+                },
+                title: {
+                    fontColor: '#66686b',
+                    fontSize: 12,
+                    display: false,
+                    text: 'Titulo',
+                    position: 'top'
+                },
+                legend: {
+                    fullWidth: true,
+                    display: true,
+                    position: 'bottom',
+                    align: 'center'
+                },
+                maintainAspectRatio: false,
+                responsive: true,
+                scales: {
+                    yAxes: [
+                        {
+                            gridLines: {
+                                display: true,
+                                lineWidth: 1,
+                                color: '#ddd'
+                            },
+                            ticks: {
+                                display: true,
+                                fontSize: 12,
+                                fontColor: '#66686b',
+                                maxTicksLimit: 5,
+                                beginAtZero: true
+                            }
+                        }
+                    ],
+                    xAxes: [
+                        {
+                            ticks: {
+                                display: true,
+                                fontSize: 12,
+                                fontColor: '#66686b'
+                            },
+                            gridLines: {
+                                display: false,
+                                lineWidth: 1,
+                                color: '#ddd'
+                            }
+                        }
+                    ]
+                }
+            }
+        },
+        type: 'bar-chart',
+        name: 'Total de Riscos por Barra'
+    },
+    {
+        id: 2,
+        data: {},
+        type: 'line-chart',
+        name: 'Total de Riscos por Linha'
+    },
+    {
+        id: 3,
+        data: {},
+        type: 'table',
+        name: 'Tabela de Riscos'
     }
 ];

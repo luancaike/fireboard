@@ -264,7 +264,6 @@ export class ExpressionBuilderComponent implements AfterViewInit {
             const { parserErrors, lexerErrors, typeErrors } = parse({
                 ...options
             });
-            console.log({ parserErrors, lexerErrors, typeErrors });
             this.errors = [...this.errors, ...parserErrors, ...lexerErrors, ...typeErrors, ...errors];
         } catch (errors) {
             this.errors = [...this.errors, { message: 'Erro de Sintaxe' }];

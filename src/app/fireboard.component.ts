@@ -3,6 +3,7 @@ import {
     ChangeDetectionStrategy,
     ChangeDetectorRef,
     Component,
+    ElementRef,
     QueryList,
     ViewChild,
     ViewChildren
@@ -11,12 +12,14 @@ import { CraftableComponent } from 'ng-craftable';
 import { DataSourceSelectorComponent } from './components/data-source-selector/data-source-selector.component';
 import { WidgetAbstract, WidgetConfig, WidgetOptions } from './widgets/widget.abstract';
 import { DataSource } from './models/data-source.dtos';
-import { DataSourceMockList } from './models/mocks';
+import { ChartsMockList, DataSourceMockList } from './models/mocks';
 import { StyleEditorComponent } from './components/style-editor/style-editor.component';
 import { FireboardDataService } from './service/fireboard-data.service';
 import { debounce } from './utils/effects';
 import { LegoConfig } from 'ng-craftable/lib/model';
 import { FilterHandlerDto } from './models/filter.dtos';
+import { ChartItemConfig } from './models/charts.dtos';
+import { ChartSelectorComponent } from './components/chart-selector/chart-selector.component';
 
 type DashboardPage = {
     name: string;
@@ -36,12 +39,16 @@ export class FireboardComponent implements AfterViewInit {
     public filtersList: QueryList<WidgetAbstract>;
     @ViewChild('craftable')
     public craftable: CraftableComponent;
+    @ViewChild('modalChartSelect')
+    public modalChartSelect: ElementRef;
     @ViewChild('datasourceSelector')
     public datasourceSelector: DataSourceSelectorComponent;
     @ViewChild('optionsConfiguration')
     public optionsConfiguration: DataSourceSelectorComponent;
     @ViewChild('styleEditorWidget')
     public styleEditorWidget: StyleEditorComponent;
+    @ViewChild('chartSelector')
+    public chartSelector: ChartSelectorComponent;
     @ViewChild('styleEditorFilter')
     public styleEditorFilter: StyleEditorComponent;
     public pages: DashboardPage[] = [];
@@ -50,9 +57,11 @@ export class FireboardComponent implements AfterViewInit {
     public isLoading = false;
     public showLegoOptionsEditor = false;
     public dataSources: DataSource[] = DataSourceMockList;
+    public chartsList: ChartItemConfig[] = ChartsMockList;
     public visualizationMode = false;
     public showTabsWidget = false;
     public filterModal = false;
+    public chartEditorModal = false;
 
     constructor(private cdr: ChangeDetectorRef, public fireboardDataService: FireboardDataService) {
         this.fireboardDataService.filterEventEmitter.subscribe((data) => this.handlerFilter(data));
@@ -120,20 +129,6 @@ export class FireboardComponent implements AfterViewInit {
     blurDropdown(): void {
         const activeElement = document.activeElement as HTMLButtonElement;
         activeElement.blur && activeElement.blur();
-    }
-
-    selectionChange(data: string[]): void {
-        this.showLegoOptionsEditor = false;
-        this.showTabsWidget = false;
-        if (data.length === 1) {
-            this.showSelectedLegoOptionsEditor();
-        } else {
-            this.showGeneralOptionsEditor();
-        }
-    }
-
-    showGeneralOptionsEditor(): void {
-        // Implement
     }
 
     updateLegoDataSource(legoConfig: WidgetConfig): void {
@@ -205,6 +200,19 @@ export class FireboardComponent implements AfterViewInit {
                 this.detectChanges();
             }
         }, 300);
+    }
+
+    selectedChart(item: ChartItemConfig) {
+        this.drawNewLego(item);
+    }
+
+    editChart(item: ChartItemConfig) {
+        this.chartEditorModal = true;
+        console.log(item);
+    }
+
+    showChartSelect() {
+        this.chartSelector.show();
     }
 
     @debounce()

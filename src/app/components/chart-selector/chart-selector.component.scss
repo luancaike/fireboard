@@ -1,0 +1,69 @@
+.list-group {
+    position: relative;
+}
+
+.chart-item {
+    position: relative;
+    cursor: pointer;
+
+    &:hover {
+        background: rgba(108, 117, 125, 0.1);
+
+        .icon-item-edit {
+            display: block;
+        }
+    }
+
+    .icon-item {
+        position: absolute;
+        left: 10px;
+        top: 10px;
+        width: 40px;
+
+        &.end {
+            left: initial;
+            right: 0;
+        }
+    }
+
+    .label-item {
+        margin-left: 40px
+    }
+
+    .icon-item-edit {
+        display: none;
+        color: #777777;
+        font-size: 20px;
+        position: absolute;
+        right: 10px;
+        top: 10px;
+        width: 40px;
+    }
+}
+
+
+.card-header {
+    padding: 10px;
+}
+
+.card-body {
+    padding: 10px;
+    max-height: 400px;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.search-input {
+    position: relative;
+
+    .input-search {
+        border-radius: 0;
+        color: #777777;
+    }
+
+    .icon {
+        position: absolute;
+        right: 10px;
+        top: 20%;
+    }
+}

@@ -27,6 +27,7 @@ import { SqlBuilderModule } from './components/sql-builder/sql-builder.module';
 import { PopoverModule } from './components/popover/popover.module';
 import { SelectColumnModule } from './components/select-column/select-column.module';
 import { ExpressionBuilderModule } from './components/expression-builder/expression-builder.module';
+import { ChartSelectorModule } from './components/chart-selector/chart-selector.module';
 
 @NgModule({
     imports: [
@@ -43,7 +44,8 @@ import { ExpressionBuilderModule } from './components/expression-builder/express
         AgGridModule.withComponents([]),
         SelectColumnModule,
         NgSelectModule,
-        ExpressionBuilderModule
+        ExpressionBuilderModule,
+        ChartSelectorModule
     ],
     providers: [LoadingBarService],
     declarations: [

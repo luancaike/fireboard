@@ -320,7 +320,6 @@ export function tokenize(expression) {
                 if (char === ']') {
                     const prev = tokens[tokens.length - 1];
                     const ref = prev && prev.type === TOKEN.Identifier ? source.slice(prev.start, prev.end) : null;
-                    console.log({ prev, ref });
                     const message = ref ? `Missing an opening bracket for ${ref}` : `Missing an opening bracket`;
                     errors.push({ message, pos });
                 } else {
