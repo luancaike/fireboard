@@ -1,5 +1,14 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, Output } from '@angular/core';
-import { WidgetOptions } from '../../widgets/widget.abstract';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    EventEmitter,
+    Input,
+    OnChanges,
+    Output,
+    SimpleChanges
+} from '@angular/core';
+import { WidgetConfig } from '../../widgets/widget.abstract';
 import { FieldEditor } from '../../widgets/field-editor.dtos';
 import { GetValueObjectByPath, SetValueObjectByPath } from '../../utils/objects';
 import { debounce } from 'src/app/utils/effects';
@@ -11,19 +20,24 @@ import { ColorByDark } from '../../utils/chart';
     templateUrl: './style-editor.component.html',
     styleUrls: ['./style-editor.component.scss']
 })
-export class StyleEditorComponent {
+export class StyleEditorComponent implements OnChanges {
     @Input() public fieldsEditor: FieldEditor[];
-    @Output() public changedOptions = new EventEmitter<WidgetOptions>();
+    @Output() public changedOptions = new EventEmitter<WidgetConfig>();
+    @Input() legoOptions: WidgetConfig = null;
+
     public colorByDark = ColorByDark;
-    public legoOptions: WidgetOptions;
     public form = {};
+
+    ngOnChanges(changes: SimpleChanges) {
+        if (changes.legoOptions && this.legoOptions) {
+            this.editLego();
+        }
+    }
 
     constructor(private cdr: ChangeDetectorRef) {}
 
-    editLego(legoOptions: WidgetOptions): void {
-        this.legoOptions = legoOptions;
+    editLego(): void {
         this.form = {};
-        console.log(legoOptions);
         this.setLegoOptionsValueInForm();
         this.cdr.detectChanges();
     }
@@ -41,6 +55,9 @@ export class StyleEditorComponent {
     }
 
     checkDependenceKey(field: FieldEditor): boolean {
+        if (!this.legoOptions) {
+            return false;
+        }
         if (typeof field.dependencyKey === 'string' && field.dependencyKey.length) {
             return !!this.getValueByKeyPath(field.dependencyKey);
         }
@@ -79,12 +96,12 @@ export class StyleEditorComponent {
     }
 
     setValueObjectByPath(keyPath: string, value: unknown): void {
-        SetValueObjectByPath(this.legoOptions, keyPath, value);
+        SetValueObjectByPath(this.legoOptions.options, keyPath, value);
         this.changedOptions.emit({ ...this.legoOptions });
         this.cdr.detectChanges();
     }
 
     getValueByKeyPath(keyPath: string): any {
-        return GetValueObjectByPath(this.legoOptions, keyPath);
+        return GetValueObjectByPath(this.legoOptions.options, keyPath);
     }
 }

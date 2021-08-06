@@ -59,6 +59,13 @@
             </button>
             <div class="toolbar-separator"></div>
             <div class="btn-toolbar-dropdown">
+                <button class="dropdown-button" (click)="showChartSelect()">
+                    <fa-icon class="btn-icon" icon="chart-bar"></fa-icon>
+                    Adicionar Gráfico
+                </button>
+            </div>
+            <div class="toolbar-separator"></div>
+            <div class="btn-toolbar-dropdown">
                 <button class="dropdown-button">
                     <fa-icon class="btn-icon" icon="filter"></fa-icon>
                     Adicionar Filtro
@@ -90,13 +97,6 @@
                     Adicionar Dados
                 </button>
             </div>
-            <div class="toolbar-separator"></div>
-            <div class="btn-toolbar-dropdown">
-                <button class="dropdown-button" (click)="showChartSelect()">
-                    <fa-icon class="btn-icon" icon="database"></fa-icon>
-                    Adicionar Gráfico
-                </button>
-            </div>
         </div>
     </div>
     <div class="workspace" [class.visualization]="visualizationMode">
@@ -118,38 +118,6 @@
             </ng-template>
         </ng-craftable>
     </div>
-    <div class="sidebar" [hidden]="true">
-        <ul ngbNav #nav="ngbNav" class="nav-tabs"  [hidden]="!showTabsWidget" [destroyOnHide]="false">
-            <li [ngbNavItem]="1">
-                <a ngbNavLink>
-                    <fa-icon [fixedWidth]="true" class="tab-icon" icon="database"></fa-icon>
-                    <span class="tab-label">Dados</span>
-                </a>
-                <ng-template ngbNavContent>
-                    <fb-data-source-selector
-                        [hidden]="!showLegoOptionsEditor"
-                        #datasourceSelector
-                        (changedDataSource)="updateLegoDataSource($event)"
-                        [dataSources]="dataSources"
-                    ></fb-data-source-selector>
-                </ng-template>
-            </li>
-            <li [ngbNavItem]="2">
-                <a ngbNavLink>
-                    <fa-icon [fixedWidth]="true" class="tab-icon" icon="pencil-ruler"></fa-icon>
-                    <span class="tab-label">Opções</span>
-                </a>
-                <ng-template ngbNavContent>
-                    <fb-style-editor
-                        [hidden]="!showLegoOptionsEditor"
-                        #styleEditorWidget
-                        (changedOptions)="updateLegoOptions($event)"
-                    ></fb-style-editor>
-                </ng-template>
-            </li>
-        </ul>
-        <div [ngbNavOutlet]="nav" [hidden]="!showTabsWidget"></div>
-    </div>
 </div>
 <fb-modal-panel [showPainel]="filterModal">
     <fb-sql-builder
@@ -158,10 +126,7 @@
 </fb-modal-panel>
 <fb-chart-selector
     #chartSelector
+    [dataSources]="dataSources"
     [charts]="chartsList"
     (selected)="selectedChart($event)"
-    (editable)="editChart($event)"
 ></fb-chart-selector>
-<fb-modal-panel [showPainel]="chartEditorModal">
-    teste
-</fb-modal-panel>

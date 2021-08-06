@@ -190,9 +190,9 @@ export class FireboardComponent implements AfterViewInit {
                 if (component) {
                     this.isLoading = false;
                     this.showLegoOptionsEditor = true;
-                    this.datasourceSelector.editLego(component?.getConfig());
+                    // this.datasourceSelector.editLego(component?.getConfig());
                     this.styleEditorWidget.fieldsEditor = component.fieldsEditor;
-                    this.styleEditorWidget.editLego(component?.getOptions());
+                    // this.styleEditorWidget.editLego(component?.getOptions());
                     this.showTabsWidget = true;
                 } else {
                     this.showSelectedLegoOptionsEditor();

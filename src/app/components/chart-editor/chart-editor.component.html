@@ -1,0 +1,72 @@
+<div class="chart-editor-wrapper">
+    <div class="card border-0" style="display: flex; justify-content: flex-start; height: 100%">
+    <div class="card-header d-flex justify-content-between">
+        <h6 style="margin: 0.5rem">
+            <fa-icon icon="chart-pie" class="mr-2"></fa-icon>
+            Criar Novo Gráfico
+        </h6>
+        <button class="btn btn-outline-dark btn-sm" (click)="showPanel = false">
+            FECHAR
+            <fa-icon icon="times" class="ml-2"></fa-icon>
+        </button>
+    </div>
+        <div class="input-name">
+            <input
+                type="text"
+                class="form-control"
+                placeholder="Nome Gráfico"
+                [(ngModel)]="modelChart.name"
+            />
+        </div>
+    <div class="card-body scroll-style" style="max-height: calc(100% - 65px); overflow-x: hidden; overflow-y: auto">
+        <div class="chart-editor-container" *ngIf="modelChart">
+            <div class="chart-area">
+                <fb-bar-chart class="chart-item" #chart *ngIf="modelChart.type === 'bar-chart'" [legoData]="modelChart"></fb-bar-chart>
+                <fb-pie-chart class="chart-item" #chart *ngIf="modelChart.type === 'pie-chart'" [legoData]="modelChart"> </fb-pie-chart>
+                <fb-line-chart class="chart-item" #chart *ngIf="modelChart.type === 'line-chart'" [legoData]="modelChart"> </fb-line-chart>
+                <fb-table class="chart-item" #chart *ngIf="modelChart.type === 'table'" [legoData]="modelChart"> </fb-table>
+            </div>
+            <div class="sidebar">
+                <ul ngbNav #nav="ngbNav" class="nav-tabs" [destroyOnHide]="false">
+                    <li [ngbNavItem]="1">
+                        <a ngbNavLink>
+                            <fa-icon [fixedWidth]="true" class="tab-icon" icon="database"></fa-icon>
+                            <span class="tab-label">Dados</span>
+                        </a>
+                        <ng-template ngbNavContent>
+                            <fb-data-source-selector
+                                *ngIf="getChartSelect?.getConfig"
+                                #datasourceSelector
+                                [legoConfig]="getChartSelect?.getConfig()"
+                                (changedDataSource)="updateLegoOptions($event)"
+                                [dataSources]="dataSources"
+                            ></fb-data-source-selector>
+                        </ng-template>
+                    </li>
+                    <li [ngbNavItem]="2">
+                        <a ngbNavLink>
+                            <fa-icon [fixedWidth]="true" class="tab-icon" icon="pencil-ruler"></fa-icon>
+                            <span class="tab-label">Opções</span>
+                        </a>
+                        <ng-template ngbNavContent>
+                            <fb-style-editor
+                                *ngIf="getChartSelect?.fieldsEditor && getChartSelect?.getConfig"
+                                #styleEditorWidget
+                                [legoOptions]="getChartSelect.getConfig()"
+                                [fieldsEditor]="getChartSelect.fieldsEditor"
+                                (changedOptions)="updateLegoOptions($event)"></fb-style-editor>
+                        </ng-template>
+                    </li>
+                </ul>
+                <div [ngbNavOutlet]="nav"></div>
+            </div>
+        </div>
+    </div>
+    <div class="card-footer text-muted d-flex justify-content-end">
+        <button class="btn btn-primary ml-3" [disabled]="!isValid" (click)="_save()">
+            <fa-icon icon="save" class="mr-2"></fa-icon>
+            SALVAR
+        </button>
+    </div>
+</div>
+</div>

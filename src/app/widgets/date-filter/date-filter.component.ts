@@ -181,7 +181,6 @@ export class DateFilterComponent extends FilterAbstract implements WidgetCompone
     }
 
     applyComponentData(): void {
-        console.log(this.dataSourceSelectedKeys);
         this.cdr.detectChanges();
     }
 

@@ -5,7 +5,9 @@ import {
     Component,
     EventEmitter,
     Input,
+    OnChanges,
     Output,
+    SimpleChanges,
     ViewChild
 } from '@angular/core';
 import { DataSourceBindOption, DataSourceSelectedKey, WidgetConfig } from '../../widgets/widget.abstract';
@@ -21,18 +23,17 @@ import { CdkDragEnter, CdkDragExit } from '@angular/cdk/drag-drop/drag-events';
     templateUrl: './data-source-selector.component.html',
     styleUrls: ['./data-source-selector.component.scss']
 })
-export class DataSourceSelectorComponent {
+export class DataSourceSelectorComponent implements OnChanges {
     @ViewChild('fbFilter') fbFilter: FilterSelectorComponent;
 
     @Input() public dataSources: DataSource[];
-
+    @Input() legoConfig: WidgetConfig = null;
     @Output() public changedDataSource = new EventEmitter<WidgetConfig>();
 
     public showFilters = true;
     public stateFilterPanel = false;
     public dataSourceKeys: DataSourceKey[] = [];
     public dataSourceSelected: number = null;
-    public legoConfig: WidgetConfig = null;
     public dataSourceBindOptions: DataSourceBindOption[] = [];
     public filters: FilterModel[] = [];
     public filtersSelected: FilterModel[] = [];
@@ -45,6 +46,12 @@ export class DataSourceSelectorComponent {
         public fireboardDataService: FireboardDataService
     ) {}
 
+    ngOnChanges(changes: SimpleChanges): void {
+        if (changes.legoConfig) {
+            this.editLego();
+        }
+    }
+
     showFilterPanel() {
         this.stateFilterPanel = true;
         const dataSource = this.dataSources.find(({ id }) => this.dataSourceSelected === id);
@@ -56,7 +63,6 @@ export class DataSourceSelectorComponent {
     }
 
     checkEnterItem(drag: CdkDragEnter<DataSourceKey[], DataSourceKey>) {
-        console.log(drag);
         const allowed = this.checkRules(drag);
         if (!allowed) {
             console.log(drag.container.element.nativeElement.classList.toString());
@@ -98,8 +104,8 @@ export class DataSourceSelectorComponent {
         }
     }
 
-    editLego(legoConfig: WidgetConfig): void {
-        this.legoConfig = legoConfig;
+    editLego(): void {
+        // this.legoConfig = legoConfig;
         this.resetData();
         this.selectDataSource();
         this.mountDataSourceBindOptions();
@@ -209,7 +215,6 @@ export class DataSourceSelectorComponent {
     }
 
     drop(event: CdkDragDrop<DataSourceKey[]>): void {
-        console.log(event);
         this.resetDropAreaStyle(event.container.element.nativeElement);
         const allowed = this.checkRules(event);
         if (!allowed) {

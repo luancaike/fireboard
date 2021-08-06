@@ -87,7 +87,7 @@
     }
 
     .field-selector-container {
-        flex: 0 0 90%;
+        flex: 0 0 88%;
         display: flex;
 
         .field-selector {
@@ -194,6 +194,7 @@
 }
 
 .cdk-drag-preview {
+    z-index: 9000!important;
     @include field-item;
 
     .remove-icon {

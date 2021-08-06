@@ -51,39 +51,6 @@
                     ></fa-icon>
                 </div>
             </div>
-            <div
-                [hidden]="!showFilters"
-                cdkDropList
-                [cdkDropListData]="filtersSelected"
-                class="field-bindings"
-                (cdkDropListDropped)="dropFilter($event)"
-            >
-                <span class="field-bindings-label">
-                    Filtros
-                    <fa-icon
-                        class="field-bindings-icon"
-                        *ngIf="dataSourceSelected"
-                        icon="plus"
-                        (click)="showFilterPanel()"
-                    ></fa-icon>
-                </span>
-                <div
-                    *ngFor="let filter of filtersSelected"
-                    class="field filter"
-                    cdkDragBoundary=".field-bindings"
-                    cdkDrag
-                >
-                    <div class="field-text">
-                        <fa-icon class="column-icon" icon="filter"></fa-icon>
-                        {{ filter.name }}
-                    </div>
-                    <fa-icon
-                        class="remove-icon"
-                        icon="times-circle"
-                        (click)="removeFilter(filter, filtersSelected)"
-                    ></fa-icon>
-                </div>
-            </div>
         </div>
         <div class="field-list">
             <div
