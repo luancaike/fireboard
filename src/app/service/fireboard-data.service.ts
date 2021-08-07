@@ -1,7 +1,7 @@
 import { EventEmitter, Injectable } from '@angular/core';
 import { DataGetter } from '../widgets/widget.abstract';
 import { DataSourceDataMockList } from '../models/mocks';
-import { FilterModel } from '../models/data-source.dtos';
+import { DataSourceSelected, FilterModel } from '../models/data-source.dtos';
 import { CustomFilterDto } from '../components/filter-maker/filter-maker.model';
 import { FilterDto, FilterHandlerDto } from '../models/filter.dtos';
 
@@ -14,9 +14,9 @@ export class FireboardDataService {
 
     dataGetter = (data: DataGetter, notInternalFilter = false): Promise<any[]> => {
         return new Promise((resolve) => {
-            const result = DataSourceDataMockList.find((value) => value.id === data.id);
+            const result = DataSourceDataMockList.find((value) => value.id === data.sourceId);
             const dataList = result ? result.data : [];
-            const dataFilter = this.filtersControl.filter((filter) => filter.dataSource === data.id);
+            const dataFilter = this.filtersControl.filter((filter) => filter.dataSource === data.sourceId);
             const dataResult = notInternalFilter
                 ? dataList
                 : dataFilter.reduce((acc, item) => {
@@ -30,7 +30,7 @@ export class FireboardDataService {
             setTimeout(() => resolve({ id: 100, name: data.label }), randomTimer());
         });
     };
-    getExternalFilters = (sourceId: number): Promise<FilterModel[]> => {
+    getExternalFilters = (sourceId: DataSourceSelected): Promise<FilterModel[]> => {
         return new Promise((resolve) => {
             setTimeout(
                 () =>

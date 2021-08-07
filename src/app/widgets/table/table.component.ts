@@ -54,7 +54,6 @@ export class TableComponent extends WidgetAbstract implements WidgetComponent, A
     }
 
     setOptions(options: GridOptions) {
-        console.log(options);
         this.columnDefs = options.columnDefs;
         this.setColumns();
     }

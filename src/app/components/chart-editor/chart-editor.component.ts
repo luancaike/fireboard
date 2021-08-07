@@ -56,11 +56,11 @@ export class ChartEditorComponent {
     private _showPanel = false;
 
     updateLegoOptions(legoOptions: WidgetConfig): void {
+        this.modelChart.data = this.getChartSelect.getConfig();
         this.getChartSelect?.setConfig(legoOptions);
     }
 
     _save() {
-        const data = this.getChartSelect.getConfig();
-        this.save.emit({ ...this.modelChart, data });
+        this.save.emit({ ...this.modelChart });
     }
 }

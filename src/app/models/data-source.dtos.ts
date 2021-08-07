@@ -1,3 +1,5 @@
+export type DataSourceSelected = number | number[];
+
 export enum DataSourceKeyTypes {
     Boolean = 'boolean',
     String = 'string',

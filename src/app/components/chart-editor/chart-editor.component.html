@@ -21,10 +21,10 @@
     <div class="card-body scroll-style" style="max-height: calc(100% - 65px); overflow-x: hidden; overflow-y: auto">
         <div class="chart-editor-container" *ngIf="modelChart">
             <div class="chart-area">
-                <fb-bar-chart class="chart-item" #chart *ngIf="modelChart.type === 'bar-chart'" [legoData]="modelChart"></fb-bar-chart>
-                <fb-pie-chart class="chart-item" #chart *ngIf="modelChart.type === 'pie-chart'" [legoData]="modelChart"> </fb-pie-chart>
-                <fb-line-chart class="chart-item" #chart *ngIf="modelChart.type === 'line-chart'" [legoData]="modelChart"> </fb-line-chart>
-                <fb-table class="chart-item" #chart *ngIf="modelChart.type === 'table'" [legoData]="modelChart"> </fb-table>
+                <fb-bar-chart class="chart-component" #chart *ngIf="modelChart.type === 'bar-chart'" [legoData]="modelChart"></fb-bar-chart>
+                <fb-pie-chart class="chart-component" #chart *ngIf="modelChart.type === 'pie-chart'" [legoData]="modelChart"> </fb-pie-chart>
+                <fb-line-chart class="chart-component" #chart *ngIf="modelChart.type === 'line-chart'" [legoData]="modelChart"> </fb-line-chart>
+                <fb-table class="chart-component" #chart *ngIf="modelChart.type === 'table'" [legoData]="modelChart"> </fb-table>
             </div>
             <div class="sidebar">
                 <ul ngbNav #nav="ngbNav" class="nav-tabs" [destroyOnHide]="false">

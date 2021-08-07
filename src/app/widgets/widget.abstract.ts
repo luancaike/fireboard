@@ -1,7 +1,7 @@
 import { FieldEditor } from './field-editor.dtos';
 import { LegoConfig } from 'ng-craftable/lib/model';
 import { ChangeDetectorRef } from '@angular/core';
-import { DataSourceKey, DataSourceKeyTypes, FilterModel } from '../models/data-source.dtos';
+import { DataSourceKey, DataSourceKeyTypes, DataSourceSelected, FilterModel } from '../models/data-source.dtos';
 import { WidgetComponent } from './widget.interface';
 import { FireboardDataService } from '../service/fireboard-data.service';
 
@@ -25,7 +25,7 @@ export interface DataSourceSelectedKey {
 export interface WidgetConfig {
     dataSourceSelectedKeys?: DataSourceSelectedKey[];
     dataSourceBindOptions?: DataSourceBindOption[];
-    dataSource?: number;
+    dataSource?: DataSourceSelected;
     filters?: FilterModel[];
     options?: WidgetOptions;
 }
@@ -33,7 +33,7 @@ export interface WidgetConfig {
 export type WidgetOptions = { [key: string]: any };
 
 export interface DataGetter {
-    id?: number;
+    sourceId?: DataSourceSelected;
     filters?: FilterModel[];
 }
 
@@ -42,7 +42,7 @@ export abstract class WidgetAbstract implements WidgetComponent {
     abstract fireboardDataService: FireboardDataService;
     public isFilter = false;
     public isLoading: boolean;
-    public dataSource: number = null;
+    public dataSource: DataSourceSelected = null;
     public dataSourceBindOptions: DataSourceBindOption[] = [];
     public dataSourceSelectedKeys: DataSourceSelectedKey[] = [];
     public options: WidgetOptions = {};
@@ -133,7 +133,7 @@ export abstract class WidgetAbstract implements WidgetComponent {
         this.cdr.detectChanges();
     }
 
-    setDataSource(dataSource: number): void {
+    setDataSource(dataSource: DataSourceSelected): void {
         this.dataSource = dataSource;
         this.cdr.detectChanges();
     }

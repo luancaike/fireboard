@@ -11,7 +11,7 @@ import {
     ViewChild
 } from '@angular/core';
 import { DataSourceBindOption, DataSourceSelectedKey, WidgetConfig } from '../../widgets/widget.abstract';
-import { DataSource, DataSourceKey, FilterModel } from '../../models/data-source.dtos';
+import { DataSource, DataSourceKey, DataSourceSelected, FilterModel } from '../../models/data-source.dtos';
 import { FilterSelectorComponent } from '../filter-selector/filter-selector.component';
 import { LoadingBarService } from '../../service/loading-bar.service';
 import { FireboardDataService } from '../../service/fireboard-data.service';
@@ -33,7 +33,7 @@ export class DataSourceSelectorComponent implements OnChanges {
     public showFilters = true;
     public stateFilterPanel = false;
     public dataSourceKeys: DataSourceKey[] = [];
-    public dataSourceSelected: number = null;
+    public dataSourceSelected: DataSourceSelected = null;
     public dataSourceBindOptions: DataSourceBindOption[] = [];
     public filters: FilterModel[] = [];
     public filtersSelected: FilterModel[] = [];
