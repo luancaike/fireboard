@@ -104,7 +104,7 @@ export abstract class WidgetAbstract implements WidgetComponent {
 
     async getData(): Promise<any[]> {
         if (this.dataSource && this.fireboardDataService.dataGetter) {
-            const model = { id: this.dataSource, filters: this.filters };
+            const model = { sourceId: this.dataSource, filters: this.filters };
             return await this.fireboardDataService.dataGetter(model, this.isFilter);
         }
         return [];

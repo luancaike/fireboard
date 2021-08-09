@@ -11,6 +11,7 @@ const randomTimer = () => Math.random() * (1000 - 100) + 100;
 export class FireboardDataService {
     private filtersControl: FilterDto[] = [];
     public filterEventEmitter = new EventEmitter<FilterHandlerDto>();
+    public filtersLegoMap = new Map();
 
     dataGetter = (data: DataGetter, notInternalFilter = false): Promise<any[]> => {
         return new Promise((resolve) => {

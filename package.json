@@ -33,7 +33,7 @@
     "chartjs-plugin-colorschemes": "^0.4.0",
     "chevrotain": "^9.0.2",
     "icepick": "^2.4.0",
-    "ng-craftable": "^1.0.0-alpha.3",
+    "ng-craftable": "^1.0.0-alpha.4",
     "regexp.escape": "^1.1.0",
     "rxjs": "~6.6.0",
     "tslib": "^2.0.0",

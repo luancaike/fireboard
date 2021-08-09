@@ -11,7 +11,7 @@ import {
 import { CraftableComponent } from 'ng-craftable';
 import { DataSourceSelectorComponent } from './components/data-source-selector/data-source-selector.component';
 import { WidgetAbstract, WidgetConfig, WidgetOptions } from './widgets/widget.abstract';
-import { DataSource } from './models/data-source.dtos';
+import { DataSource, DataSourceKey } from './models/data-source.dtos';
 import { ChartsMockList, DataSourceMockList } from './models/mocks';
 import { StyleEditorComponent } from './components/style-editor/style-editor.component';
 import { FireboardDataService } from './service/fireboard-data.service';
@@ -33,24 +33,17 @@ type DashboardPage = {
     templateUrl: './fireboard.component.html'
 })
 export class FireboardComponent implements AfterViewInit {
-    @ViewChildren('chart')
-    public widgetsList: QueryList<WidgetAbstract>;
-    @ViewChildren('filter')
-    public filtersList: QueryList<WidgetAbstract>;
-    @ViewChild('craftable')
-    public craftable: CraftableComponent;
-    @ViewChild('modalChartSelect')
-    public modalChartSelect: ElementRef;
-    @ViewChild('datasourceSelector')
-    public datasourceSelector: DataSourceSelectorComponent;
-    @ViewChild('optionsConfiguration')
-    public optionsConfiguration: DataSourceSelectorComponent;
-    @ViewChild('styleEditorWidget')
-    public styleEditorWidget: StyleEditorComponent;
-    @ViewChild('chartSelector')
-    public chartSelector: ChartSelectorComponent;
-    @ViewChild('styleEditorFilter')
-    public styleEditorFilter: StyleEditorComponent;
+    @ViewChildren('chart') widgetsList: QueryList<WidgetAbstract>;
+    @ViewChildren('filter') filtersList: QueryList<WidgetAbstract>;
+
+    @ViewChild('craftable') craftable: CraftableComponent;
+    @ViewChild('modalChartSelect') modalChartSelect: ElementRef;
+    @ViewChild('datasourceSelector') datasourceSelector: DataSourceSelectorComponent;
+    @ViewChild('optionsConfiguration') optionsConfiguration: DataSourceSelectorComponent;
+    @ViewChild('styleEditorWidget') styleEditorWidget: StyleEditorComponent;
+    @ViewChild('chartSelector') chartSelector: ChartSelectorComponent;
+    @ViewChild('styleEditorFilter') styleEditorFilter: StyleEditorComponent;
+
     public pages: DashboardPage[] = [];
     public pageSelected = 0;
     public nameBoard = 'Nome do Dashboard';
@@ -59,8 +52,13 @@ export class FireboardComponent implements AfterViewInit {
     public dataSources: DataSource[] = DataSourceMockList;
     public chartsList: ChartItemConfig[] = ChartsMockList;
     public visualizationMode = false;
+    public enableDrag = true;
+    public enableResize = true;
+    public enableSelect = true;
     public showTabsWidget = false;
     public filterModal = false;
+    public showFilterEditor = false;
+    public enableFilterEditor = false;
     public chartEditorModal = false;
 
     constructor(private cdr: ChangeDetectorRef, public fireboardDataService: FireboardDataService) {
@@ -69,6 +67,65 @@ export class FireboardComponent implements AfterViewInit {
 
     ngAfterViewInit(): void {
         this.addPage();
+    }
+
+    isControl(type: any) {
+        return type === 'date-filter' || type === 'input-select' || type === 'input-text' || type === 'card-select';
+    }
+
+    enableEditFilter() {
+        this.enableDrag = this.enableResize = this.enableSelect = false;
+        this.enableFilterEditor = true;
+        this.detectChanges();
+    }
+
+    getWidgetComponent(key: string) {
+        const component = this.widgetsList.find((el) => el.legoData.key === key);
+        if (!component) {
+            return null;
+        }
+        return component;
+    }
+
+    getFilterModel(lego: LegoConfig) {
+        const exists = this.fireboardDataService.filtersLegoMap.get(lego.key);
+        if (exists) {
+            return exists.key;
+        } else {
+            const model = { dataSource: lego.data.dataSource, key: null };
+            this.fireboardDataService.filtersLegoMap.set(lego.key, model);
+            return model.key;
+        }
+    }
+
+    setFilterModel(lego: LegoConfig, key) {
+        const exists = this.fireboardDataService.filtersLegoMap.get(lego.key);
+        if (exists) {
+            exists.key = key;
+            this.fireboardDataService.filtersLegoMap.set(lego.key, exists);
+        } else {
+            const model = { dataSource: lego.data.dataSource, key };
+            this.fireboardDataService.filtersLegoMap.set(lego.key, model);
+        }
+        this.detectChanges();
+    }
+
+    getLegoSourceKeys(lego: LegoConfig): DataSourceKey[] {
+        const component = this.getWidgetComponent(lego.key);
+        if (!component) {
+            return [];
+        }
+        const data = this.dataSources.find((el) => el.id === component.dataSource);
+        if (!data) {
+            return [];
+        }
+        return data.keys;
+    }
+
+    disableEditFilter() {
+        this.enableDrag = this.enableResize = this.enableSelect = true;
+        this.enableFilterEditor = false;
+        this.detectChanges();
     }
 
     handlerFilter(filter: FilterHandlerDto) {
@@ -176,6 +233,7 @@ export class FireboardComponent implements AfterViewInit {
     }
 
     toggleVisualizationMode(): void {
+        this.disableEditFilter();
         this.visualizationMode = !this.visualizationMode;
         setTimeout(() => this.craftable.setScaleByScreen());
     }
@@ -216,6 +274,14 @@ export class FireboardComponent implements AfterViewInit {
     }
 
     @debounce()
+    onSelectedLego(event: string[]) {
+        const selectedFilter = this.filtersList.find((el) => !!event.find((e) => e === el.legoData.key));
+        this.showFilterEditor = !!selectedFilter;
+        console.log({ event, selectedFilter });
+        this.detectChanges();
+    }
+
+    @debounce(100)
     detectChanges() {
         this.cdr.detectChanges();
     }

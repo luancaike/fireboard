@@ -19,102 +19,138 @@
             </div>
         </div>
         <div class="toolbar-tools" [hidden]="visualizationMode">
-            <div class="btn-toolbar-dropdown">
-                <button class="dropdown-button">
-                    <fa-icon class="btn-icon" icon="paperclip"></fa-icon>
-                    Página {{ pageSelected + 1 }} de {{ pages.length }}
-                    <fa-icon class="btn-icon-arrow" icon="chevron-down"></fa-icon>
-                </button>
-                <div class="dropdown-options">
-                    <button class="dropdown-options-list-item" (click)="addPage()">
-                        <fa-icon [fixedWidth]="true" [icon]="['far', 'plus-square']" class="btn-icon"></fa-icon>
-                        Adicionar Página
+            <ng-container *ngIf="!enableFilterEditor">
+                <div class="btn-toolbar-dropdown">
+                    <button class="dropdown-button">
+                        <fa-icon class="btn-icon" icon="paperclip"></fa-icon>
+                        Página {{ pageSelected + 1 }} de {{ pages.length }}
+                        <fa-icon class="btn-icon-arrow" icon="chevron-down"></fa-icon>
                     </button>
-                    <div *ngFor="let page of pages; let i = index" class="dropdown-options-page-item">
-                        <button class="page-item" (click)="selectPage(i)">
-                            <span class="page-counter">{{i+1}}.</span> {{ page.name }}
+                    <div class="dropdown-options">
+                        <button class="dropdown-options-list-item" (click)="addPage()">
+                            <fa-icon [fixedWidth]="true" [icon]="['far', 'plus-square']" class="btn-icon"></fa-icon>
+                            Adicionar Página
                         </button>
-                        <button class="page-remove-item" *ngIf="pages.length - 1">
-                            <fa-icon [fixedWidth]="true" icon="times" (click)="deletePage($event, i)"></fa-icon>
+                        <div *ngFor="let page of pages; let i = index" class="dropdown-options-page-item">
+                            <button class="page-item" (click)="selectPage(i)">
+                                <span class="page-counter">{{i + 1}}.</span> {{ page.name }}
+                            </button>
+                            <button class="page-remove-item" *ngIf="pages.length - 1">
+                                <fa-icon [fixedWidth]="true" icon="times" (click)="deletePage($event, i)"></fa-icon>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="toolbar-separator"></div>
+                <button
+                    type="button"
+                    title="Redo"
+                    class="btn btn-sm btn-outline-secondary border-0"
+                    (click)="craftable.undo()"
+                >
+                    <fa-icon icon="undo"></fa-icon>
+                </button>
+                <button
+                    type="button"
+                    title="Redo"
+                    class="btn btn-sm btn-outline-secondary border-0"
+                    (click)="craftable.redo()"
+                >
+                    <fa-icon icon="redo"></fa-icon>
+                </button>
+                <div class="toolbar-separator"></div>
+                <div class="btn-toolbar-dropdown">
+                    <button class="dropdown-button" (click)="showChartSelect()">
+                        <fa-icon class="btn-icon" icon="chart-bar"></fa-icon>
+                        Adicionar Gráfico
+                    </button>
+                </div>
+                <div class="toolbar-separator"></div>
+                <div class="btn-toolbar-dropdown">
+                    <button class="dropdown-button">
+                        <fa-icon class="btn-icon" icon="filter"></fa-icon>
+                        Adicionar Filtro
+                        <fa-icon class="btn-icon-arrow" icon="chevron-down"></fa-icon>
+                    </button>
+                    <div class="dropdown-options list">
+                        <button class="dropdown-options-list-item" (click)="drawNewLego({ type: 'date-filter' })">
+                            <fa-icon [fixedWidth]="true" icon="calendar-alt" class="btn-icon"></fa-icon>
+                            Intervalo de Datas
+                        </button>
+                        <button class="dropdown-options-list-item" (click)="drawNewLego({ type: 'input-select' })">
+                            <fa-icon [fixedWidth]="true" icon="list-ul" class="btn-icon"></fa-icon>
+                            Lista de Seleção
+                        </button>
+                        <button class="dropdown-options-list-item" (click)="drawNewLego({ type: 'card-select' })">
+                            <fa-icon [fixedWidth]="true" icon="list-alt" class="btn-icon"></fa-icon>
+                            Caixa de Seleção
+                        </button>
+                        <button class="dropdown-options-list-item" (click)="drawNewLego({ type: 'input-text' })">
+                            <fa-icon [fixedWidth]="true" icon="font" class="btn-icon"></fa-icon>
+                            Caixa de Entrada
                         </button>
                     </div>
                 </div>
-            </div>
-            <div class="toolbar-separator"></div>
-            <button
-                type="button"
-                title="Redo"
-                class="btn btn-sm btn-outline-secondary border-0"
-                (click)="craftable.undo()"
-            >
-                <fa-icon icon="undo"></fa-icon>
-            </button>
-            <button
-                type="button"
-                title="Redo"
-                class="btn btn-sm btn-outline-secondary border-0"
-                (click)="craftable.redo()"
-            >
-                <fa-icon icon="redo"></fa-icon>
-            </button>
-            <div class="toolbar-separator"></div>
-            <div class="btn-toolbar-dropdown">
-                <button class="dropdown-button" (click)="showChartSelect()">
-                    <fa-icon class="btn-icon" icon="chart-bar"></fa-icon>
-                    Adicionar Gráfico
-                </button>
-            </div>
-            <div class="toolbar-separator"></div>
-            <div class="btn-toolbar-dropdown">
-                <button class="dropdown-button">
-                    <fa-icon class="btn-icon" icon="filter"></fa-icon>
-                    Adicionar Filtro
-                    <fa-icon class="btn-icon-arrow" icon="chevron-down"></fa-icon>
-                </button>
-                <div class="dropdown-options list">
-                    <button class="dropdown-options-list-item" (click)="drawNewLego({ type: 'date-filter' })">
-                        <fa-icon [fixedWidth]="true" icon="calendar-alt" class="btn-icon"></fa-icon>
-                        Intervalo de Datas
-                    </button>
-                    <button class="dropdown-options-list-item" (click)="drawNewLego({ type: 'input-select' })">
-                        <fa-icon [fixedWidth]="true" icon="list-ul" class="btn-icon"></fa-icon>
-                        Lista de Seleção
-                    </button>
-                    <button class="dropdown-options-list-item" (click)="drawNewLego({ type: 'card-select' })">
-                        <fa-icon [fixedWidth]="true" icon="list-alt" class="btn-icon"></fa-icon>
-                        Caixa de Seleção
-                    </button>
-                    <button class="dropdown-options-list-item" (click)="drawNewLego({ type: 'input-text' })">
-                        <fa-icon [fixedWidth]="true" icon="font" class="btn-icon"></fa-icon>
-                        Caixa de Entrada
+                <div class="toolbar-separator"></div>
+                <div class="btn-toolbar-dropdown">
+                    <button class="dropdown-button" (click)="filterModal = !filterModal">
+                        <fa-icon class="btn-icon" icon="database"></fa-icon>
+                        Adicionar Dados
                     </button>
                 </div>
-            </div>
-            <div class="toolbar-separator"></div>
-            <div class="btn-toolbar-dropdown">
-                <button class="dropdown-button" (click)="filterModal = !filterModal">
-                    <fa-icon class="btn-icon" icon="database"></fa-icon>
-                    Adicionar Dados
-                </button>
-            </div>
+            </ng-container>
+            <ng-container *ngIf="enableFilterEditor">
+                <div class="btn-toolbar-dropdown">
+                    <button class="dropdown-button solid" (click)="disableEditFilter()">
+                        <fa-icon class="btn-icon" icon="chevron-left"></fa-icon>
+                        Voltar a Edição
+                    </button>
+                </div>
+            </ng-container>
         </div>
     </div>
     <div class="workspace" [class.visualization]="visualizationMode">
         <ng-craftable #craftable
                       [minHeight]="40"
                       [minWidth]="40"
+                      [enableDrag]="enableDrag"
+                      [enableResize]="enableResize"
+                      [enableSelect]="enableSelect"
+                      (selectionChange)="onSelectedLego($event)"
                       [visualizationMode]="visualizationMode">
             <ng-template #template let-data>
                 <!-- Charts -->
                 <fb-bar-chart #chart *ngIf="data.type === 'bar-chart'" [legoData]="data"></fb-bar-chart>
-                <fb-pie-chart #chart *ngIf="data.type === 'pie-chart'" [legoData]="data"> </fb-pie-chart>
-                <fb-line-chart #chart *ngIf="data.type === 'line-chart'" [legoData]="data"> </fb-line-chart>
-                <fb-table #chart *ngIf="data.type === 'table'" [legoData]="data"> </fb-table>
+                <fb-pie-chart #chart *ngIf="data.type === 'pie-chart'" [legoData]="data"></fb-pie-chart>
+                <fb-line-chart #chart *ngIf="data.type === 'line-chart'" [legoData]="data"></fb-line-chart>
+                <fb-table #chart *ngIf="data.type === 'table'" [legoData]="data"></fb-table>
                 <!-- Filters -->
-                <fb-date-filter #filter *ngIf="data.type === 'date-filter'" [legoData]="data"> </fb-date-filter>
-                <fb-input-select #filter *ngIf="data.type === 'input-select'" [legoData]="data"> </fb-input-select>
+                <fb-date-filter #filter *ngIf="data.type === 'date-filter'" [legoData]="data"></fb-date-filter>
+                <fb-input-select #filter *ngIf="data.type === 'input-select'" [legoData]="data"></fb-input-select>
                 <fb-input-text #filter *ngIf="data.type === 'input-text'" [legoData]="data"></fb-input-text>
                 <fb-card-select #filter *ngIf="data.type === 'card-select'" [legoData]="data"></fb-card-select>
+            </ng-template>
+            <ng-template #overlay let-data>
+                <ng-container *ngIf="!visualizationMode">
+                    <div class="lego-overlay-control" *ngIf="isControl(data.type) && !enableFilterEditor">
+                    <span class="overlay-floating-action">
+                        <fa-icon icon="cog" class="control-config" (click)="enableEditFilter()"></fa-icon>
+                    </span>
+                    </div>
+                    <div class="lego-overlay-lego" *ngIf="!isControl(data.type) && enableFilterEditor">
+                        <label class="filter-select-label">Selecione coluna para Filtrar</label>
+                        <ng-select
+                            [ngModel]="getFilterModel(data)"
+                            (ngModelChange)="setFilterModel(data, $event)"
+                            class="filter-select"
+                            placeholder="Adicionar Filtro"
+                            [items]="getLegoSourceKeys(data)"
+                            [closeOnSelect]="true"
+                            bindValue="id"
+                            bindLabel="name"
+                        ></ng-select>
+                    </div>
+                </ng-container>
             </ng-template>
         </ng-craftable>
     </div>
