@@ -97,12 +97,6 @@ export class CardSelectComponent extends FilterAbstract implements WidgetCompone
         this.cdr.detectChanges();
     }
 
-    filterAction(data): any[] {
-        const keySelected = this.getKeySelected();
-        const selected = this.items.filter((item) => item.checked);
-        return keySelected ? data.filter((el) => selected.find((sl) => el[keySelected.key] === sl.value)) : data;
-    }
-
     ngAfterViewInit() {
         if (this.legoData.data) {
             this.setConfig(this.legoData.data);

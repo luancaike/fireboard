@@ -99,13 +99,6 @@ export class DateFilterComponent extends FilterAbstract implements WidgetCompone
         super(cdr);
     }
 
-    filterAction(data): any[] {
-        const keySelected = this.getKeySelected();
-        return keySelected
-            ? data.filter((el) => !this.from || !this.to || this.checkDateInRanger(el[keySelected.key]))
-            : data;
-    }
-
     setOptions(options: WidgetOptions) {
         const defaultOptions = DateFilterDefault.options();
         const newOptions = { ...defaultOptions, ...options };

@@ -6,7 +6,6 @@ export abstract class FilterAbstract extends WidgetAbstract {
     isFilter = true;
 
     abstract typeFilter: FilterQueryTypes;
-    abstract filterAction(data: any[]): any[];
 
     getKeySelected(): DataSourceKey {
         const sourceKey = this.dataSourceSelectedKeys.find(() => true);

@@ -50,19 +50,6 @@ export class InputTextComponent extends FilterAbstract implements WidgetComponen
         super(cdr);
     }
 
-    filterAction(data): any[] {
-        const keySelected = this.getKeySelected();
-        return keySelected
-            ? data.filter(
-                  (el) =>
-                      !this.model ||
-                      (typeof this.model === 'string' &&
-                          this.model.length &&
-                          !!~el[keySelected.key].toUpperCase().indexOf(this.model.toUpperCase()))
-              )
-            : data;
-    }
-
     ngAfterViewInit() {
         this.modelFilterUpdate(this.model);
         if (this.legoData.data) {

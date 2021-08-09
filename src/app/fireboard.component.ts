@@ -63,6 +63,10 @@ export class FireboardComponent implements AfterViewInit {
     public enableFilterEditor = false;
     public chartEditorModal = false;
 
+    get allLegos(): WidgetAbstract[] {
+        return [...this.filtersList, ...this.widgetsList];
+    }
+
     constructor(private cdr: ChangeDetectorRef, public fireboardDataService: FireboardDataService) {
         this.fireboardDataService.filterEventEmitter.subscribe((data) => this.handlerFilter(data));
     }
@@ -193,10 +197,18 @@ export class FireboardComponent implements AfterViewInit {
         });
     }
 
+    filterUnusedFilters(filterBindKeys: FilterBindKey[]) {
+        return filterBindKeys.filter(
+            (filter) =>
+                !!this.allLegos.find((el) => el.legoData.key === filter.filterKey) &&
+                !!this.allLegos.find((el) => el.legoData.key === filter.widgetKey)
+        );
+    }
+
     saveSelectedPage(): void {
         if (this.pages[this.pageSelected]) {
             this.pages[this.pageSelected].data = this.getCraftableData();
-            this.pages[this.pageSelected].filters = this.fireboardDataService.filterBindKey;
+            this.pages[this.pageSelected].filters = this.filterUnusedFilters(this.fireboardDataService.filterBindKey);
         }
     }
 
@@ -213,8 +225,7 @@ export class FireboardComponent implements AfterViewInit {
     updateLegoDataSource(legoConfig: WidgetConfig): void {
         const lego = this.craftable.getSelectedLegos().find(() => true);
         if (lego) {
-            const allLegos = [...this.filtersList, ...this.widgetsList];
-            const component = allLegos.find((el) => el.legoData.key === lego.key);
+            const component = this.allLegos.find((el) => el.legoData.key === lego.key);
             component.setConfig(legoConfig);
         }
     }
@@ -222,17 +233,15 @@ export class FireboardComponent implements AfterViewInit {
     updateLegoOptions(legoOptions: WidgetOptions): void {
         const lego = this.craftable.getSelectedLegos().find(() => true);
         if (lego) {
-            const allLegos = [...this.filtersList, ...this.widgetsList];
-            const component = allLegos.find((el) => el.legoData.key === lego.key);
+            const component = this.allLegos.find((el) => el.legoData.key === lego.key);
             component.setOptions(legoOptions);
         }
     }
 
     getCraftableData(): LegoConfig[] {
-        const allLegos = [...this.filtersList, ...this.widgetsList];
         return this.craftable.legoData.map((lego) => ({
             ...lego,
-            data: allLegos.find((w) => w.legoData.key === lego.key)?.getConfig()
+            data: this.allLegos.find((w) => w.legoData.key === lego.key)?.getConfig()
         }));
     }
 

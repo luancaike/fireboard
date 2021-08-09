@@ -73,11 +73,6 @@ export class InputSelectComponent extends FilterAbstract implements WidgetCompon
         super(cdr);
     }
 
-    filterAction(data): any[] {
-        const keySelected = this.getKeySelected();
-        return keySelected ? data.filter((el) => !this.model || el[keySelected.key] === this.model) : data;
-    }
-
     ngAfterViewInit() {
         if (this.legoData.data) {
             this.setConfig(this.legoData.data);
