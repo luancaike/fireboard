@@ -4,6 +4,7 @@ import { ChangeDetectorRef } from '@angular/core';
 import { DataSourceKey, DataSourceKeyTypes, DataSourceSelected, FilterModel } from '../models/data-source.dtos';
 import { WidgetComponent } from './widget.interface';
 import { FireboardDataService } from '../service/fireboard-data.service';
+import { FilterQueryTypes } from '../models/filter.dtos';
 
 export interface DataSourceBindOptionRules {
     max?: number;
@@ -34,19 +35,19 @@ export type WidgetOptions = { [key: string]: any };
 
 export interface DataGetter {
     sourceId?: DataSourceSelected;
-    filters?: FilterModel[];
+    widgetKey?: string;
 }
 
 export abstract class WidgetAbstract implements WidgetComponent {
     abstract legoData: LegoConfig;
     abstract fireboardDataService: FireboardDataService;
+    public typeFilter: FilterQueryTypes;
     public isFilter = false;
     public isLoading: boolean;
     public dataSource: DataSourceSelected = null;
     public dataSourceBindOptions: DataSourceBindOption[] = [];
     public dataSourceSelectedKeys: DataSourceSelectedKey[] = [];
     public options: WidgetOptions = {};
-    public filters: FilterModel[] = [];
     public data: any[] = [];
     public fieldsEditor: FieldEditor[] = [];
 
@@ -66,7 +67,6 @@ export abstract class WidgetAbstract implements WidgetComponent {
         return {
             dataSourceSelectedKeys: this.dataSourceSelectedKeys,
             dataSourceBindOptions: this.dataSourceBindOptions,
-            filters: this.filters,
             dataSource: this.dataSource,
             options: this.getOptions()
         };
@@ -81,7 +81,7 @@ export abstract class WidgetAbstract implements WidgetComponent {
     }
 
     setConfig(widgetConfig: WidgetConfig): void {
-        const { dataSource, options, dataSourceBindOptions, dataSourceSelectedKeys, filters } = widgetConfig;
+        const { dataSource, options, dataSourceBindOptions, dataSourceSelectedKeys } = widgetConfig;
         if (dataSourceSelectedKeys) {
             this.setDataSourceSelectKeys(dataSourceSelectedKeys);
         }
@@ -94,9 +94,6 @@ export abstract class WidgetAbstract implements WidgetComponent {
         if (options) {
             this.setOptions(options);
         }
-        if (filters) {
-            this.setFilters(filters);
-        }
         if (this.checkValidityForGetData()) {
             this.updateDataAndApplyComponent();
         }
@@ -104,8 +101,10 @@ export abstract class WidgetAbstract implements WidgetComponent {
 
     async getData(): Promise<any[]> {
         if (this.dataSource && this.fireboardDataService.dataGetter) {
-            const model = { sourceId: this.dataSource, filters: this.filters };
-            return await this.fireboardDataService.dataGetter(model, this.isFilter);
+            return await this.fireboardDataService.dataGetter({
+                sourceId: this.dataSource,
+                widgetKey: this.legoData.key
+            });
         }
         return [];
     }
@@ -145,12 +144,6 @@ export abstract class WidgetAbstract implements WidgetComponent {
 
     setOptions(options: WidgetOptions): void {
         this.options = options;
-        this.cdr.detectChanges();
-    }
-
-    setFilters(filters: FilterModel[]): void {
-        this.filters = filters;
-        this.updateDataAndApplyComponent();
         this.cdr.detectChanges();
     }
 

@@ -5,7 +5,6 @@ import {
     Component,
     ElementRef,
     Input,
-    OnDestroy,
     ViewChild,
     ViewEncapsulation
 } from '@angular/core';
@@ -16,6 +15,7 @@ import { FilterAbstract } from '../filter.abstract';
 import { debounce } from '../../utils/effects';
 import { WidgetOptions } from '../widget.abstract';
 import { DateFilterDefault } from '../date-filter/date-filter.default';
+import { FilterQueryTypes } from '../../models/filter.dtos';
 
 @Component({
     selector: 'fb-input-text',
@@ -29,14 +29,16 @@ import { DateFilterDefault } from '../date-filter/date-filter.default';
             type="text"
             class="form-control input-text"
             [(ngModel)]="model"
-            (ngModelChange)="modelUpdate($event)"
+            (ngModelChange)="modelUpdate()"
             [placeholder]="placeholder"
         />
     `
 })
-export class InputTextComponent extends FilterAbstract implements WidgetComponent, AfterViewInit, OnDestroy {
+export class InputTextComponent extends FilterAbstract implements WidgetComponent, AfterViewInit {
     @ViewChild('input') input: ElementRef<HTMLInputElement>;
     @Input() public legoData;
+
+    public typeFilter = FilterQueryTypes.LikeValue;
     public model = null;
     public placeholder = 'Texto';
     public filterKey = 'input-text';
@@ -62,6 +64,7 @@ export class InputTextComponent extends FilterAbstract implements WidgetComponen
     }
 
     ngAfterViewInit() {
+        this.modelFilterUpdate(this.model);
         if (this.legoData.data) {
             this.setConfig(this.legoData.data);
         } else {
@@ -92,11 +95,8 @@ export class InputTextComponent extends FilterAbstract implements WidgetComponen
     }
 
     @debounce()
-    modelUpdate(event: any) {
-        super.modelUpdate(event);
-    }
-
-    ngOnDestroy(): void {
-        this.fireboardDataService.removeFilterControl(this.legoData.key);
+    modelUpdate() {
+        this.modelFilterUpdate(this.model);
+        super.modelUpdate();
     }
 }

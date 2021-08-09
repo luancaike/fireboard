@@ -17,12 +17,13 @@ import { StyleEditorComponent } from './components/style-editor/style-editor.com
 import { FireboardDataService } from './service/fireboard-data.service';
 import { debounce } from './utils/effects';
 import { LegoConfig } from 'ng-craftable/lib/model';
-import { FilterHandlerDto } from './models/filter.dtos';
+import { FilterBindKey, FilterHandlerDto } from './models/filter.dtos';
 import { ChartItemConfig } from './models/charts.dtos';
 import { ChartSelectorComponent } from './components/chart-selector/chart-selector.component';
 
 type DashboardPage = {
     name: string;
+    filters: FilterBindKey[];
     data: LegoConfig[];
 };
 
@@ -51,6 +52,7 @@ export class FireboardComponent implements AfterViewInit {
     public showLegoOptionsEditor = false;
     public dataSources: DataSource[] = DataSourceMockList;
     public chartsList: ChartItemConfig[] = ChartsMockList;
+    public selectedFilter: WidgetAbstract;
     public visualizationMode = false;
     public enableDrag = true;
     public enableResize = true;
@@ -77,6 +79,7 @@ export class FireboardComponent implements AfterViewInit {
         this.enableDrag = this.enableResize = this.enableSelect = false;
         this.enableFilterEditor = true;
         this.detectChanges();
+        setTimeout(() => this.detectChanges(), 1000);
     }
 
     getWidgetComponent(key: string) {
@@ -88,25 +91,35 @@ export class FireboardComponent implements AfterViewInit {
     }
 
     getFilterModel(lego: LegoConfig) {
-        const exists = this.fireboardDataService.filtersLegoMap.get(lego.key);
-        if (exists) {
-            return exists.key;
+        if (this.selectedFilter) {
+            const model: FilterBindKey = {
+                dataSource: lego.data.dataSource,
+                keySource: null,
+                type: this.selectedFilter.typeFilter,
+                widgetKey: lego.key,
+                filterKey: this.selectedFilter.legoData.key
+            };
+            const exists = this.fireboardDataService.getFilter(model);
+            if (exists) {
+                return exists.keySource;
+            } else {
+                this.fireboardDataService.addFilter(model);
+                return model.keySource;
+            }
         } else {
-            const model = { dataSource: lego.data.dataSource, key: null };
-            this.fireboardDataService.filtersLegoMap.set(lego.key, model);
-            return model.key;
+            return null;
         }
     }
 
-    setFilterModel(lego: LegoConfig, key) {
-        const exists = this.fireboardDataService.filtersLegoMap.get(lego.key);
-        if (exists) {
-            exists.key = key;
-            this.fireboardDataService.filtersLegoMap.set(lego.key, exists);
-        } else {
-            const model = { dataSource: lego.data.dataSource, key };
-            this.fireboardDataService.filtersLegoMap.set(lego.key, model);
-        }
+    setFilterModel(lego: LegoConfig, keySource) {
+        const model: FilterBindKey = {
+            dataSource: lego.data.dataSource,
+            keySource: keySource,
+            type: this.selectedFilter.typeFilter,
+            widgetKey: lego.key,
+            filterKey: this.selectedFilter.legoData.key
+        };
+        this.fireboardDataService.addFilter(model);
         this.detectChanges();
     }
 
@@ -130,7 +143,13 @@ export class FireboardComponent implements AfterViewInit {
 
     handlerFilter(filter: FilterHandlerDto) {
         this.widgetsList.forEach((widget) => {
-            if (widget.dataSource === filter.sourceKey) {
+            const model: FilterBindKey = {
+                type: filter.type,
+                widgetKey: widget.legoData.key,
+                filterKey: filter.filterKey
+            };
+            const dataSource = this.fireboardDataService.getFilter(model);
+            if (dataSource) {
                 widget.updateDataAndApplyComponent();
             }
         });
@@ -142,6 +161,7 @@ export class FireboardComponent implements AfterViewInit {
         this.saveSelectedPage();
         this.pages.push({
             data: [],
+            filters: [],
             name: `Página ${this.pages.length + 1}`
         });
         this.setCraftableData([]);
@@ -165,6 +185,7 @@ export class FireboardComponent implements AfterViewInit {
         if (this.pages[pageIndex]) {
             this.pageSelected = pageIndex;
             this.setCraftableData(this.pages[pageIndex].data);
+            this.fireboardDataService.filterBindKey = this.pages[pageIndex]?.filters || [];
         }
         setTimeout(() => {
             this.isLoading = false;
@@ -175,6 +196,7 @@ export class FireboardComponent implements AfterViewInit {
     saveSelectedPage(): void {
         if (this.pages[this.pageSelected]) {
             this.pages[this.pageSelected].data = this.getCraftableData();
+            this.pages[this.pageSelected].filters = this.fireboardDataService.filterBindKey;
         }
     }
 
@@ -214,7 +236,38 @@ export class FireboardComponent implements AfterViewInit {
         }));
     }
 
+    checkDrawLegos(data: LegoConfig[], ifTrue = () => null) {
+        if (!data.length) {
+            return;
+        }
+        const allLegos = [...this.filtersList, ...this.widgetsList];
+        const result = data.every((el) => !!allLegos.find((al) => al.legoData.key === el.key));
+        if (result) {
+            ifTrue();
+        } else {
+            setTimeout(() => this.checkDrawLegos(data, ifTrue), 300);
+        }
+    }
+
     setCraftableData(data: LegoConfig[]): void {
+        this.addCraftableLegos([]);
+        const controls = data.filter((lego) => this.isControl((lego as any).type));
+        const widgets = data.filter((lego) => !this.isControl((lego as any).type));
+        const widgetsHandles = () => {
+            widgets.forEach((lego) => this.addCraftableLego(lego));
+        };
+
+        controls.forEach((lego) => this.addCraftableLego(lego));
+        this.checkDrawLegos(controls, widgetsHandles);
+    }
+
+    addCraftableLego(data: LegoConfig): void {
+        this.craftable.addLego(data);
+        (this.craftable as any).detectChanges();
+        this.detectChanges();
+    }
+
+    addCraftableLegos(data: LegoConfig[]): void {
         this.craftable.setLegoData(data);
         (this.craftable as any).detectChanges();
         this.detectChanges();
@@ -275,9 +328,8 @@ export class FireboardComponent implements AfterViewInit {
 
     @debounce()
     onSelectedLego(event: string[]) {
-        const selectedFilter = this.filtersList.find((el) => !!event.find((e) => e === el.legoData.key));
-        this.showFilterEditor = !!selectedFilter;
-        console.log({ event, selectedFilter });
+        this.selectedFilter = this.filtersList.find((el) => !!event.find((e) => e === el.legoData.key));
+        this.showFilterEditor = !!this.selectedFilter;
         this.detectChanges();
     }
 

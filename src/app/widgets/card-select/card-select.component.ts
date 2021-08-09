@@ -4,7 +4,6 @@ import {
     ChangeDetectorRef,
     Component,
     Input,
-    OnDestroy,
     ViewEncapsulation
 } from '@angular/core';
 import { WidgetComponent } from '../widget.interface';
@@ -12,6 +11,7 @@ import { CardSelectDefault } from './card-select.default';
 import { FireboardDataService } from '../../service/fireboard-data.service';
 import { FilterAbstract } from '../filter.abstract';
 import { debounce } from 'src/app/utils/effects';
+import { FilterQueryTypes } from '../../models/filter.dtos';
 
 @Component({
     selector: 'fb-card-select',
@@ -40,7 +40,7 @@ import { debounce } from 'src/app/utils/effects';
                 <div class="column-item" *ngFor="let item of getItems">
                     <label class="container-checkbox">
                         {{ item.text }}
-                        <input type="checkbox" [(ngModel)]="item.checked" (ngModelChange)="modelUpdate($event)" />
+                        <input type="checkbox" [(ngModel)]="item.checked" (ngModelChange)="modelUpdate()" />
                         <span class="checkmark"></span>
                     </label>
                 </div>
@@ -48,8 +48,9 @@ import { debounce } from 'src/app/utils/effects';
         </div>
     `
 })
-export class CardSelectComponent extends FilterAbstract implements WidgetComponent, AfterViewInit, OnDestroy {
+export class CardSelectComponent extends FilterAbstract implements WidgetComponent, AfterViewInit {
     @Input() public legoData;
+    public typeFilter = FilterQueryTypes.EqualValue;
     public selectAll = true;
     public filterText = '';
     public placeholder = 'placeholder';
@@ -118,9 +119,5 @@ export class CardSelectComponent extends FilterAbstract implements WidgetCompone
             this.items = this.data.map((el) => ({ text: el[key], value: el[key], checked: true }));
             this.cdr.detectChanges();
         }
-    }
-
-    ngOnDestroy(): void {
-        this.fireboardDataService.removeFilterControl(this.legoData.key);
     }
 }

@@ -1,9 +1,11 @@
 import { WidgetAbstract } from './widget.abstract';
 import { DataSourceKey } from '../models/data-source.dtos';
+import { FilterQueryTypes } from '../models/filter.dtos';
 
 export abstract class FilterAbstract extends WidgetAbstract {
     isFilter = true;
 
+    abstract typeFilter: FilterQueryTypes;
     abstract filterAction(data: any[]): any[];
 
     getKeySelected(): DataSourceKey {
@@ -13,21 +15,12 @@ export abstract class FilterAbstract extends WidgetAbstract {
         }
     }
 
-    modelUpdate(event: any = {}): void {
-        this.fireboardDataService.handlerFilter({ sourceKey: this.dataSource });
+    modelUpdate(): void {
+        this.fireboardDataService.handlerFilter({ filterKey: this.legoData.key, type: this.typeFilter });
         this.cdr.detectChanges();
     }
 
-    updateFilterOnServiceData() {
-        this.fireboardDataService.addFilterControl({
-            key: this.legoData.key,
-            filterAction: (data) => this.filterAction(data),
-            dataSource: this.dataSource
-        });
-    }
-
-    setDataSource(dataSource: number) {
-        super.setDataSource(dataSource);
-        this.updateFilterOnServiceData();
+    modelFilterUpdate(filterValue = null) {
+        this.fireboardDataService.setFilterValue(this.legoData.key, filterValue);
     }
 }

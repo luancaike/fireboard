@@ -6,7 +6,6 @@ import {
     ElementRef,
     Input,
     NgZone,
-    OnDestroy,
     ViewChild,
     ViewEncapsulation
 } from '@angular/core';
@@ -17,6 +16,7 @@ import { FilterAbstract } from '../filter.abstract';
 import { NgbDatepicker, NgbDateStruct, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap/modal/modal-ref';
 import { WidgetOptions } from '../widget.abstract';
+import { FilterQueryTypes } from '../../models/filter.dtos';
 
 @Component({
     selector: 'fb-date-filter',
@@ -74,12 +74,13 @@ import { WidgetOptions } from '../widget.abstract';
         </button>
     `
 })
-export class DateFilterComponent extends FilterAbstract implements WidgetComponent, AfterViewInit, OnDestroy {
+export class DateFilterComponent extends FilterAbstract implements WidgetComponent, AfterViewInit {
     @ViewChild('datePicker') datePicker: ElementRef<HTMLButtonElement>;
     @ViewChild('fromPicker') fromPickerRef: NgbDatepicker;
     @ViewChild('toPicker') toPickerRef: NgbDatepicker;
     @Input() public legoData;
 
+    public typeFilter = FilterQueryTypes.DateInterval;
     public filterKey = 'date-filter';
     public from: NgbDateStruct;
     public to: NgbDateStruct;
@@ -140,7 +141,15 @@ export class DateFilterComponent extends FilterAbstract implements WidgetCompone
     applyFilter(modal: NgbModalRef) {
         modal.close();
         this.setModelToPlaceholder();
+        this.modelFilterUpdate(this.getFilterModel());
         this.modelUpdate();
+    }
+
+    getFilterModel() {
+        return {
+            to: this.modelToDate(this.to).toISOString(),
+            from: this.modelToDate(this.from).toISOString()
+        };
     }
 
     setModelToPlaceholder() {
@@ -168,6 +177,8 @@ export class DateFilterComponent extends FilterAbstract implements WidgetCompone
         this.from = this.dateToModel(from);
         this.to = this.dateToModel(to);
         this.setModelToPlaceholder();
+        this.modelFilterUpdate(this.getFilterModel());
+        this.modelUpdate();
         this.cdr.detectChanges();
     }
 
@@ -182,9 +193,5 @@ export class DateFilterComponent extends FilterAbstract implements WidgetCompone
 
     applyComponentData(): void {
         this.cdr.detectChanges();
-    }
-
-    ngOnDestroy(): void {
-        this.fireboardDataService.removeFilterControl(this.legoData.key);
     }
 }

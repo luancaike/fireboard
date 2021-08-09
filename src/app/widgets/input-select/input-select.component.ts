@@ -5,7 +5,6 @@ import {
     Component,
     ElementRef,
     Input,
-    OnDestroy,
     ViewChild,
     ViewEncapsulation
 } from '@angular/core';
@@ -17,6 +16,7 @@ import { NgSelectComponent } from '@ng-select/ng-select';
 import { debounce } from '../../utils/effects';
 import { WidgetOptions } from '../widget.abstract';
 import { DateFilterDefault } from '../date-filter/date-filter.default';
+import { FilterQueryTypes } from '../../models/filter.dtos';
 
 @Component({
     selector: 'fb-input-select',
@@ -29,7 +29,7 @@ import { DateFilterDefault } from '../date-filter/date-filter.default';
             <ng-select
                 #select
                 [(ngModel)]="model"
-                (ngModelChange)="modelUpdate($event)"
+                (ngModelChange)="modelUpdate()"
                 class="ng-select-auto"
                 [appendTo]="'.canvas-container'"
                 [placeholder]="placeholder"
@@ -42,10 +42,12 @@ import { DateFilterDefault } from '../date-filter/date-filter.default';
         </div>
     `
 })
-export class InputSelectComponent extends FilterAbstract implements WidgetComponent, AfterViewInit, OnDestroy {
+export class InputSelectComponent extends FilterAbstract implements WidgetComponent, AfterViewInit {
     @ViewChild('selectWrapper') selectWrapper: ElementRef<HTMLDivElement>;
     @ViewChild('select') select: NgSelectComponent;
     @Input() public legoData;
+
+    public typeFilter = FilterQueryTypes.EqualValue;
     public model = null;
     public placeholder = 'Selecione...';
     public items = [
@@ -109,12 +111,8 @@ export class InputSelectComponent extends FilterAbstract implements WidgetCompon
     }
 
     @debounce()
-    modelUpdate(event: any) {
+    modelUpdate() {
         this.select.close();
-        super.modelUpdate(event);
-    }
-
-    ngOnDestroy(): void {
-        this.fireboardDataService.removeFilterControl(this.legoData.key);
+        super.modelUpdate();
     }
 }

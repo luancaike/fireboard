@@ -3,29 +3,57 @@ import { DataGetter } from '../widgets/widget.abstract';
 import { DataSourceDataMockList } from '../models/mocks';
 import { DataSourceSelected, FilterModel } from '../models/data-source.dtos';
 import { CustomFilterDto } from '../components/filter-maker/filter-maker.model';
-import { FilterDto, FilterHandlerDto } from '../models/filter.dtos';
+import { FilterBindKey, FilterHandlerDto, FilterQueryTypes } from '../models/filter.dtos';
 
 const randomTimer = () => Math.random() * (1000 - 100) + 100;
 
 @Injectable({ providedIn: 'root' })
 export class FireboardDataService {
-    private filtersControl: FilterDto[] = [];
     public filterEventEmitter = new EventEmitter<FilterHandlerDto>();
-    public filtersLegoMap = new Map();
+    public filterBindKey: FilterBindKey[] = [];
+    public filterValues = new Map<string, any>();
 
-    dataGetter = (data: DataGetter, notInternalFilter = false): Promise<any[]> => {
+    dataGetter = (data: DataGetter): Promise<any[]> => {
+        console.log({ data, filterBindKey: this.filterBindKey, filterValues: this.filterValues });
+        const query: any = {};
+
+        query.sourceId = data.sourceId;
+        query.filters = this.filterBindKey
+            .filter((el) => el.widgetKey === data.widgetKey && el.dataSource === data.sourceId)
+            .map((el) => ({
+                key: el.keySource,
+                type: el.type,
+                value: this.filterValues.get(el.filterKey)
+            }));
+        console.log(query);
         return new Promise((resolve) => {
             const result = DataSourceDataMockList.find((value) => value.id === data.sourceId);
-            const dataList = result ? result.data : [];
-            const dataFilter = this.filtersControl.filter((filter) => filter.dataSource === data.sourceId);
-            const dataResult = notInternalFilter
-                ? dataList
-                : dataFilter.reduce((acc, item) => {
-                      return item.filterAction(acc);
-                  }, dataList);
-            setTimeout(() => resolve(dataResult), randomTimer());
+            const dataResult = result ? result.data : [];
+            const filtered = query.filters.reduce((acc, item) => {
+                if (item.type === FilterQueryTypes.DateInterval) {
+                    return acc.filter((el) => {
+                        {
+                            const dateToCompare = new Date(el.dt_create);
+                            const fromCompare = new Date(item.value.from);
+                            const toCompare = new Date(item.value.to);
+                            return fromCompare <= dateToCompare && dateToCompare <= toCompare;
+                        }
+                    });
+                }
+                if (item.type === FilterQueryTypes.LikeValue) {
+                    return acc.filter(
+                        (el) =>
+                            !item.value ||
+                            !item.value.length ||
+                            !!~el.nm_risco.toUpperCase().indexOf(item.value.toUpperCase())
+                    );
+                }
+                return acc;
+            }, dataResult);
+            setTimeout(() => resolve(filtered), randomTimer());
         });
     };
+
     addExternalFilter = (data: CustomFilterDto): Promise<FilterModel> => {
         return new Promise((resolve) => {
             setTimeout(() => resolve({ id: 100, name: data.label }), randomTimer());
@@ -58,21 +86,22 @@ export class FireboardDataService {
         this.filterEventEmitter.emit(filter);
     }
 
-    addFilterControl(filter: FilterDto) {
-        const result = this.filtersControl.find((el) => el.key === filter.key);
-        if (result) {
-            this.filtersControl = this.filtersControl.map((el) => {
-                if (el.key === filter.key) {
-                    return filter;
-                }
-                return el;
-            });
-        } else {
-            this.filtersControl.push(filter);
-        }
+    setFilterValue(filterKey, filterValue) {
+        this.filterValues.set(filterKey, filterValue);
     }
 
-    removeFilterControl(filterKey: string) {
-        this.filtersControl = this.filtersControl.filter(({ key }) => key !== filterKey);
+    getFilter(filter: FilterBindKey) {
+        return this.filterBindKey.find((el) => el.filterKey === filter.filterKey && el.widgetKey === filter.widgetKey);
+    }
+
+    addFilter(filter: FilterBindKey) {
+        const index = this.filterBindKey.findIndex(
+            (el) => el.filterKey === filter.filterKey && el.widgetKey === filter.widgetKey
+        );
+        if (index >= 0) {
+            this.filterBindKey[index] = filter;
+        } else {
+            this.filterBindKey.push(filter);
+        }
     }
 }
