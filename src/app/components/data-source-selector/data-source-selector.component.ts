@@ -57,7 +57,7 @@ export class DataSourceSelectorComponent implements OnChanges {
         const dataSource = this.dataSources.find(({ id }) => this.dataSourceSelected === id);
 
         if (dataSource) {
-            this.fbFilter.columnsData = dataSource.keys;
+            this.fbFilter.columnsData = dataSource.columns;
             this.getAndSetFilters();
         }
     }
@@ -196,7 +196,7 @@ export class DataSourceSelectorComponent implements OnChanges {
     updateLegoKeysBySelections(): void {
         const result = this.dataSources.find((el) => el.id === this.dataSourceSelected);
         if (result) {
-            this.dataSourceKeys = result.keys;
+            this.dataSourceKeys = result.columns;
         }
     }
 

@@ -10,7 +10,7 @@ import {
 } from '@angular/core';
 import { CraftableComponent } from 'ng-craftable';
 import { DataSourceSelectorComponent } from './components/data-source-selector/data-source-selector.component';
-import { WidgetAbstract, WidgetConfig, WidgetOptions } from './widgets/widget.abstract';
+import { WidgetAbstract, WidgetConfig } from './widgets/widget.abstract';
 import { DataSource, DataSourceKey } from './models/data-source.dtos';
 import { ChartsMockList, DataSourceMockList } from './models/mocks';
 import { StyleEditorComponent } from './components/style-editor/style-editor.component';
@@ -136,7 +136,7 @@ export class FireboardComponent implements AfterViewInit {
         if (!data) {
             return [];
         }
-        return data.keys;
+        return data.columns;
     }
 
     disableEditFilter() {
@@ -227,14 +227,6 @@ export class FireboardComponent implements AfterViewInit {
         if (lego) {
             const component = this.allLegos.find((el) => el.legoData.key === lego.key);
             component.setConfig(legoConfig);
-        }
-    }
-
-    updateLegoOptions(legoOptions: WidgetOptions): void {
-        const lego = this.craftable.getSelectedLegos().find(() => true);
-        if (lego) {
-            const component = this.allLegos.find((el) => el.legoData.key === lego.key);
-            component.setOptions(legoOptions);
         }
     }
 

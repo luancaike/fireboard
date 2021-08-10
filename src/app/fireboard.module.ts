@@ -23,9 +23,12 @@ import { SelectColumnModule } from './components/select-column/select-column.mod
 import { ExpressionBuilderModule } from './components/expression-builder/expression-builder.module';
 import { ChartSelectorModule } from './components/chart-selector/chart-selector.module';
 import { ModalPanelModule } from './components/modal-panel/modal-panel.module';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { TokenInterceptor } from './service/http.service';
 
 @NgModule({
     imports: [
+        HttpClientModule,
         BrowserAnimationsModule,
         BrowserModule,
         FormsModule,
@@ -43,7 +46,14 @@ import { ModalPanelModule } from './components/modal-panel/modal-panel.module';
         ChartSelectorModule,
         ModalPanelModule
     ],
-    providers: [LoadingBarService],
+    providers: [
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: TokenInterceptor,
+            multi: true
+        },
+        LoadingBarService
+    ],
     declarations: [
         FireboardComponent,
         ToolbarMenuComponent,

@@ -11,7 +11,7 @@ export enum DataSourceKeyTypes {
 export interface DataSource {
     id: number;
     name: string;
-    keys: DataSourceKey[];
+    columns: DataSourceKey[];
 }
 
 export interface DataSourceKey {

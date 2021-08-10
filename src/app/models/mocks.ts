@@ -127,7 +127,7 @@ export const DataSourceMockList: DataSource[] = [
     {
         name: 'Riscos Associados',
         id: 1,
-        keys: [
+        columns: [
             {
                 id: 1,
                 key: 'id_risco',
@@ -157,7 +157,7 @@ export const DataSourceMockList: DataSource[] = [
     {
         name: 'Fatores de Riscos',
         id: 2,
-        keys: [
+        columns: [
             {
                 id: 1,
                 key: 'id_fator_risco',

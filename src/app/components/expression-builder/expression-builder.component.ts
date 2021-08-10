@@ -31,7 +31,7 @@ export class ExpressionBuilderComponent implements AfterViewInit {
 
     public get suggestionOptions() {
         return this.columns.reduce((acc, item) => {
-            return [...acc, ...item.keys.map((el) => ({ text: `${el.name}` }))];
+            return [...acc, ...item.columns.map((el) => ({ text: `${el.name}` }))];
         }, []);
     }
 

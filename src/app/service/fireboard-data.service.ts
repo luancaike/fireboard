@@ -4,14 +4,37 @@ import { DataSourceDataMockList } from '../models/mocks';
 import { DataSourceSelected, FilterModel } from '../models/data-source.dtos';
 import { CustomFilterDto } from '../components/filter-maker/filter-maker.model';
 import { FilterBindKey, FilterHandlerDto, FilterQueryTypes } from '../models/filter.dtos';
+import { HttpClient } from '@angular/common/http';
+import { tap } from 'rxjs/operators';
 
 const randomTimer = () => Math.random() * (1000 - 100) + 100;
+
+const api = 'http://localhost:2000';
 
 @Injectable({ providedIn: 'root' })
 export class FireboardDataService {
     public filterEventEmitter = new EventEmitter<FilterHandlerDto>();
     public filterBindKey: FilterBindKey[] = [];
     public filterValues = new Map<string, any>();
+
+    constructor(private http: HttpClient) {}
+
+    // TODO: REMOVE
+    login = async (login: string, pass: string): Promise<any> => {
+        const model = {
+            Username: login,
+            Password: pass
+        };
+        const { data } = await this.http.post<any>(`${api}/api/v1/token`, model).toPromise();
+        window.localStorage.setItem('token', data.accessToken);
+    };
+
+    searchTable = (table: string): Promise<any> => {
+        return this.http
+            .get(`${api}/api/v1/dashboard-builder/table-columns/${table}`)
+            .pipe(tap(console.log))
+            .toPromise();
+    };
 
     dataGetter = (data: DataGetter): Promise<any[]> => {
         console.log({ data, filterBindKey: this.filterBindKey, filterValues: this.filterValues });
