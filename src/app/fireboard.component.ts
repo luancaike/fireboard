@@ -12,7 +12,7 @@ import { CraftableComponent } from 'ng-craftable';
 import { DataSourceSelectorComponent } from './components/data-source-selector/data-source-selector.component';
 import { WidgetAbstract, WidgetConfig } from './widgets/widget.abstract';
 import { DataSource, DataSourceKey } from './models/data-source.dtos';
-import { ChartsMockList, DataSourceMockList } from './models/mocks';
+import { ChartsMockList } from './models/mocks';
 import { StyleEditorComponent } from './components/style-editor/style-editor.component';
 import { FireboardDataService } from './service/fireboard-data.service';
 import { debounce } from './utils/effects';
@@ -20,6 +20,7 @@ import { LegoConfig } from 'ng-craftable/lib/model';
 import { FilterBindKey, FilterHandlerDto } from './models/filter.dtos';
 import { ChartItemConfig } from './models/charts.dtos';
 import { ChartSelectorComponent } from './components/chart-selector/chart-selector.component';
+import { TableSourceComponent } from './components/table-source/table-source.component';
 
 type DashboardPage = {
     name: string;
@@ -43,6 +44,7 @@ export class FireboardComponent implements AfterViewInit {
     @ViewChild('optionsConfiguration') optionsConfiguration: DataSourceSelectorComponent;
     @ViewChild('styleEditorWidget') styleEditorWidget: StyleEditorComponent;
     @ViewChild('chartSelector') chartSelector: ChartSelectorComponent;
+    @ViewChild('tableSource') tableSource: TableSourceComponent;
     @ViewChild('styleEditorFilter') styleEditorFilter: StyleEditorComponent;
 
     public pages: DashboardPage[] = [];
@@ -50,7 +52,7 @@ export class FireboardComponent implements AfterViewInit {
     public nameBoard = 'Nome do Dashboard';
     public isLoading = false;
     public showLegoOptionsEditor = false;
-    public dataSources: DataSource[] = DataSourceMockList;
+    public dataSources: DataSource[] = [];
     public chartsList: ChartItemConfig[] = ChartsMockList;
     public selectedFilter: WidgetAbstract;
     public visualizationMode = false;
@@ -73,6 +75,11 @@ export class FireboardComponent implements AfterViewInit {
 
     ngAfterViewInit(): void {
         this.addPage();
+        this.getDataSources();
+    }
+
+    getDataSources() {
+        this.fireboardDataService.getDataSources().then(({ data }) => (this.dataSources = data));
     }
 
     isControl(type: any) {
@@ -325,6 +332,10 @@ export class FireboardComponent implements AfterViewInit {
 
     showChartSelect() {
         this.chartSelector.show();
+    }
+
+    showTableSource() {
+        this.tableSource.show();
     }
 
     @debounce()

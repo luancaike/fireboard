@@ -98,6 +98,13 @@
                         Adicionar Dados
                     </button>
                 </div>
+                <div class="toolbar-separator"></div>
+                <div class="btn-toolbar-dropdown">
+                    <button class="dropdown-button" (click)="showTableSource()">
+                        <fa-icon class="btn-icon" icon="code-branch"></fa-icon>
+                        Adicionar Origem de Dados
+                    </button>
+                </div>
             </ng-container>
             <ng-container *ngIf="enableFilterEditor">
                 <div class="btn-toolbar-dropdown">
@@ -157,6 +164,7 @@
 </div>
 <fb-modal-panel [showPainel]="filterModal">
     <fb-sql-builder
+        [tables]="dataSources"
         [(showPanel)]="filterModal"
     ></fb-sql-builder>
 </fb-modal-panel>
@@ -166,3 +174,6 @@
     [charts]="chartsList"
     (selected)="selectedChart($event)"
 ></fb-chart-selector>
+<fb-table-source
+    #tableSource
+></fb-table-source>

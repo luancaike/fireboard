@@ -20,23 +20,31 @@ export class FireboardDataService {
     constructor(private http: HttpClient) {}
 
     // TODO: REMOVE
-    login = async (login: string, pass: string): Promise<any> => {
+    async login(login: string, pass: string): Promise<any> {
         const model = {
             Username: login,
             Password: pass
         };
         const { data } = await this.http.post<any>(`${api}/api/v1/token`, model).toPromise();
         window.localStorage.setItem('token', data.accessToken);
-    };
+    }
 
-    searchTable = (table: string): Promise<any> => {
+    async addTableSource(model): Promise<any> {
+        return this.http.post<any>(`${api}/api/v1/dashboard-builder/datasource`, model).toPromise();
+    }
+
+    getDataSources(): Promise<any> {
+        return this.http.get(`${api}/api/v1/dashboard-builder/datasource`).toPromise();
+    }
+
+    searchTable(table: string): Promise<any> {
         return this.http
             .get(`${api}/api/v1/dashboard-builder/table-columns/${table}`)
             .pipe(tap(console.log))
             .toPromise();
-    };
+    }
 
-    dataGetter = (data: DataGetter): Promise<any[]> => {
+    dataGetter(data: DataGetter): Promise<any[]> {
         console.log({ data, filterBindKey: this.filterBindKey, filterValues: this.filterValues });
         const query: any = {};
 
@@ -75,14 +83,15 @@ export class FireboardDataService {
             }, dataResult);
             setTimeout(() => resolve(filtered), randomTimer());
         });
-    };
+    }
 
-    addExternalFilter = (data: CustomFilterDto): Promise<FilterModel> => {
+    addExternalFilter(data: CustomFilterDto): Promise<FilterModel> {
         return new Promise((resolve) => {
             setTimeout(() => resolve({ id: 100, name: data.label }), randomTimer());
         });
-    };
-    getExternalFilters = (sourceId: DataSourceSelected): Promise<FilterModel[]> => {
+    }
+
+    getExternalFilters(sourceId: DataSourceSelected): Promise<FilterModel[]> {
         return new Promise((resolve) => {
             setTimeout(
                 () =>
@@ -103,7 +112,7 @@ export class FireboardDataService {
                 randomTimer()
             );
         });
-    };
+    }
 
     handlerFilter(filter: FilterHandlerDto) {
         this.filterEventEmitter.emit(filter);

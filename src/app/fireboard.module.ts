@@ -25,6 +25,7 @@ import { ChartSelectorModule } from './components/chart-selector/chart-selector.
 import { ModalPanelModule } from './components/modal-panel/modal-panel.module';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { TokenInterceptor } from './service/http.service';
+import { TableSourceModule } from './components/table-source/table-source.module';
 
 @NgModule({
     imports: [
@@ -44,7 +45,8 @@ import { TokenInterceptor } from './service/http.service';
         NgSelectModule,
         ExpressionBuilderModule,
         ChartSelectorModule,
-        ModalPanelModule
+        ModalPanelModule,
+        TableSourceModule
     ],
     providers: [
         {

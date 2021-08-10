@@ -26,7 +26,7 @@
         <li class="sb-list-group-separator">
             {{ item.name }}
         </li>
-        <ng-container *ngFor="let el of item?.keys">
+        <ng-container *ngFor="let el of item?.columns">
             <li class="sb-list-group-item" (click)="onselect(el)" [hidden]="excludeList?.includes(el)">
                 <fa-icon *ngIf="el.type === 'custom'" icon="code" [fixedWidth]="true"></fa-icon>
                 <fa-icon *ngIf="el.type === 'number'" icon="calculator" [fixedWidth]="true"></fa-icon>
@@ -42,7 +42,7 @@
         <li class="sb-list-group-separator">
             {{ item.name }}
         </li>
-        <ng-container *ngFor="let el of item?.keys">
+        <ng-container *ngFor="let el of item?.columns">
             <li class="sb-list-group-item" (click)="onSelectedFilter(el)">
                 <fa-icon *ngIf="el.type === 'custom'" icon="code" [fixedWidth]="true"></fa-icon>
                 <fa-icon *ngIf="el.type === 'number'" icon="calculator" [fixedWidth]="true"></fa-icon>

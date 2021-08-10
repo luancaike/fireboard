@@ -1,6 +1,5 @@
 import { Component, EventEmitter, Input, Output, QueryList, ViewChildren, ViewEncapsulation } from '@angular/core';
 import { PopoverComponent } from '../popover/popover.component';
-import { DataSourceMockList } from '../../models/mocks';
 import { DataSource, DataSourceKey, DataSourceKeyTypes } from '../../models/data-source.dtos';
 import {
     FilterOperator,
@@ -24,6 +23,7 @@ export class SqlBuilderComponent {
     @ViewChildren(PopoverComponent) popovers: QueryList<PopoverComponent>;
     @Output() showPanelChange = new EventEmitter();
     @Output() save = new EventEmitter<ModelSqlBuild>();
+    @Input() tables: DataSource[] = [];
 
     @Input() set showPanel(value: boolean) {
         this.showPanelChange.emit(value);
@@ -35,7 +35,6 @@ export class SqlBuilderComponent {
     }
 
     private _showPanel = false;
-    public tables: DataSource[] = DataSourceMockList;
     public selectedColumnFilter: DataSourceKey;
     public selectedOperator;
     public operatorsFilter: FilterOperator[] = [];

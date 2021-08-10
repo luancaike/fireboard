@@ -1,0 +1,57 @@
+<ng-template #modalChartSelect let-modal>
+    <div class="card border-0 table-source">
+        <div class="card-header d-flex justify-content-between">
+            <h6 style="margin: 0.5rem">
+                <fa-icon icon="code-branch" class="mr-2"></fa-icon>
+                Adicionar Origem de Dados
+            </h6>
+            <button class="btn btn-sm btn-outline-dark close-modal" (click)="modal.close()">
+                <fa-icon icon="times"></fa-icon>
+            </button>
+        </div>
+        <div class="search-input">
+            <input
+                type="text"
+                class="form-control input-table"
+                placeholder="Digite o nome da Tabela"
+                [(ngModel)]="filterText"
+                (ngModelChange)="filterTextAction()"
+            />
+            <fa-icon icon="table" class="icon" [hidden]="isLoading"></fa-icon>
+            <fa-icon icon="circle-notch" class="icon" [spin]="true" [hidden]="!isLoading"></fa-icon>
+        </div>
+        <div class="card-body scroll-style">
+            <ul class="list-group">
+                <ng-container *ngFor="let item of dataColumns">
+                    <li class="list-group-item column-item">
+                        <div>
+                            <fa-icon *ngIf="item.type === 'custom'" icon="code" class="icon-item"></fa-icon>
+                            <fa-icon *ngIf="item.type === 'number'" icon="calculator" class="icon-item"></fa-icon>
+                            <fa-icon *ngIf="item.type === 'string'" icon="font" class="icon-item"></fa-icon>
+                            <fa-icon *ngIf="item.type === 'date'" icon="calendar" class="icon-item"></fa-icon>
+                            <input  class="form-control label-item" [(ngModel)]="item.name"/>
+                        </div>
+                        <fa-icon class="icon-item-remove" icon="times" [fixedWidth]="true" (click)="removeItem(item)"></fa-icon>
+                    </li>
+                </ng-container>
+                <li class="list-group-item column-item" [hidden]="dataColumns.length || !filterText || !filterText.length || isLoading">
+                    <div class="error-item">
+                        Nenhuma Tabela Encontrada
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="card-footer text-muted d-flex justify-content-end" *ngIf="dataColumns.length">
+            <input
+                type="text"
+                class="form-control mr-2"
+                placeholder="Nome da Origem"
+                [(ngModel)]="nameOrigin"
+            />
+            <button class="btn btn-primary mb-2" [disabled]="!isValid" (click)="save()">
+                Salvar
+                <fa-icon icon="plus" class="ml-2"></fa-icon>
+            </button>
+        </div>
+    </div>
+</ng-template>
