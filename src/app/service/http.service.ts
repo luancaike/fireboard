@@ -12,6 +12,9 @@ export class TokenInterceptor implements HttpInterceptor {
         });
         return next.handle(request).pipe(
             catchError((error: HttpErrorResponse) => {
+                if (error.status === 401) {
+                    window.localStorage.removeItem('token');
+                }
                 return throwError(error);
             }),
             map((event: HttpEvent<any>) => {

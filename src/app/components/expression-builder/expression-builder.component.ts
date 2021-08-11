@@ -14,6 +14,8 @@ import { syntax } from './models/syntax';
 import { OPERATOR, TOKEN, tokenize } from './models/tokenizer';
 import { PopoverComponent } from '../popover/popover.component';
 import { DataSource, DataSourceKeyTypes } from '../../models/data-source.dtos';
+import { FUNCTIONS } from './models';
+import { compile } from './models/compile';
 
 @Component({
     selector: 'fb-expression-builder',
@@ -63,6 +65,10 @@ export class ExpressionBuilderComponent implements AfterViewInit {
         {
             text: 'upper',
             value: 'upper'
+        },
+        {
+            text: 'count',
+            value: 'count'
         }
     ];
     public suggestionResults = [];
@@ -121,8 +127,12 @@ export class ExpressionBuilderComponent implements AfterViewInit {
         }
         const { anchorIndex, focusIndex, textSegments } = this.getSelectIndex();
         const textContent = textSegments.map(({ text }) => text).join('');
-        const start = this.suggestionSelected?.start || anchorIndex;
-        const end = this.suggestionSelected?.end || anchorIndex === focusIndex ? anchorIndex : focusIndex;
+        const start = !!~this.suggestionSelected.start ? this.suggestionSelected.start : anchorIndex;
+        const end = !!~this.suggestionSelected.end
+            ? this.suggestionSelected.end
+            : anchorIndex === focusIndex
+            ? anchorIndex
+            : focusIndex;
         const prefix = textContent.slice(0, start);
         const postfix = textContent.slice(end);
 
@@ -138,6 +148,7 @@ export class ExpressionBuilderComponent implements AfterViewInit {
         this.editor.nativeElement.focus();
         const indexOfSuggestion = suggestion.length + start - (type === 'function' ? 1 : 0);
         this.restoreSelection(indexOfSuggestion, indexOfSuggestion);
+        this.hiddenSuggestions();
     }
 
     keydown(e: KeyboardEvent) {
@@ -182,9 +193,9 @@ export class ExpressionBuilderComponent implements AfterViewInit {
             }
             result = suggest.reduce((acc, item) => [item, ...acc], []).join('');
         }
-
+        start = start ? start : anchorIndex - index;
         this.suggestionSelected = {
-            start: start ? start : anchorIndex - index,
+            start,
             end,
             text: textContent.slice(start, end)
         };
@@ -253,6 +264,10 @@ export class ExpressionBuilderComponent implements AfterViewInit {
         this.source = source;
         this.errors = [];
 
+        let syntaxTree;
+        let compileError;
+        let expression;
+
         const { tokens, errors } = tokenize(source);
         const options = {
             source
@@ -260,13 +275,39 @@ export class ExpressionBuilderComponent implements AfterViewInit {
 
         this.checkTokensAndColumns(source, tokens);
 
-        try {
-            const { parserErrors, lexerErrors, typeErrors } = parse({
-                ...options
-            });
-            this.errors = [...this.errors, ...parserErrors, ...lexerErrors, ...typeErrors, ...errors];
-        } catch (errors) {
+        const { cst, parserErrors, lexerErrors, typeErrors, tokenVector } = parse({
+            ...options,
+            recover: true
+        });
+
+        if (typeErrors.length > 0 || parserErrors.length > 0) {
+            compileError = typeErrors.concat(parserErrors);
+        } else {
+            try {
+                expression = compile({
+                    cst,
+                    tokenVector,
+                    resolve: (kind, name) => {
+                        console.log({ kind, name });
+                    },
+                    ...options
+                });
+            } catch (e) {
+                console.warn('compile error', e);
+                compileError = e;
+            }
+        }
+
+        console.log(expression, compileError);
+
+        if ([...parserErrors, ...lexerErrors, ...typeErrors, ...errors].length) {
             this.errors = [...this.errors, { message: 'Erro de Sintaxe' }];
+        }
+
+        try {
+            syntaxTree = syntax({ cst, tokenVector, ...options });
+        } catch (e) {
+            console.warn('syntax error', e);
         }
 
         const renderSyntaxTree = (node) => {
@@ -275,7 +316,6 @@ export class ExpressionBuilderComponent implements AfterViewInit {
             }</span>`;
         };
 
-        const syntaxTree = syntax({ ...options });
         if (!syntaxTree) {
             this.renderHTML(source);
         } else {
@@ -291,6 +331,7 @@ export class ExpressionBuilderComponent implements AfterViewInit {
         const columns = Identifiers.filter(
             (ident) =>
                 !(
+                    FUNCTIONS.has(ident) ||
                     this.suggestionOptions.find((o) => !!~o.text.indexOf(ident)) ||
                     this.suggestionFunctions.find((o) => !!~o.text.indexOf(ident))
                 )

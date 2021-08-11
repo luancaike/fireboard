@@ -1,17 +1,17 @@
 import { ExpressionCstVisitor, parse } from './parser';
 import {
-    lexerWithRecovery,
+    CLAUSE_TOKENS,
+    FunctionName,
     Identifier,
-    WhiteSpace,
+    IdentifierString,
+    isTokenType,
+    lexerWithRecovery,
     LParen,
     RParen,
-    IdentifierString,
-    FunctionName,
-    isTokenType,
-    CLAUSE_TOKENS
+    WhiteSpace
 } from './lexer';
 
-import { MBQL_CLAUSES, getMBQLName } from './config';
+import { getMBQLName, MBQL_CLAUSES } from './config';
 
 const TOKENIZED_NODES = new Set(['dimension', 'metric', 'aggregation']);
 
@@ -346,7 +346,6 @@ export function syntax({ strategies = DEFAULT_STRATEGIES, ...options }: any = {}
         try {
             return strategy(options);
         } catch (e) {
-            // console.warn(e)
         }
     }
     throw new Error('Unable to parse: ' + options.source);

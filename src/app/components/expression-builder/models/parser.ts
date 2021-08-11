@@ -12,19 +12,23 @@ import {
     FunctionName,
     Identifier,
     IdentifierString,
+    isTokenType,
     lexer,
+    lexerWithRecovery,
     LogicalAndOperator,
     LogicalOrOperator,
     LParen,
     Minus,
     MultiplicativeOperator,
     NumberLiteral,
+    RecoveryToken,
     RParen,
     StringLiteral
 } from './lexer';
 import { typeCheck } from './typechecker';
 
 export class ExpressionParser extends CstParser {
+    private tokenRecoveryEnabled: any;
     constructor(config = {}) {
         super(allTokens, {
             // reduced for performance reasons
@@ -384,15 +388,13 @@ export class ExpressionParser extends CstParser {
         }
     }
 
-    // canTokenTypeBeInsertedInRecovery() {
-    //     // console.log("insert", this.tokenRecoveryEnabled);
-    //     return this.tokenRecoveryEnabled;
-    // }
-    //
-    // canRecoverWithSingleTokenDeletion() {
-    //     // console.log("delete", this.tokenRecoveryEnabled);
-    //     return this.tokenRecoveryEnabled;
-    // }
+    canTokenTypeBeInsertedInRecovery() {
+        return this.tokenRecoveryEnabled;
+    }
+
+    canRecoverWithSingleTokenDeletion() {
+        return this.tokenRecoveryEnabled;
+    }
 }
 
 export const parser = new ExpressionParser();
@@ -403,8 +405,8 @@ export const parserWithRecovery = new ExpressionParser({
 export class ExpressionCstVisitor extends parser.getBaseCstVisitorConstructor() {}
 
 export function parse({ source, tokenVector, startRule = 'expression', recover = false }: any = {}) {
-    const l = lexer;
-    const p = parser;
+    const l = recover ? lexerWithRecovery : lexer;
+    const p = recover ? parserWithRecovery : parser;
 
     let lexerErrors;
     // Lex
@@ -420,6 +422,9 @@ export function parse({ source, tokenVector, startRule = 'expression', recover =
             tokenVector = tokens;
         }
     }
+
+    const lexerRecovered =
+        tokenVector.length > 0 && isTokenType(tokenVector[tokenVector.length - 1].tokenType, RecoveryToken);
 
     // Parse
     p.input = tokenVector;
@@ -438,6 +443,7 @@ export function parse({ source, tokenVector, startRule = 'expression', recover =
     return {
         cst,
         tokenVector,
+        lexerRecovered,
         parserErrors,
         parserRecovered,
         lexerErrors,
