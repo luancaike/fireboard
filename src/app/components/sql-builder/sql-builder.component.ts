@@ -12,6 +12,8 @@ import {
     JoinType,
     ModelSqlBuild
 } from './sql-builder.model';
+import { FlatCopy } from '../../utils/objects';
+import { FireboardDataService } from '../../service/fireboard-data.service';
 
 @Component({
     selector: 'fb-sql-builder',
@@ -24,6 +26,8 @@ export class SqlBuilderComponent {
     @Output() showPanelChange = new EventEmitter();
     @Output() save = new EventEmitter<ModelSqlBuild>();
     @Input() tables: DataSource[] = [];
+
+    constructor(public fireboardDataService: FireboardDataService) {}
 
     @Input() set showPanel(value: boolean) {
         this.showPanelChange.emit(value);
@@ -201,8 +205,43 @@ export class SqlBuilderComponent {
         }
     }
 
+    getModelToSave() {
+        const newModel: { [key: string]: any } | ModelSqlBuild = FlatCopy<ModelSqlBuild>(this.model);
+
+        delete newModel.table.columns;
+
+        newModel.select = newModel.select.map(({ id }) => ({ id }));
+        newModel.group = newModel.group.map(({ id }) => ({ id }));
+        newModel.order = newModel.order.map(({ id, direction }) => ({ id, direction }));
+        newModel.filters = newModel.filters.map((item) => ({
+            ...item,
+            values: item.values.map((el) => ({
+                ...el,
+                value: el.type === 'date' ? new Date(el.value).toISOString() : el.value
+            })),
+            operator: item.operator.id,
+            column: { id: item.column.id }
+        }));
+        newModel.forks = newModel.forks
+            .filter((item) => !!item?.table?.id)
+            .map((item) => ({
+                ...item,
+                table: { id: item.table.id },
+                columnPrimary: { id: item.table.id },
+                columnSecondary: { id: item.table.id }
+            }));
+        return newModel;
+    }
+
+    previewModel() {
+        this.fireboardDataService.previewDataSource(this.getModelToSave()).then(({ data }) => {
+            console.log(data.query);
+            console.table(data.result);
+        });
+    }
+
     saveThisModel() {
         this.save.emit(this.model);
-        this.closePanel();
+        //this.closePanel();
     }
 }

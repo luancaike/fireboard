@@ -1,15 +1,23 @@
-import { ChangeDetectorRef, Component, HostBinding, OnDestroy, TemplateRef } from '@angular/core';
+import { ChangeDetectorRef, Component, HostBinding, OnDestroy, TemplateRef, ViewEncapsulation } from '@angular/core';
 import { ToastService } from 'src/app/service/toast.service';
 import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'fb-toasts',
+    encapsulation: ViewEncapsulation.None,
+    styles: [
+        `
+            .ngb-toasts {
+                z-index: 1500 !important;
+            }
+        `
+    ],
     template: `
         <ngb-toast
             *ngFor="let toast of toastService.toasts"
             [class]="toast.classname"
             [autohide]="true"
-            [delay]="toast.delay || 5000"
+            [delay]="toast.delay || 10000"
             (hide)="hide(toast)"
         >
             <ng-template [ngIf]="isTemplate(toast)" [ngIfElse]="text">

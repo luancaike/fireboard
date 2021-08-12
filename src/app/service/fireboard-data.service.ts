@@ -48,6 +48,13 @@ export class FireboardDataService {
             .catch(this.catchHttpError);
     }
 
+    async previewDataSource(model): Promise<any> {
+        return this.http
+            .post<any>(`${api}/api/v1/dashboard-builder/datasource/test`, model)
+            .toPromise()
+            .catch(this.catchHttpError);
+    }
+
     getDataSources(): Promise<any> {
         return this.http.get(`${api}/api/v1/dashboard-builder/datasource`).toPromise().catch(this.catchHttpError);
     }

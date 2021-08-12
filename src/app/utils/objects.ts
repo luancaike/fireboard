@@ -39,3 +39,6 @@ export const SetValueObjectByPath = (
     }, object);
     return object;
 };
+export const FlatCopy = <T = any>(object: { [key: string]: any }): T => {
+    return JSON.parse(JSON.stringify(object));
+};
