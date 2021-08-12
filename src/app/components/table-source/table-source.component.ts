@@ -53,14 +53,16 @@ export class TableSourceComponent {
     @debounce(500)
     getTableColumns() {
         if (this.filterText && this.filterText.length) {
-            this.dataService.searchTable(this.filterText).then(({ data }) => {
-                this.isLoading = false;
-                this.dataColumns = data.map((el) => ({
-                    name: el.columnName,
-                    type: el.dataType,
-                    key: el.columnName
-                }));
-            });
+            this.dataService
+                .searchTable(this.filterText)
+                .then(({ data }) => {
+                    this.dataColumns = data.map((el) => ({
+                        name: el.columnName,
+                        type: el.dataType,
+                        key: el.columnName
+                    }));
+                })
+                .finally(() => (this.isLoading = false));
         } else {
             this.isLoading = false;
         }

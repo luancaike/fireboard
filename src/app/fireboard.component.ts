@@ -21,6 +21,7 @@ import { FilterBindKey, FilterHandlerDto } from './models/filter.dtos';
 import { ChartItemConfig } from './models/charts.dtos';
 import { ChartSelectorComponent } from './components/chart-selector/chart-selector.component';
 import { TableSourceComponent } from './components/table-source/table-source.component';
+import { ToastService } from './service/toast.service';
 
 type DashboardPage = {
     name: string;
@@ -69,8 +70,16 @@ export class FireboardComponent implements AfterViewInit {
         return [...this.filtersList, ...this.widgetsList];
     }
 
-    constructor(private cdr: ChangeDetectorRef, public fireboardDataService: FireboardDataService) {
+    constructor(
+        private cdr: ChangeDetectorRef,
+        public fireboardDataService: FireboardDataService,
+        public toastService: ToastService
+    ) {
         this.fireboardDataService.filterEventEmitter.subscribe((data) => this.handlerFilter(data));
+    }
+
+    showStandard() {
+        this.toastService.showError('I am a standard toast');
     }
 
     ngAfterViewInit(): void {

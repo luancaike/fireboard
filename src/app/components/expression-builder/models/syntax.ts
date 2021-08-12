@@ -345,8 +345,7 @@ export function syntax({ strategies = DEFAULT_STRATEGIES, ...options }: any = {}
     for (const strategy of strategies) {
         try {
             return strategy(options);
-        } catch (e) {
-        }
+        } catch (e) {}
     }
     throw new Error('Unable to parse: ' + options.source);
 }

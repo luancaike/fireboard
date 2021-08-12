@@ -26,6 +26,8 @@ import { ModalPanelModule } from './components/modal-panel/modal-panel.module';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { TokenInterceptor } from './service/http.service';
 import { TableSourceModule } from './components/table-source/table-source.module';
+import { ToastComponent } from './components/toast/toast.component';
+import { ToastService } from './service/toast.service';
 
 @NgModule({
     imports: [
@@ -54,6 +56,7 @@ import { TableSourceModule } from './components/table-source/table-source.module
             useClass: TokenInterceptor,
             multi: true
         },
+        ToastService,
         LoadingBarService
     ],
     declarations: [
@@ -63,7 +66,8 @@ import { TableSourceModule } from './components/table-source/table-source.module
         DateFilterComponent,
         InputSelectComponent,
         InputTextComponent,
-        CardSelectComponent
+        CardSelectComponent,
+        ToastComponent
     ],
     bootstrap: [FireboardComponent]
 })

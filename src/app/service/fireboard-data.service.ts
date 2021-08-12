@@ -4,8 +4,8 @@ import { DataSourceDataMockList } from '../models/mocks';
 import { DataSourceSelected, FilterModel } from '../models/data-source.dtos';
 import { CustomFilterDto } from '../components/filter-maker/filter-maker.model';
 import { FilterBindKey, FilterHandlerDto, FilterQueryTypes } from '../models/filter.dtos';
-import { HttpClient } from '@angular/common/http';
-import { tap } from 'rxjs/operators';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { ToastService } from './toast.service';
 
 const randomTimer = () => Math.random() * (1000 - 100) + 100;
 
@@ -17,7 +17,19 @@ export class FireboardDataService {
     public filterBindKey: FilterBindKey[] = [];
     public filterValues = new Map<string, any>();
 
-    constructor(private http: HttpClient) {}
+    constructor(private http: HttpClient, private toastService: ToastService) {}
+
+    private catchHttpError = (response: HttpErrorResponse) => {
+        const errorsList = response?.error?.errors;
+        const errorMsg = response?.error?.message;
+        if (Array.isArray(errorsList)) {
+            errorsList.forEach(({ message }) => this.toastService.showError(message));
+        } else if (errorMsg) {
+            this.toastService.showError(errorMsg);
+        } else {
+            this.toastService.showError('Erro Interno');
+        }
+    };
 
     // TODO: REMOVE
     async login(login: string, pass: string): Promise<any> {
@@ -25,23 +37,26 @@ export class FireboardDataService {
             Username: login,
             Password: pass
         };
-        const { data } = await this.http.post<any>(`${api}/api/v1/token`, model).toPromise();
+        const { data } = await this.http.post<any>(`${api}/api/v1/token`, model).toPromise().catch(this.catchHttpError);
         window.localStorage.setItem('token', data.accessToken);
     }
 
     async addTableSource(model): Promise<any> {
-        return this.http.post<any>(`${api}/api/v1/dashboard-builder/datasource`, model).toPromise();
+        return this.http
+            .post<any>(`${api}/api/v1/dashboard-builder/datasource`, model)
+            .toPromise()
+            .catch(this.catchHttpError);
     }
 
     getDataSources(): Promise<any> {
-        return this.http.get(`${api}/api/v1/dashboard-builder/datasource`).toPromise();
+        return this.http.get(`${api}/api/v1/dashboard-builder/datasource`).toPromise().catch(this.catchHttpError);
     }
 
     searchTable(table: string): Promise<any> {
         return this.http
             .get(`${api}/api/v1/dashboard-builder/table-columns/${table}`)
-            .pipe(tap(console.log))
-            .toPromise();
+            .toPromise()
+            .catch(this.catchHttpError);
     }
 
     dataGetter(data: DataGetter): Promise<any[]> {
