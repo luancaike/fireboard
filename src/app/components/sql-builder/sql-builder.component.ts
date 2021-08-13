@@ -1,4 +1,13 @@
-import { Component, EventEmitter, Input, Output, QueryList, ViewChildren, ViewEncapsulation } from '@angular/core';
+import {
+    ChangeDetectorRef,
+    Component,
+    EventEmitter,
+    Input,
+    Output,
+    QueryList,
+    ViewChildren,
+    ViewEncapsulation
+} from '@angular/core';
 import { PopoverComponent } from '../popover/popover.component';
 import { DataSource, DataSourceKey, DataSourceKeyTypes } from '../../models/data-source.dtos';
 import {
@@ -27,7 +36,7 @@ export class SqlBuilderComponent {
     @Output() save = new EventEmitter<ModelSqlBuild>();
     @Input() tables: DataSource[] = [];
 
-    constructor(public fireboardDataService: FireboardDataService) {}
+    constructor(public fireboardDataService: FireboardDataService, private cdr: ChangeDetectorRef) {}
 
     @Input() set showPanel(value: boolean) {
         this.showPanelChange.emit(value);
@@ -39,6 +48,12 @@ export class SqlBuilderComponent {
     }
 
     private _showPanel = false;
+    public previewCollapsed = true;
+    public previewQueryResult = {
+        query: '',
+        result: [],
+        columns: []
+    };
     public selectedColumnFilter: DataSourceKey;
     public selectedOperator;
     public operatorsFilter: FilterOperator[] = [];
@@ -235,8 +250,10 @@ export class SqlBuilderComponent {
 
     previewModel() {
         this.fireboardDataService.previewDataSource(this.getModelToSave()).then(({ data }) => {
-            console.log(data.query);
-            console.table(data.result);
+            this.previewQueryResult.query = data.query;
+            this.previewQueryResult.result = data.result;
+            this.previewQueryResult.columns = data.result.length ? Object.keys(data.result[0]) : [];
+            this.cdr.detectChanges();
         });
     }
 

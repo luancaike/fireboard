@@ -5,9 +5,10 @@ import { PopoverModule } from '../popover/popover.module';
 import { IconsModule } from '../../icons/icons.module';
 import { FormsModule } from '@angular/forms';
 import { ExpressionBuilderModule } from '../expression-builder/expression-builder.module';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
-    imports: [CommonModule, PopoverModule, IconsModule, FormsModule, ExpressionBuilderModule],
+    imports: [CommonModule, PopoverModule, IconsModule, FormsModule, ExpressionBuilderModule, NgbModule],
     declarations: [SqlBuilderComponent],
     exports: [SqlBuilderComponent]
 })

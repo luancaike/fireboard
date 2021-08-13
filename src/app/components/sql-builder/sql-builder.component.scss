@@ -28,6 +28,10 @@ $sb-border-radius: 5px !default;
     justify-content: flex-start;
     align-items: flex-start;
     align-content: flex-start;
+    height: 100%;
+    overflow: auto;
+
+    @include scroll-style;
 
     * {
         user-select: none;
@@ -116,6 +120,7 @@ $sb-border-radius: 5px !default;
     .select-box,
     .orderby-box,
     .filter-box,
+    .preview-box,
     .top-box {
         color: var(--sb-color-base);
         background-color: var(--sb-color-base-alpha);
@@ -157,8 +162,11 @@ $sb-border-radius: 5px !default;
             align-content: center;
             align-items: center;
             margin: 5px 0;
+            flex-wrap: wrap;
 
             .item {
+                margin-top: 5px;
+                margin-bottom: 5px;
                 margin-right: 10px;
                 flex: 0 0 50px;
                 width: 100%;
@@ -287,5 +295,22 @@ $sb-border-radius: 5px !default;
     .top-box {
         --sb-color-base: rgb(108, 108, 108);
         --sb-color-base-alpha: rgba(108, 108, 108, 0.1);
+    }
+}
+.preview-box {
+    color: rgb(108, 108, 108);
+    border: solid 1px #f0f0f0;
+    background-color: rgba(108, 108, 108, 0.1);
+    padding: 0;
+    overflow: hidden;
+    height: 100%;
+    font-size: 12px;
+
+    .box-container {
+        background-color: white;
+        height: calc(100% - 56px);
+        overflow: auto;
+
+        @include scroll-style;
     }
 }
