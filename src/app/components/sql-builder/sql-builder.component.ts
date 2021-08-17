@@ -24,6 +24,7 @@ import {
 import { FlatCopy } from '../../utils/objects';
 import { FireboardDataService } from '../../service/fireboard-data.service';
 import { EDITOR_FK_SYMBOLS } from '../expression-builder/models';
+import { ExpressionBuilderComponent } from '../expression-builder/expression-builder.component';
 
 @Component({
     selector: 'fb-sql-builder',
@@ -55,6 +56,7 @@ export class SqlBuilderComponent {
         result: [],
         columns: []
     };
+    public selectedCustomColumn: DataSourceKey;
     public selectedColumnFilter: DataSourceKey;
     public selectedOperator;
     public operatorsFilter: FilterOperator[] = [];
@@ -104,6 +106,16 @@ export class SqlBuilderComponent {
     };
     public addCustomColumn = (table: any) => {
         this.model.select.push(table);
+        this.closeAllPopovers();
+    };
+    public editCustomColumn = (table: any) => {
+        const result = this.model.select.find((el) => el === this.selectedCustomColumn);
+        if (result) {
+            result.name = table.name;
+            result.source = table.source;
+            result.expression = table.expression;
+        }
+        this.selectedCustomColumn = null;
         this.closeAllPopovers();
     };
     public addFork = () => {
@@ -252,6 +264,21 @@ export class SqlBuilderComponent {
                 columnSecondary: { id: item.table.id }
             }));
         return newModel;
+    }
+
+    selectColumn(
+        mouseEvent: MouseEvent,
+        popover: PopoverComponent,
+        expression: ExpressionBuilderComponent,
+        item: DataSourceKey
+    ) {
+        this.selectedCustomColumn = null;
+        if (item.type === DataSourceKeyTypes.Custom) {
+            this.selectedCustomColumn = item;
+            popover.show(mouseEvent);
+            expression.columnTitle = item.name;
+            expression.renderText(item.source);
+        }
     }
 
     previewModel() {

@@ -247,7 +247,7 @@
                         </div>
                         <div class="box-container">
                             <div class="item" *ngFor="let item of model?.select">
-                                <div class="item-option">
+                                <div class="item-option" (click)="selectColumn($event, popoverCustomColumnEditor, expressionCustomColumnEditor, item)">
                                     {{ item.name }}
                                     <fa-icon
                                         icon="times"
@@ -256,6 +256,13 @@
                                     ></fa-icon>
                                 </div>
                             </div>
+                            <fb-popover #popoverCustomColumnEditor title="Coluna Customizada">
+                                <fb-expression-builder
+                                    #expressionCustomColumnEditor
+                                    (save)="editCustomColumn($event)"
+                                    [columns]="columnsOfModel"
+                                ></fb-expression-builder>
+                            </fb-popover>
                             <div class="item">
                                 <button class="btn item-option outline readonly add" (click)="popoverForkSelect.show($event)">
                                     <fa-icon icon="plus"></fa-icon>
@@ -279,6 +286,7 @@
                                 </button>
                                 <fb-popover #popoverCustomColumn title="Coluna Customizada">
                                     <fb-expression-builder
+                                        source=""
                                         (save)="addCustomColumn($event)"
                                         [columns]="columnsOfModel"
                                     ></fb-expression-builder>
@@ -441,7 +449,7 @@
                             </thead>
                             <tbody>
                             <tr *ngFor="let row of previewQueryResult.result">
-                                <td *ngFor="let column of previewQueryResult.columns">{{row[column]}}</td>
+                                <td *ngFor="let column of previewQueryResult.columns">{{row[column] || "&nbsp;"}}</td>&nbsp;
                             </tr>
                             </tbody>
                         </table>

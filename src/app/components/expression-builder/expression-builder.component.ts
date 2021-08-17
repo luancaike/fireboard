@@ -30,6 +30,7 @@ export class ExpressionBuilderComponent implements AfterViewInit {
     @ViewChild('editor') editor: ElementRef<HTMLDivElement>;
     @ViewChild('suggestionsPopover') suggestionsPopover: PopoverComponent;
     @Output() save = new EventEmitter();
+    @Input() columnTitle = '';
     @Input() columns: DataSourceKey[] = [];
 
     constructor(private cdr: ChangeDetectorRef) {}
@@ -42,11 +43,10 @@ export class ExpressionBuilderComponent implements AfterViewInit {
         return this.columnTitle.length && !this.errors.length;
     }
 
+    public source = '';
     public showErrors = false;
     public errors = [];
-    public source = '';
     public expression = [];
-    public columnTitle = '';
     public suggestionFunctions = [
         {
             text: 'abs',
