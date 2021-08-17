@@ -1,6 +1,7 @@
 import {
     AfterViewInit,
     ChangeDetectionStrategy,
+    ChangeDetectorRef,
     Component,
     ElementRef,
     EventEmitter,
@@ -13,7 +14,7 @@ import { parse } from './models/parser';
 import { syntax } from './models/syntax';
 import { OPERATOR, TOKEN, tokenize } from './models/tokenizer';
 import { PopoverComponent } from '../popover/popover.component';
-import { DataSource, DataSourceKeyTypes } from '../../models/data-source.dtos';
+import { DataSourceKey, DataSourceKeyTypes } from '../../models/data-source.dtos';
 import { FUNCTIONS } from './models';
 import { compile } from './models/compile';
 
@@ -29,12 +30,12 @@ export class ExpressionBuilderComponent implements AfterViewInit {
     @ViewChild('editor') editor: ElementRef<HTMLDivElement>;
     @ViewChild('suggestionsPopover') suggestionsPopover: PopoverComponent;
     @Output() save = new EventEmitter();
-    @Input() columns: DataSource[] = [];
+    @Input() columns: DataSourceKey[] = [];
+
+    constructor(private cdr: ChangeDetectorRef) {}
 
     public get suggestionOptions() {
-        return this.columns.reduce((acc, item) => {
-            return [...acc, ...item.columns.map((el) => ({ text: `${el.name}` }))];
-        }, []);
+        return this.columns.map((el) => ({ text: `${el.name}` }));
     }
 
     public get isValid() {
@@ -44,6 +45,7 @@ export class ExpressionBuilderComponent implements AfterViewInit {
     public showErrors = false;
     public errors = [];
     public source = '';
+    public expression = [];
     public columnTitle = '';
     public suggestionFunctions = [
         {
@@ -69,6 +71,22 @@ export class ExpressionBuilderComponent implements AfterViewInit {
         {
             text: 'count',
             value: 'count'
+        },
+        {
+            text: 'max',
+            value: 'max'
+        },
+        {
+            text: 'min',
+            value: 'min'
+        },
+        {
+            text: 'avg',
+            value: 'avg'
+        },
+        {
+            text: 'sum',
+            value: 'sum'
         }
     ];
     public suggestionResults = [];
@@ -162,7 +180,6 @@ export class ExpressionBuilderComponent implements AfterViewInit {
     }
 
     showSuggestions() {
-        this.hiddenSuggestions();
         const { anchorIndex, focusIndex, textSegments } = this.getSelectIndex();
         const textContent = textSegments.map(({ text }) => text).join('');
         let result = '';
@@ -209,7 +226,10 @@ export class ExpressionBuilderComponent implements AfterViewInit {
         );
         if (this.suggestionResults.length || this.suggestionFunctionsResults.length) {
             this.showSuggestionsPopover();
+        } else {
+            this.hiddenSuggestions();
         }
+        this.cdr.detectChanges();
     }
 
     showSuggestionsPopover() {
@@ -265,8 +285,7 @@ export class ExpressionBuilderComponent implements AfterViewInit {
         this.errors = [];
 
         let syntaxTree;
-        let compileError;
-        let expression;
+        let compileError = [];
 
         const { tokens, errors } = tokenize(source);
         const options = {
@@ -284,23 +303,22 @@ export class ExpressionBuilderComponent implements AfterViewInit {
             compileError = typeErrors.concat(parserErrors);
         } else {
             try {
-                expression = compile({
+                this.expression = compile({
                     cst,
                     tokenVector,
-                    resolve: (kind, name) => {
-                        console.log({ kind, name });
+                    query: {
+                        dimensionOptions: () => {
+                            return this.columns;
+                        }
                     },
                     ...options
                 });
             } catch (e) {
-                console.warn('compile error', e);
-                compileError = e;
+                compileError = [e];
             }
         }
 
-        console.log(expression, compileError);
-
-        if ([...parserErrors, ...lexerErrors, ...typeErrors, ...errors].length) {
+        if ([...parserErrors, ...lexerErrors, ...typeErrors, ...errors, ...compileError].length) {
             this.errors = [...this.errors, { message: 'Erro de Sintaxe' }];
         }
 
@@ -351,7 +369,8 @@ export class ExpressionBuilderComponent implements AfterViewInit {
         this.save.emit({
             name: this.columnTitle,
             type: DataSourceKeyTypes.Custom,
-            source: this.source
+            source: this.source,
+            expression: this.expression
         });
         this.resetExpression();
     }

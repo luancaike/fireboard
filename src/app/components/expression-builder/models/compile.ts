@@ -194,7 +194,7 @@ export function compile({ cst, ...options }) {
             if (!dimension) {
                 throw new Error(`Unknown Field: ${name}`);
             }
-            return dimension.mbql();
+            return ['dimension', dimension.id];
         }
     }
 

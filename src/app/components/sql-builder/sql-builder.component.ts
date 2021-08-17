@@ -23,6 +23,7 @@ import {
 } from './sql-builder.model';
 import { FlatCopy } from '../../utils/objects';
 import { FireboardDataService } from '../../service/fireboard-data.service';
+import { EDITOR_FK_SYMBOLS } from '../expression-builder/models';
 
 @Component({
     selector: 'fb-sql-builder',
@@ -60,7 +61,7 @@ export class SqlBuilderComponent {
     public operatorsValues: FilterValuesSqlBuild[] = [];
     public model: ModelSqlBuild = getDefaultModel();
 
-    get tablesOfModel() {
+    get tablesOfModel(): DataSource[] {
         const baseColumns = this.model?.table ? [this.model?.table] : [];
         const forkColumns =
             this.model?.forks?.reduce((acc, item) => {
@@ -69,18 +70,20 @@ export class SqlBuilderComponent {
                 }
                 return acc;
             }, []) || [];
-        // const customColumns = this.model?.select?.filter((el) => el.type === DataSourceKeyTypes.Custom);
         return [...baseColumns, ...forkColumns];
+    }
+
+    get columnsOfModel(): DataSourceKey[] {
+        return this.tablesOfModel.reduce((acc, item) => {
+            return [
+                ...acc,
+                ...item.columns.map((el) => ({ ...el, name: `${item.name}${EDITOR_FK_SYMBOLS.default}${el.name}` }))
+            ];
+        }, []);
     }
 
     get filterIsValid(): boolean {
         return this.selectedColumnFilter && this.selectedOperator && this.operatorsValues.every((el) => !!el.value);
-    }
-
-    get columnsOfModel() {
-        return this.tablesOfModel.reduce((acc, item) => {
-            return [...acc, ...item.keys.map((el) => ({ ...el, name: `${item.name} → ${el.name}` }))];
-        }, []);
     }
 
     public trackByValorFilter = (index: number, item: any) => {
@@ -91,6 +94,9 @@ export class SqlBuilderComponent {
         this.model = getDefaultModel();
         this.model.table = table;
         this.closeAllPopovers();
+    };
+    public trackById = (index: number, item: any) => {
+        return item?.id;
     };
     public addSelect = (table: DataSourceKey) => {
         this.model.select.push(table);
@@ -225,7 +231,7 @@ export class SqlBuilderComponent {
 
         delete newModel.table.columns;
 
-        newModel.select = newModel.select.map(({ id }) => ({ id }));
+        newModel.select = newModel.select.map(({ id, expression, type, name }) => ({ id, expression, type, name }));
         newModel.group = newModel.group.map(({ id }) => ({ id }));
         newModel.order = newModel.order.map(({ id, direction }) => ({ id, direction }));
         newModel.filters = newModel.filters.map((item) => ({
@@ -252,13 +258,24 @@ export class SqlBuilderComponent {
         this.fireboardDataService.previewDataSource(this.getModelToSave()).then(({ data }) => {
             this.previewQueryResult.query = data.query;
             this.previewQueryResult.result = data.result;
-            this.previewQueryResult.columns = data.result.length ? Object.keys(data.result[0]) : [];
+            this.previewQueryResult.columns = data.result.length ? this.getColumnsOfData(data.result) : [];
             this.cdr.detectChanges();
         });
     }
 
+    getColumnsOfData(data: any[]) {
+        const keys = new Set();
+        data.forEach((el) => {
+            Object.keys(el).forEach((k) => keys.add(k));
+        });
+        return Array.from(keys);
+    }
+
+    viewQuerySql() {
+        alert(this.previewQueryResult.query);
+    }
+
     saveThisModel() {
         this.save.emit(this.model);
-        //this.closePanel();
     }
 }

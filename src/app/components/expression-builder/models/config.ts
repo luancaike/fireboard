@@ -80,7 +80,7 @@ export const MBQL_CLAUSES = {
         args: ['number'],
         requiresFeature: 'standard-deviation-aggregations'
     },
-    avg: { displayName: `Average`, type: 'aggregation', args: ['number'] },
+    avg: { displayName: `Avg`, type: 'aggregation', args: ['number'] },
     min: { displayName: `Min`, type: 'aggregation', args: ['number'] },
     max: { displayName: `Max`, type: 'aggregation', args: ['number'] },
     share: { displayName: `Share`, type: 'aggregation', args: ['boolean'] },

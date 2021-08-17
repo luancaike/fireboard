@@ -47,10 +47,7 @@ export function formatSegmentName(segment, options) {
  */
 export function parseDimension(name, { query }) {
     // FIXME: this is pretty inefficient, create a lookup table?
-    return query
-        .dimensionOptions()
-        .all()
-        .find((d) => EDITOR_FK_SYMBOLS.symbols.some((separator) => getDimensionName(d, separator) === name));
+    return query.dimensionOptions().find((d) => d.name === name);
 }
 
 export function formatDimensionName(dimension, options) {

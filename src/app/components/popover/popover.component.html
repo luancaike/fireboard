@@ -2,6 +2,6 @@
     <span class="title-popover">{{title}}</span>
     <button (click)="hide()" class="close-popover">✕</button>
     <div class="body-popover">
-        <ng-content></ng-content>
+        <ng-content *ngIf="isShow"></ng-content>
     </div>
 </div>

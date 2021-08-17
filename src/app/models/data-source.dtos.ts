@@ -19,6 +19,8 @@ export interface DataSourceKey {
     type: DataSourceKeyTypes;
     name: string;
     key: string;
+    expression?: any[];
+    source?: string;
 }
 export interface FilterModel {
     id: number;

@@ -1,6 +1,6 @@
 <ng-template #tablesList let-onselect="onselect" let-excludeList="excludeList">
     <ul class="sb-list-group">
-        <ng-container *ngFor="let table of tables">
+        <ng-container *ngFor="let table of tables; trackBy:trackById">
             <li class="sb-list-group-item" (click)="onselect(table)" [hidden]="excludeList?.includes(table)">
                 <fa-icon icon="table" [fixedWidth]="true"></fa-icon>
                 {{ table.name }}
@@ -10,7 +10,7 @@
 </ng-template>
 <ng-template #columnsList let-onselect="onselect" let-columns="columns" let-excludeList="excludeList">
     <ul class="sb-list-group">
-        <ng-container *ngFor="let item of columns">
+        <ng-container *ngFor="let item of columns; trackBy:trackById">
             <li class="sb-list-group-item" (click)="onselect(item)" [hidden]="excludeList?.includes(item)">
                 <fa-icon *ngIf="item.type === 'custom'" icon="code" [fixedWidth]="true"></fa-icon>
                 <fa-icon *ngIf="item.type === 'number'" icon="calculator" [fixedWidth]="true"></fa-icon>
@@ -21,28 +21,12 @@
         </ng-container>
     </ul>
 </ng-template>
-<ng-template #columnsGroupList let-onselect="onselect" let-columns="columns" let-excludeList="excludeList">
-    <ul class="sb-list-group" *ngFor="let item of columns">
-        <li class="sb-list-group-separator">
-            {{ item.name }}
-        </li>
-        <ng-container *ngFor="let el of item?.columns">
-            <li class="sb-list-group-item" (click)="onselect(el)" [hidden]="excludeList?.includes(el)">
-                <fa-icon *ngIf="el.type === 'custom'" icon="code" [fixedWidth]="true"></fa-icon>
-                <fa-icon *ngIf="el.type === 'number'" icon="calculator" [fixedWidth]="true"></fa-icon>
-                <fa-icon *ngIf="el.type === 'string'" icon="font" [fixedWidth]="true"></fa-icon>
-                <fa-icon *ngIf="el.type === 'date'" icon="calendar" [fixedWidth]="true"></fa-icon>
-                {{ el.name }}
-            </li>
-        </ng-container>
-    </ul>
-</ng-template>
 <ng-template #columnsFilterBuild let-columns="columns" let-onselect="onselect">
     <ul class="sb-list-group" *ngFor="let item of columns" [hidden]="selectedColumnFilter">
         <li class="sb-list-group-separator">
             {{ item.name }}
         </li>
-        <ng-container *ngFor="let el of item?.columns">
+        <ng-container *ngFor="let el of item?.columns; trackBy:trackById">
             <li class="sb-list-group-item" (click)="onSelectedFilter(el)">
                 <fa-icon *ngIf="el.type === 'custom'" icon="code" [fixedWidth]="true"></fa-icon>
                 <fa-icon *ngIf="el.type === 'number'" icon="calculator" [fixedWidth]="true"></fa-icon>
@@ -279,11 +263,11 @@
                                 <fb-popover #popoverForkSelect title="Colunas">
                                     <ng-container
                                         *ngTemplateOutlet="
-                                    columnsGroupList;
+                                    columnsList;
                                     context: {
                                         excludeList: model?.select,
                                         onselect: addSelect,
-                                        columns: tablesOfModel
+                                        columns: columnsOfModel
                                     }
                                 "
                                     ></ng-container>
@@ -296,9 +280,8 @@
                                 <fb-popover #popoverCustomColumn title="Coluna Customizada">
                                     <fb-expression-builder
                                         (save)="addCustomColumn($event)"
-                                        [columns]="tablesOfModel"
-                                    ></fb-expression-builder
-                                    >
+                                        [columns]="columnsOfModel"
+                                    ></fb-expression-builder>
                                 </fb-popover>
                             </div>
                         </div>
@@ -329,11 +312,11 @@
                                 <fb-popover #popoverForkGroup title="Colunas">
                                     <ng-container
                                         *ngTemplateOutlet="
-                                    columnsGroupList;
+                                    columnsList;
                                     context: {
                                         excludeList: model?.group,
                                         onselect: addGroup,
-                                        columns: tablesOfModel
+                                        columns: columnsOfModel
                                     }
                                 "
                                     ></ng-container>
@@ -411,11 +394,11 @@
                                 <fb-popover #popoverForkOrder title="Colunas">
                                     <ng-container
                                         *ngTemplateOutlet="
-                                    columnsGroupList;
+                                    columnsList;
                                     context: {
                                         excludeList: model?.order,
                                         onselect: addOrder,
-                                        columns: tablesOfModel
+                                        columns: columnsOfModel
                                     }
                                 "
                                     ></ng-container>
@@ -441,9 +424,13 @@
             </div>
             <div class="col-4 h-100">
                 <div class="preview-box" [hidden]="!model?.table">
-                    <button class="btn btn-light m-2 preview-btn" (click)="previewModel()">
+                    <button class="btn btn-primary m-2" (click)="previewModel()">
                         Visualizar
                         <fa-icon icon="play" class="ml-2"></fa-icon>
+                    </button>
+                    <button class="btn btn-secondary m-2" (click)="viewQuerySql()">
+                        SQL
+                        <fa-icon icon="terminal" class="ml-2"></fa-icon>
                     </button>
                     <div class="box-container">
                         <table class="table table-bordered">
