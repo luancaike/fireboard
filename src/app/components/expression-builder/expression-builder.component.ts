@@ -146,11 +146,12 @@ export class ExpressionBuilderComponent implements AfterViewInit {
         const { anchorIndex, focusIndex, textSegments } = this.getSelectIndex();
         const textContent = textSegments.map(({ text }) => text).join('');
         const start = !!~this.suggestionSelected.start ? this.suggestionSelected.start : anchorIndex;
-        const end = !!~this.suggestionSelected.end
-            ? this.suggestionSelected.end
-            : anchorIndex === focusIndex
-            ? anchorIndex
-            : focusIndex;
+        const end =
+            !!~this.suggestionSelected.end && this.suggestionSelected.end !== null
+                ? this.suggestionSelected.end
+                : anchorIndex === focusIndex
+                ? anchorIndex
+                : focusIndex;
         const prefix = textContent.slice(0, start);
         const postfix = textContent.slice(end);
 
