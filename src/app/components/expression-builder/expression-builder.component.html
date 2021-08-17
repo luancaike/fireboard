@@ -19,7 +19,9 @@
             <li class="suggestion-item-separator" *ngIf="suggestionResults.length">
                 Colunas
             </li>
-            <li *ngFor="let item of suggestionResults" class="suggestion-item column"
+            <li *ngFor="let item of suggestionResults"
+                class="suggestion-item column"
+                [class.focused]="selectedSuggestionIndex?.id === item.id && selectedSuggestionIndex?.type === 'identifier'"
                 (click)="selectSuggestions($event, item.text)">
                 <fa-icon icon="columns"></fa-icon>
                 &nbsp;
@@ -28,7 +30,9 @@
             <li class="suggestion-item-separator" *ngIf="suggestionFunctionsResults.length">
                 Funções
             </li>
-            <li *ngFor="let item of suggestionFunctionsResults" class="suggestion-item function"
+            <li *ngFor="let item of suggestionFunctionsResults;"
+                class="suggestion-item function"
+                [class.focused]="selectedSuggestionIndex?.id === item.id && selectedSuggestionIndex?.type === 'function'"
                 (click)="selectSuggestions($event, item.text, 'function')">
                 <fa-icon icon="code-branch"></fa-icon>
                 &nbsp;

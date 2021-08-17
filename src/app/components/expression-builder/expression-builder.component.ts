@@ -36,7 +36,7 @@ export class ExpressionBuilderComponent implements AfterViewInit {
     constructor(private cdr: ChangeDetectorRef) {}
 
     public get suggestionOptions() {
-        return this.columns.map((el) => ({ text: `${el.name}` }));
+        return this.columns.map((el, id) => ({ text: `${el.name}`, id }));
     }
 
     public get isValid() {
@@ -50,45 +50,46 @@ export class ExpressionBuilderComponent implements AfterViewInit {
     public suggestionFunctions = [
         {
             text: 'abs',
-            value: 'abs'
+            id: 'abs'
         },
         {
             text: 'case',
-            value: 'case'
+            id: 'case'
         },
         {
             text: 'concat',
-            value: 'concat'
+            id: 'concat'
         },
         {
             text: 'lower',
-            tevaluet: 'lower'
+            id: 'lower'
         },
         {
             text: 'upper',
-            value: 'upper'
+            id: 'upper'
         },
         {
             text: 'count',
-            value: 'count'
+            id: 'count'
         },
         {
             text: 'max',
-            value: 'max'
+            id: 'max'
         },
         {
             text: 'min',
-            value: 'min'
+            id: 'min'
         },
         {
             text: 'avg',
-            value: 'avg'
+            id: 'avg'
         },
         {
             text: 'sum',
-            value: 'sum'
+            id: 'sum'
         }
     ];
+    public selectedSuggestionIndex;
     public suggestionResults = [];
     public suggestionFunctionsResults = [];
     public suggestionSelected: any = {};
@@ -135,7 +136,7 @@ export class ExpressionBuilderComponent implements AfterViewInit {
         return { anchorIndex, focusIndex, textSegments };
     }
 
-    selectSuggestions(event: MouseEvent, suggestion, type: 'identifier' | 'function' = 'identifier') {
+    selectSuggestions(event: UIEvent, suggestion, type: 'identifier' | 'function' = 'identifier') {
         event.preventDefault();
         if (type === 'identifier') {
             suggestion = `[${suggestion}]`;
@@ -171,13 +172,62 @@ export class ExpressionBuilderComponent implements AfterViewInit {
     }
 
     keydown(e: KeyboardEvent) {
+        console.log(e.key);
+        const allSuggestions = [
+            ...this.suggestionResults.map((el) => ({ ...el, type: 'identifier' })),
+            ...this.suggestionFunctionsResults.map((el) => ({ ...el, type: 'function' }))
+        ];
         this.showSuggestions();
         if (e.key === 'Enter' || e.key === 'Escape') {
             e.stopPropagation();
             e.preventDefault();
+            if (e.key === 'Enter' && this.selectedSuggestionIndex) {
+                this.selectSuggestions(e, this.selectedSuggestionIndex.text, this.selectedSuggestionIndex.type);
+            }
             this.hiddenSuggestions();
             return;
         }
+
+        if (!allSuggestions.length) {
+            return;
+        }
+
+        if (e.key === 'ArrowDown') {
+            e.stopPropagation();
+            e.preventDefault();
+            if (this.selectedSuggestionIndex) {
+                const index = allSuggestions.findIndex((el) => this.selectedSuggestionIndex.id === el.id);
+                const indexPlus = index + 1;
+                const indexMax = allSuggestions.length - 1;
+                const indexElement = index < 0 ? 0 : indexPlus > indexMax ? indexMax : indexPlus;
+                this.selectedSuggestionIndex = allSuggestions[indexElement];
+            } else {
+                this.selectedSuggestionIndex = allSuggestions[0];
+            }
+            this.showFocusedSuggestions();
+        }
+        if (e.key === 'ArrowUp') {
+            e.stopPropagation();
+            e.preventDefault();
+            if (this.selectedSuggestionIndex) {
+                const index = allSuggestions.findIndex((el) => this.selectedSuggestionIndex.id === el.id);
+                const indexMinus = index - 1;
+                const indexElement = indexMinus < 0 ? 0 : indexMinus;
+                this.selectedSuggestionIndex = allSuggestions[indexElement];
+            }
+            this.showFocusedSuggestions();
+        }
+    }
+
+    showFocusedSuggestions() {
+        this.cdr.detectChanges();
+        setTimeout(
+            () =>
+                document
+                    .querySelector('.suggestion-item.focused')
+                    ?.scrollIntoView({ inline: 'nearest', block: 'nearest' }),
+            300
+        );
     }
 
     showSuggestions() {
@@ -239,6 +289,7 @@ export class ExpressionBuilderComponent implements AfterViewInit {
 
     hiddenSuggestions() {
         this.suggestionsPopover.hide();
+        this.selectedSuggestionIndex = null;
     }
 
     blurEditor() {

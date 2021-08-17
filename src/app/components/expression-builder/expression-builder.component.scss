@@ -59,9 +59,9 @@
         .suggestion-item {
             position: relative;
             display: block;
-            padding: 10px 20px;
+            padding: 8px 16px;
             background-color: #fff;
-            font-size: 16px;
+            font-size: 14px;
             font-weight: 500;
             color: rgba(108, 117, 125, 0.7);
         }
@@ -73,7 +73,7 @@
             &.function {
                 color: #a424ce;
 
-                &:hover {
+                &:hover, &.focused {
                     cursor: pointer;
                     color: white;
                     background-color: #a424ce;
@@ -83,7 +83,7 @@
             &.column {
                 color: #409dcf;
 
-                &:hover {
+                &:hover, &.focused {
                     cursor: pointer;
                     color: white;
                     background-color: #409dcf;
