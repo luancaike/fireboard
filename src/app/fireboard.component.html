@@ -162,18 +162,17 @@
         </ng-craftable>
     </div>
 </div>
-<fb-modal-panel [showPainel]="filterModal">
-    <fb-sql-builder
-        [tables]="tableSources"
-        [(showPanel)]="filterModal"
-    ></fb-sql-builder>
-</fb-modal-panel>
 <fb-chart-selector
     #chartSelector
     [dataSources]="dataSources"
     [charts]="chartsList"
     (selected)="selectedChart($event)"
 ></fb-chart-selector>
+<fb-data-source
+    #dataSource
+    [dataSources]="dataSources"
+    [tableSources]="tableSources"
+></fb-data-source>
 <fb-table-source
     #tableSource
 ></fb-table-source>

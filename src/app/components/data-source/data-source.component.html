@@ -1,0 +1,48 @@
+<ng-template #modal let-modal>
+    <div class="card border-0 data-source">
+        <div class="card-header d-flex justify-content-between">
+            <h6 style="margin: 0.5rem">
+                <fa-icon icon="database" class="mr-2"></fa-icon>
+                Dados
+            </h6>
+            <button class="btn btn-sm btn-outline-dark close-modal" (click)="modal.close()">
+                <fa-icon icon="times"></fa-icon>
+            </button>
+        </div>
+        <div class="search-input">
+            <input
+                type="text"
+                class="form-control input-search"
+                placeholder="Pesquisar"
+                [(ngModel)]="filterText"
+                (ngModelChange)="filterTextAction()"
+            />
+            <fa-icon icon="search" class="icon"></fa-icon>
+        </div>
+        <div class="card-body scroll-style">
+            <ul class="list-group">
+                <ng-container *ngFor="let item of getItems">
+                    <li class="list-group-item data-source-item">
+                        <div class="label-item">{{ item.name }}</div>
+                        <fa-icon class="icon-item-edit" icon="pen-alt" [fixedWidth]="true"
+                                 (click)="editDataSource(item)"></fa-icon>
+                        <fa-icon class="icon-item-delete" icon="trash-alt" [fixedWidth]="true"
+                                 (click)="removeDataSource(item)"></fa-icon>
+                    </li>
+                </ng-container>
+            </ul>
+        </div>
+        <div class="card-footer text-muted d-flex justify-content-end">
+            <button class="btn btn-outline-primary mb-2" (click)="newData()">
+                Criar Dados
+                <fa-icon icon="plus" class="mr-2"></fa-icon>
+            </button>
+        </div>
+    </div>
+</ng-template>
+<fb-modal-panel [showPainel]="dataFormModal">
+    <fb-sql-builder
+        [tables]="tableSources"
+        [(showPanel)]="dataFormModal"
+    ></fb-sql-builder>
+</fb-modal-panel>

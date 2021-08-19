@@ -22,6 +22,7 @@ import { ChartItemConfig } from './models/charts.dtos';
 import { ChartSelectorComponent } from './components/chart-selector/chart-selector.component';
 import { TableSourceComponent } from './components/table-source/table-source.component';
 import { ToastService } from './service/toast.service';
+import { DataSourceComponent } from './components/data-source/data-source.component';
 
 type DashboardPage = {
     name: string;
@@ -46,6 +47,7 @@ export class FireboardComponent implements AfterViewInit {
     @ViewChild('styleEditorWidget') styleEditorWidget: StyleEditorComponent;
     @ViewChild('chartSelector') chartSelector: ChartSelectorComponent;
     @ViewChild('tableSource') tableSource: TableSourceComponent;
+    @ViewChild('dataSource') dataSource: DataSourceComponent;
     @ViewChild('styleEditorFilter') styleEditorFilter: StyleEditorComponent;
 
     public pages: DashboardPage[] = [];
@@ -53,8 +55,6 @@ export class FireboardComponent implements AfterViewInit {
     public nameBoard = 'Nome do Dashboard';
     public isLoading = false;
     public showLegoOptionsEditor = false;
-    public tableSources: DataSource[] = [];
-    public dataSources: DataSource[] = [];
     public chartsList: ChartItemConfig[] = ChartsMockList;
     public selectedFilter: WidgetAbstract;
     public visualizationMode = false;
@@ -71,6 +71,14 @@ export class FireboardComponent implements AfterViewInit {
         return [...this.filtersList, ...this.widgetsList];
     }
 
+    get tableSources(): DataSource[] {
+        return this.fireboardDataService.tableSources;
+    }
+
+    get dataSources(): DataSource[] {
+        return this.fireboardDataService.dataSources;
+    }
+
     constructor(
         private cdr: ChangeDetectorRef,
         public fireboardDataService: FireboardDataService,
@@ -79,18 +87,13 @@ export class FireboardComponent implements AfterViewInit {
         this.fireboardDataService.filterEventEmitter.subscribe((data) => this.handlerFilter(data));
     }
 
-    showStandard() {
-        this.toastService.showError('I am a standard toast');
-    }
-
     ngAfterViewInit(): void {
         this.addPage();
         this.getDataSources();
     }
 
     getDataSources() {
-        this.fireboardDataService.getTableSources().then(({ data }) => (this.tableSources = data));
-        this.fireboardDataService.getDataSources().then(({ data }) => (this.dataSources = data));
+        this.fireboardDataService.getData();
     }
 
     isControl(type: any) {
@@ -346,7 +349,7 @@ export class FireboardComponent implements AfterViewInit {
     }
 
     showDataSource() {
-        this.filterModal = true;
+        this.dataSource.show();
         this.detectChanges();
     }
 

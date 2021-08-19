@@ -289,7 +289,7 @@ export class SqlBuilderComponent {
     }
 
     previewModel() {
-        this.fireboardDataService.previewDataSource(this.getModelToSave()).then(({ data }) => {
+        this.fireboardDataService.previewDataSource(this.getModelToSave()).subscribe(({ data }) => {
             this.previewQueryResult.query = data.query;
             this.previewQueryResult.result = data.result;
             this.previewQueryResult.columns = data.result.length ? this.getColumnsOfData(data.result) : [];
@@ -314,7 +314,10 @@ export class SqlBuilderComponent {
             name: this.name,
             queryModel: this.getModelToSave()
         };
-        console.log(model);
-        this.closePanel();
+
+        this.fireboardDataService.addDataSource(model).subscribe(() => {
+            this.closePanel();
+            this.fireboardDataService.updateDataSources();
+        });
     }
 }

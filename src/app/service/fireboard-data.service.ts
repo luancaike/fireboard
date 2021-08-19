@@ -1,10 +1,12 @@
 import { EventEmitter, Injectable } from '@angular/core';
 import { DataGetter } from '../widgets/widget.abstract';
-import { DataSourceSelected, FilterModel } from '../models/data-source.dtos';
+import { DataSource, DataSourceSelected, FilterModel } from '../models/data-source.dtos';
 import { CustomFilterDto } from '../components/filter-maker/filter-maker.model';
 import { FilterBindKey, FilterHandlerDto, FilterQueryTypes } from '../models/filter.dtos';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { ToastService } from './toast.service';
+import { catchError } from 'rxjs/operators';
+import { Observable, throwError } from 'rxjs';
 
 const randomTimer = () => Math.random() * (1000 - 100) + 100;
 
@@ -15,19 +17,24 @@ export class FireboardDataService {
     public filterEventEmitter = new EventEmitter<FilterHandlerDto>();
     public filterBindKey: FilterBindKey[] = [];
     public filterValues = new Map<string, any>();
+    public tableSources: DataSource[] = [];
+    public dataSources: DataSource[] = [];
 
     constructor(private http: HttpClient, private toastService: ToastService) {}
 
-    private catchHttpError = (response: HttpErrorResponse) => {
-        const errorsList = response?.error?.errors;
-        const errorMsg = response?.error?.message;
-        if (Array.isArray(errorsList)) {
-            errorsList.forEach(({ message }) => this.toastService.showError(message));
-        } else if (errorMsg) {
-            this.toastService.showError(errorMsg);
-        } else {
-            this.toastService.showError('Erro Interno');
-        }
+    private catchHttpError = () => {
+        return catchError((error: HttpErrorResponse) => {
+            const errorsList = error?.error?.errors;
+            const errorMsg = error?.error?.message;
+            if (Array.isArray(errorsList)) {
+                errorsList.forEach(({ message }) => this.toastService.showError(message));
+            } else if (errorMsg) {
+                this.toastService.showError(errorMsg);
+            } else {
+                this.toastService.showError('Erro Interno');
+            }
+            return throwError(error);
+        });
     };
 
     // TODO: REMOVE
@@ -40,40 +47,51 @@ export class FireboardDataService {
         window.localStorage.setItem('token', data.accessToken);
     }
 
-    async addTableSource(model): Promise<any> {
-        return this.http
-            .post<any>(`${api}/api/v1/dashboard-builder/table-source`, model)
-            .toPromise()
-            .catch(this.catchHttpError);
+    addTableSource(model): Observable<any> {
+        return this.http.post<any>(`${api}/api/v1/dashboard-builder/table-source`, model).pipe(this.catchHttpError());
     }
 
-    async previewDataSource(id): Promise<any> {
-        return this.http
-            .get<any>(`${api}/api/v1/dashboard-builder/datasource/data/${id}`)
-            .toPromise()
-            .catch(this.catchHttpError);
+    addDataSource(model): Observable<any> {
+        return this.http.post<any>(`${api}/api/v1/dashboard-builder/datasource`, model).pipe(this.catchHttpError());
     }
 
-    async getDataSourceData(model): Promise<any> {
+    removeDataSource(id): Observable<any> {
+        return this.http.delete<any>(`${api}/api/v1/dashboard-builder/datasource/${id}`).pipe(this.catchHttpError());
+    }
+
+    previewDataSource(model): Observable<any> {
         return this.http
             .post<any>(`${api}/api/v1/dashboard-builder/datasource/test`, model)
-            .toPromise()
-            .catch(this.catchHttpError);
+            .pipe(this.catchHttpError());
     }
 
-    getTableSources(): Promise<any> {
-        return this.http.get(`${api}/api/v1/dashboard-builder/table-source`).toPromise().catch(this.catchHttpError);
+    getDataOfSource(id): Observable<any> {
+        return this.http.get<any>(`${api}/api/v1/dashboard-builder/datasource/data/${id}`).pipe(this.catchHttpError());
     }
 
-    getDataSources(): Promise<any> {
-        return this.http.get(`${api}/api/v1/dashboard-builder/datasource`).toPromise().catch(this.catchHttpError);
+    getTableSources(): Observable<any> {
+        return this.http.get(`${api}/api/v1/dashboard-builder/table-source`).pipe(this.catchHttpError());
     }
 
-    searchTable(table: string): Promise<any> {
-        return this.http
-            .get(`${api}/api/v1/dashboard-builder/table-columns/${table}`)
-            .toPromise()
-            .catch(this.catchHttpError);
+    getDataSources(): Observable<any> {
+        return this.http.get(`${api}/api/v1/dashboard-builder/datasource`).pipe(this.catchHttpError());
+    }
+
+    searchTable(table: string): Observable<any> {
+        return this.http.get(`${api}/api/v1/dashboard-builder/table-columns/${table}`).pipe(this.catchHttpError());
+    }
+
+    getData() {
+        this.updateTableSources();
+        this.updateDataSources();
+    }
+
+    updateTableSources() {
+        this.getTableSources().subscribe(({ data }) => (this.tableSources = data));
+    }
+
+    updateDataSources() {
+        this.getDataSources().subscribe(({ data }) => (this.dataSources = data));
     }
 
     async dataGetter(data: DataGetter): Promise<any[]> {
@@ -88,29 +106,34 @@ export class FireboardDataService {
                 type: el.type,
                 value: this.filterValues.get(el.filterKey)
             }));
-        const result = await this.previewDataSource(data.sourceId);
-        const dataResult = result?.data?.result ?? [];
-        return query.filters.reduce((acc, item) => {
-            if (item.type === FilterQueryTypes.DateInterval) {
-                return acc.filter((el) => {
-                    {
-                        const dateToCompare = new Date(el.dt_create);
-                        const fromCompare = new Date(item.value.from);
-                        const toCompare = new Date(item.value.to);
-                        return fromCompare <= dateToCompare && dateToCompare <= toCompare;
-                    }
-                });
-            }
-            if (item.type === FilterQueryTypes.LikeValue) {
-                return acc.filter(
-                    (el) =>
-                        !item.value ||
-                        !item.value.length ||
-                        !!~el.nm_risco.toUpperCase().indexOf(item.value.toUpperCase())
+        return new Promise<any[]>((resolve) => {
+            this.getDataOfSource(data.sourceId).subscribe(({ result }) => {
+                const dataResult = result?.data?.result ?? [];
+                resolve(
+                    query.filters.reduce((acc, item) => {
+                        if (item.type === FilterQueryTypes.DateInterval) {
+                            return acc.filter((el) => {
+                                {
+                                    const dateToCompare = new Date(el.dt_create);
+                                    const fromCompare = new Date(item.value.from);
+                                    const toCompare = new Date(item.value.to);
+                                    return fromCompare <= dateToCompare && dateToCompare <= toCompare;
+                                }
+                            });
+                        }
+                        if (item.type === FilterQueryTypes.LikeValue) {
+                            return acc.filter(
+                                (el) =>
+                                    !item.value ||
+                                    !item.value.length ||
+                                    !!~el.nm_risco.toUpperCase().indexOf(item.value.toUpperCase())
+                            );
+                        }
+                        return acc;
+                    }, dataResult)
                 );
-            }
-            return acc;
-        }, dataResult);
+            });
+        });
     }
 
     addExternalFilter(data: CustomFilterDto): Promise<FilterModel> {

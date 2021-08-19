@@ -28,6 +28,7 @@ import { TokenInterceptor } from './service/http.service';
 import { TableSourceModule } from './components/table-source/table-source.module';
 import { ToastComponent } from './components/toast/toast.component';
 import { ToastService } from './service/toast.service';
+import { DataSourceModule } from './components/data-source/data-source.module';
 
 @NgModule({
     imports: [
@@ -48,7 +49,8 @@ import { ToastService } from './service/toast.service';
         ExpressionBuilderModule,
         ChartSelectorModule,
         ModalPanelModule,
-        TableSourceModule
+        TableSourceModule,
+        DataSourceModule
     ],
     providers: [
         {

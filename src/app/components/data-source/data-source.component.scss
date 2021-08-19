@@ -1,0 +1,81 @@
+.data-source {
+    .list-group {
+        position: relative;
+    }
+
+    .data-source-item {
+        position: relative;
+
+        &:hover {
+            background: rgba(108, 117, 125, 0.1);
+
+            .icon-item-edit {
+                display: block;
+            }
+
+            .icon-item-delete {
+                display: block;
+            }
+        }
+
+        .icon-item {
+            position: absolute;
+            left: 10px;
+            top: 10px;
+            width: 40px;
+
+            &.end {
+                left: initial;
+                right: 0;
+            }
+        }
+
+        .icon-item-edit {
+            cursor: pointer;
+            display: none;
+            color: #007bff;
+            font-size: 20px;
+            position: absolute;
+            right: 35px;
+            top: 5px;
+            width: 40px;
+        }
+
+        .icon-item-delete {
+            cursor: pointer;
+            display: none;
+            color:  #dc3545;
+            font-size: 20px;
+            position: absolute;
+            right: 5px;
+            top: 5px;
+            width: 40px;
+        }
+    }
+
+    .card-header {
+        padding: 10px;
+    }
+
+    .card-body {
+        padding: 10px;
+        max-height: 400px;
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+
+    .search-input {
+        position: relative;
+
+        .input-search {
+            border-radius: 0;
+            color: #777777;
+        }
+
+        .icon {
+            position: absolute;
+            right: 10px;
+            top: 20%;
+        }
+    }
+}

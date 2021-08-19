@@ -3,12 +3,10 @@ import {
     ChangeDetectorRef,
     Component,
     ElementRef,
-    Input,
     ViewChild,
     ViewEncapsulation
 } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { DataSource } from '../../models/data-source.dtos';
 import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap/modal/modal-ref';
 import { FireboardDataService } from '../../service/fireboard-data.service';
 import { debounce } from '../../utils/effects';
@@ -23,7 +21,6 @@ import { debounce } from '../../utils/effects';
 export class TableSourceComponent {
     @ViewChild('modalChartSelect') modalChartSelect: ElementRef;
     @ViewChild('modalTypeChartSelect') modalTypeChartSelect: ElementRef;
-    @Input() dataSources: DataSource[] = [];
 
     public filterText: string;
     public nameOrigin: string;
@@ -53,16 +50,17 @@ export class TableSourceComponent {
     @debounce(500)
     getTableColumns() {
         if (this.filterText && this.filterText.length) {
-            this.dataService
-                .searchTable(this.filterText)
-                .then(({ data }) => {
+            this.dataService.searchTable(this.filterText).subscribe(
+                ({ data }) => {
                     this.dataColumns = data.map((el) => ({
                         name: el.columnName,
                         type: el.dataType,
                         key: el.columnName
                     }));
-                })
-                .finally(() => (this.isLoading = false));
+                },
+                () => null,
+                () => (this.isLoading = false)
+            );
         } else {
             this.isLoading = false;
         }
@@ -74,7 +72,7 @@ export class TableSourceComponent {
             tableName: this.filterText,
             columns: this.dataColumns
         };
-        this.dataService.addTableSource(model).then(() => {
+        this.dataService.addTableSource(model).subscribe(() => {
             this.modalRef.close();
         });
     }
