@@ -1,6 +1,5 @@
 import { EventEmitter, Injectable } from '@angular/core';
 import { DataGetter } from '../widgets/widget.abstract';
-import { DataSourceDataMockList } from '../models/mocks';
 import { DataSourceSelected, FilterModel } from '../models/data-source.dtos';
 import { CustomFilterDto } from '../components/filter-maker/filter-maker.model';
 import { FilterBindKey, FilterHandlerDto, FilterQueryTypes } from '../models/filter.dtos';
@@ -43,16 +42,27 @@ export class FireboardDataService {
 
     async addTableSource(model): Promise<any> {
         return this.http
-            .post<any>(`${api}/api/v1/dashboard-builder/datasource`, model)
+            .post<any>(`${api}/api/v1/dashboard-builder/table-source`, model)
             .toPromise()
             .catch(this.catchHttpError);
     }
 
-    async previewDataSource(model): Promise<any> {
+    async previewDataSource(id): Promise<any> {
+        return this.http
+            .get<any>(`${api}/api/v1/dashboard-builder/datasource/data/${id}`)
+            .toPromise()
+            .catch(this.catchHttpError);
+    }
+
+    async getDataSourceData(model): Promise<any> {
         return this.http
             .post<any>(`${api}/api/v1/dashboard-builder/datasource/test`, model)
             .toPromise()
             .catch(this.catchHttpError);
+    }
+
+    getTableSources(): Promise<any> {
+        return this.http.get(`${api}/api/v1/dashboard-builder/table-source`).toPromise().catch(this.catchHttpError);
     }
 
     getDataSources(): Promise<any> {
@@ -66,7 +76,7 @@ export class FireboardDataService {
             .catch(this.catchHttpError);
     }
 
-    dataGetter(data: DataGetter): Promise<any[]> {
+    async dataGetter(data: DataGetter): Promise<any[]> {
         console.log({ data, filterBindKey: this.filterBindKey, filterValues: this.filterValues });
         const query: any = {};
 
@@ -78,33 +88,29 @@ export class FireboardDataService {
                 type: el.type,
                 value: this.filterValues.get(el.filterKey)
             }));
-        console.log(query);
-        return new Promise((resolve) => {
-            const result = DataSourceDataMockList.find((value) => value.id === data.sourceId);
-            const dataResult = result ? result.data : [];
-            const filtered = query.filters.reduce((acc, item) => {
-                if (item.type === FilterQueryTypes.DateInterval) {
-                    return acc.filter((el) => {
-                        {
-                            const dateToCompare = new Date(el.dt_create);
-                            const fromCompare = new Date(item.value.from);
-                            const toCompare = new Date(item.value.to);
-                            return fromCompare <= dateToCompare && dateToCompare <= toCompare;
-                        }
-                    });
-                }
-                if (item.type === FilterQueryTypes.LikeValue) {
-                    return acc.filter(
-                        (el) =>
-                            !item.value ||
-                            !item.value.length ||
-                            !!~el.nm_risco.toUpperCase().indexOf(item.value.toUpperCase())
-                    );
-                }
-                return acc;
-            }, dataResult);
-            setTimeout(() => resolve(filtered), randomTimer());
-        });
+        const result = await this.previewDataSource(data.sourceId);
+        const dataResult = result?.data?.result ?? [];
+        return query.filters.reduce((acc, item) => {
+            if (item.type === FilterQueryTypes.DateInterval) {
+                return acc.filter((el) => {
+                    {
+                        const dateToCompare = new Date(el.dt_create);
+                        const fromCompare = new Date(item.value.from);
+                        const toCompare = new Date(item.value.to);
+                        return fromCompare <= dateToCompare && dateToCompare <= toCompare;
+                    }
+                });
+            }
+            if (item.type === FilterQueryTypes.LikeValue) {
+                return acc.filter(
+                    (el) =>
+                        !item.value ||
+                        !item.value.length ||
+                        !!~el.nm_risco.toUpperCase().indexOf(item.value.toUpperCase())
+                );
+            }
+            return acc;
+        }, dataResult);
     }
 
     addExternalFilter(data: CustomFilterDto): Promise<FilterModel> {

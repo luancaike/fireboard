@@ -42,7 +42,7 @@ export class TableSourceComponent {
     }
 
     show(): void {
-        this.modalRef = this.modalService.open(this.modalChartSelect, { centered: true });
+        this.modalRef = this.modalService.open(this.modalChartSelect, { centered: true, backdrop: 'static' });
     }
 
     filterTextAction() {

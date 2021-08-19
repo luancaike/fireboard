@@ -5,6 +5,7 @@ import {
     ElementRef,
     EventEmitter,
     Input,
+    NgZone,
     Output,
     ViewChild,
     ViewEncapsulation
@@ -59,7 +60,7 @@ export class ChartSelectorComponent {
         return this.chartsFilter.length ? this.chartsFilter : this.charts;
     }
 
-    constructor(private modalService: NgbModal, private cdr: ChangeDetectorRef) {}
+    constructor(private modalService: NgbModal, private cdr: ChangeDetectorRef, private zone: NgZone) {}
 
     selectChart(item: ChartItemConfig) {
         this.selected.emit(item);
@@ -85,7 +86,9 @@ export class ChartSelectorComponent {
     }
 
     show(): void {
-        this.modalRef = this.modalService.open(this.modalChartSelect, { centered: true });
+        this.zone.run(() => {
+            this.modalRef = this.modalService.open(this.modalChartSelect, { centered: true });
+        });
     }
 
     @debounce()

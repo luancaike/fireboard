@@ -53,6 +53,7 @@ export class FireboardComponent implements AfterViewInit {
     public nameBoard = 'Nome do Dashboard';
     public isLoading = false;
     public showLegoOptionsEditor = false;
+    public tableSources: DataSource[] = [];
     public dataSources: DataSource[] = [];
     public chartsList: ChartItemConfig[] = ChartsMockList;
     public selectedFilter: WidgetAbstract;
@@ -88,6 +89,7 @@ export class FireboardComponent implements AfterViewInit {
     }
 
     getDataSources() {
+        this.fireboardDataService.getTableSources().then(({ data }) => (this.tableSources = data));
         this.fireboardDataService.getDataSources().then(({ data }) => (this.dataSources = data));
     }
 
@@ -148,7 +150,7 @@ export class FireboardComponent implements AfterViewInit {
         if (!component) {
             return [];
         }
-        const data = this.dataSources.find((el) => el.id === component.dataSource);
+        const data = this.tableSources.find((el) => el.id === component.dataSource);
         if (!data) {
             return [];
         }
@@ -341,6 +343,11 @@ export class FireboardComponent implements AfterViewInit {
 
     showChartSelect() {
         this.chartSelector.show();
+    }
+
+    showDataSource() {
+        this.filterModal = true;
+        this.detectChanges();
     }
 
     showTableSource() {

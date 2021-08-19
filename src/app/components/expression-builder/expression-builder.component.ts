@@ -172,7 +172,6 @@ export class ExpressionBuilderComponent implements AfterViewInit {
     }
 
     keydown(e: KeyboardEvent) {
-        console.log(e.key);
         const allSuggestions = [
             ...this.suggestionResults.map((el) => ({ ...el, type: 'identifier' })),
             ...this.suggestionFunctionsResults.map((el) => ({ ...el, type: 'function' }))

@@ -93,7 +93,7 @@
                 </div>
                 <div class="toolbar-separator"></div>
                 <div class="btn-toolbar-dropdown">
-                    <button class="dropdown-button" (click)="filterModal = !filterModal">
+                    <button class="dropdown-button" (click)="showDataSource()">
                         <fa-icon class="btn-icon" icon="database"></fa-icon>
                         Adicionar Dados
                     </button>
@@ -164,7 +164,7 @@
 </div>
 <fb-modal-panel [showPainel]="filterModal">
     <fb-sql-builder
-        [tables]="dataSources"
+        [tables]="tableSources"
         [(showPanel)]="filterModal"
     ></fb-sql-builder>
 </fb-modal-panel>

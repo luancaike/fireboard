@@ -139,10 +139,7 @@ export class DateFilterComponent extends FilterAbstract implements WidgetCompone
     }
 
     getFilterModel() {
-        return {
-            to: this.modelToDate(this.to).toISOString(),
-            from: this.modelToDate(this.from).toISOString()
-        };
+        return [this.modelToDate(this.from).toISOString(), this.modelToDate(this.to).toISOString()];
     }
 
     setModelToPlaceholder() {

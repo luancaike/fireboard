@@ -436,7 +436,7 @@
                         Visualizar
                         <fa-icon icon="play" class="ml-2"></fa-icon>
                     </button>
-                    <button class="btn btn-secondary m-2" (click)="viewQuerySql()">
+                    <button class="btn btn-secondary m-2" *ngIf="this.previewQueryResult?.query?.length" (click)="viewQuerySql()">
                         SQL
                         <fa-icon icon="terminal" class="ml-2"></fa-icon>
                     </button>
@@ -459,7 +459,13 @@
         </div>
     </div>
     <div class="card-footer text-muted d-flex justify-content-end">
-        <button class="btn btn-outline-primary mb-2" (click)="saveThisModel()">
+        <input
+            type="text"
+            class="form-control mr-2"
+            placeholder="Nome da Origem"
+            [(ngModel)]="name"
+        />
+        <button class="btn btn-primary" style="width: 10%" [disabled]="!isValid" (click)="saveThisModel()">
             Salvar
             <fa-icon icon="save" class="mr-2"></fa-icon>
         </button>

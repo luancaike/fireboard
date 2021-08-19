@@ -49,6 +49,10 @@ export class SqlBuilderComponent {
         return this._showPanel;
     }
 
+    public get isValid() {
+        return this.name && this.name.length && this.model?.table?.id;
+    }
+
     private _showPanel = false;
     public previewCollapsed = true;
     public previewQueryResult = {
@@ -56,6 +60,7 @@ export class SqlBuilderComponent {
         result: [],
         columns: []
     };
+    public name: string;
     public selectedCustomColumn: DataSourceKey;
     public selectedColumnFilter: DataSourceKey;
     public selectedOperator;
@@ -217,6 +222,7 @@ export class SqlBuilderComponent {
 
     closePanel() {
         this.showPanel = false;
+        this.name = '';
         this.model = getDefaultModel();
     }
 
@@ -242,6 +248,7 @@ export class SqlBuilderComponent {
         const newModel: { [key: string]: any } | ModelSqlBuild = FlatCopy<ModelSqlBuild>(this.model);
 
         delete newModel.table.columns;
+        delete newModel.table.name;
 
         newModel.select = newModel.select.map(({ id, expression, type, name }) => ({ id, expression, type, name }));
         newModel.group = newModel.group.map(({ id }) => ({ id }));
@@ -303,6 +310,11 @@ export class SqlBuilderComponent {
     }
 
     saveThisModel() {
-        this.save.emit(this.model);
+        const model = {
+            name: this.name,
+            queryModel: this.getModelToSave()
+        };
+        console.log(model);
+        this.closePanel();
     }
 }
