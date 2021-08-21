@@ -33,7 +33,7 @@
             </ul>
         </div>
         <div class="card-footer text-muted d-flex justify-content-end">
-            <button class="btn btn-outline-primary mb-2" (click)="newData()">
+            <button class="btn btn-outline-primary mb-2" (click)="openSqlBuilderEditor()">
                 Criar Dados
                 <fa-icon icon="plus" class="mr-2"></fa-icon>
             </button>
@@ -42,6 +42,7 @@
 </ng-template>
 <fb-modal-panel [showPainel]="dataFormModal">
     <fb-sql-builder
+        #sqlBuilder
         [tables]="tableSources"
         [(showPanel)]="dataFormModal"
     ></fb-sql-builder>

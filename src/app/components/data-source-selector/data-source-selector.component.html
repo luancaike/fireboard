@@ -37,7 +37,7 @@
                     cdkDragBoundary=".field-bindings"
                     cdkDrag
                 >
-                    <div class="field-text">
+                    <div class="field-text" [title]="key.name">
                         <fa-icon *ngIf="key.type === 'number'" class="column-icon" icon="calculator"></fa-icon>
                         <fa-icon *ngIf="key.type === 'string'" class="column-icon" icon="font"></fa-icon>
                         <fa-icon *ngIf="key.type === 'date'" class="column-icon" icon="calendar"></fa-icon>
@@ -73,7 +73,7 @@
                     cdkDragBoundary=".field-selector-container"
                     cdkDrag
                 >
-                    <div class="field-text">
+                    <div class="field-text" [title]="item.name">
                         <fa-icon *ngIf="item.type === 'number'" class="column-icon" icon="calculator"></fa-icon>
                         <fa-icon *ngIf="item.type === 'string'" class="column-icon" icon="font"></fa-icon>
                         <fa-icon *ngIf="item.type === 'date'" class="column-icon" icon="calendar"></fa-icon>

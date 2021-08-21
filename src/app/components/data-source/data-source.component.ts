@@ -11,6 +11,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { DataSource } from '../../models/data-source.dtos';
 import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap/modal/modal-ref';
 import { FireboardDataService } from '../../service/fireboard-data.service';
+import { SqlBuilderComponent } from '../sql-builder/sql-builder.component';
 
 @Component({
     selector: 'fb-data-source',
@@ -21,6 +22,7 @@ import { FireboardDataService } from '../../service/fireboard-data.service';
 })
 export class DataSourceComponent {
     @ViewChild('modal') modalChartSelect: ElementRef;
+    @ViewChild('sqlBuilder') sqlBuilder: SqlBuilderComponent;
 
     @Input() dataSources: DataSource[] = [];
     @Input() tableSources: DataSource[] = [];
@@ -54,12 +56,15 @@ export class DataSourceComponent {
         this.cdr.detectChanges();
     }
 
-    newData() {
+    openSqlBuilderEditor() {
         this.modalRef.close();
         this.dataFormModal = true;
     }
 
-    editDataSource(item) {}
+    editDataSource(item) {
+        this.openSqlBuilderEditor();
+        this.sqlBuilder.editModel(item.id);
+    }
 
     removeDataSource(item) {
         this.fireboardDataService.removeDataSource(item.id).subscribe(() => {

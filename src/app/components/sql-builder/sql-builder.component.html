@@ -64,7 +64,7 @@
         </button>
     </div>
 </ng-template>
-<div class="card border-0">
+<div class="card border-0 sql-build">
     <div class="card-header d-flex justify-content-between">
         <h6 style="margin: 0.5rem">
             <fa-icon icon="database" class="mr-2"></fa-icon>
@@ -110,7 +110,7 @@
                             </div>
                         </div>
                     </div>
-                    <div #forkBox class="fork-box collapsed" [hidden]="!model?.table">
+                    <div #forkBox class="forks-box collapsed" [hidden]="!model?.table">
                         <div class="box-close" (click)="clearModelField('forks', forkBox)">
                             <fa-icon icon="times"></fa-icon>
                         </div>
@@ -192,7 +192,7 @@
                                     columnsList;
                                     context: {
                                         onselect: selectForkKey(i, 'columnPrimary'),
-                                        columns: model?.table?.columns
+                                        columns: getColumnsTableSchema(model?.table?.id)
                                     }
                                 "
                                     ></ng-container>
@@ -222,7 +222,7 @@
                                     columnsList;
                                     context: {
                                         onselect: selectForkKey(i, 'columnSecondary'),
-                                        columns: item?.table?.columns
+                                        columns: getColumnsTableSchema(item?.table?.id)
                                     }
                                 "
                                     ></ng-container>
@@ -294,7 +294,7 @@
                             </div>
                         </div>
                     </div>
-                    <div #groupByBox class="groupby-box collapsed" [hidden]="!model?.table">
+                    <div #groupByBox class="group-box collapsed" [hidden]="!model?.table">
                         <div class="box-close" (click)="clearModelField('group', groupByBox)">
                             <fa-icon icon="times"></fa-icon>
                         </div>
@@ -371,7 +371,7 @@
                             </div>
                         </div>
                     </div>
-                    <div #orderByBox class="orderby-box collapsed" [hidden]="!model?.table">
+                    <div #orderByBox class="order-box collapsed" [hidden]="!model?.table">
                         <div class="box-close" (click)="clearModelField('order', orderByBox)">
                             <fa-icon icon="times"></fa-icon>
                         </div>

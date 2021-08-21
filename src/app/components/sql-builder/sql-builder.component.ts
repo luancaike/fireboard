@@ -61,6 +61,7 @@ export class SqlBuilderComponent {
         columns: []
     };
     public name: string;
+    public id: number;
     public selectedCustomColumn: DataSourceKey;
     public selectedColumnFilter: DataSourceKey;
     public selectedOperator;
@@ -69,11 +70,11 @@ export class SqlBuilderComponent {
     public model: ModelSqlBuild = getDefaultModel();
 
     get tablesOfModel(): DataSource[] {
-        const baseColumns = this.model?.table ? [this.model?.table] : [];
+        const baseColumns = this.model?.table ? [this.getTableSchema(this.model?.table?.id)] : [];
         const forkColumns =
             this.model?.forks?.reduce((acc, item) => {
                 if (item?.table) {
-                    acc.push(item?.table);
+                    acc.push(this.getTableSchema(item?.table?.id));
                 }
                 return acc;
             }, []) || [];
@@ -84,7 +85,10 @@ export class SqlBuilderComponent {
         return this.tablesOfModel.reduce((acc, item) => {
             return [
                 ...acc,
-                ...item.columns.map((el) => ({ ...el, name: `${item.name}${EDITOR_FK_SYMBOLS.default}${el.name}` }))
+                ...this.getColumnsTableSchema(item.id).map((el) => ({
+                    ...el,
+                    name: `${item.name}${EDITOR_FK_SYMBOLS.default}${el.name}`
+                }))
             ];
         }, []);
     }
@@ -156,6 +160,15 @@ export class SqlBuilderComponent {
         this.popovers.forEach((popover) => popover.hide());
     }
 
+    getTableSchema(id): DataSource {
+        return this.tables.find((el) => el.id === id);
+    }
+
+    getColumnsTableSchema(id): DataSourceKey[] {
+        const result = this.getTableSchema(id);
+        return result ? result.columns : [];
+    }
+
     resetFilterSelector(): void {
         this.selectedColumnFilter = undefined;
         this.selectedOperator = undefined;
@@ -222,7 +235,13 @@ export class SqlBuilderComponent {
 
     closePanel() {
         this.showPanel = false;
+        this.previewQueryResult = {
+            query: '',
+            result: [],
+            columns: []
+        };
         this.name = '';
+        this.id = null;
         this.model = getDefaultModel();
     }
 
@@ -250,7 +269,13 @@ export class SqlBuilderComponent {
         delete newModel.table.columns;
         delete newModel.table.name;
 
-        newModel.select = newModel.select.map(({ id, expression, type, name }) => ({ id, expression, type, name }));
+        newModel.select = newModel.select.map(({ id, expression, type, name, source }) => ({
+            id,
+            expression,
+            type,
+            name,
+            source
+        }));
         newModel.group = newModel.group.map(({ id }) => ({ id }));
         newModel.order = newModel.order.map(({ id, direction }) => ({ id, direction }));
         newModel.filters = newModel.filters.map((item) => ({
@@ -267,8 +292,8 @@ export class SqlBuilderComponent {
             .map((item) => ({
                 ...item,
                 table: { id: item.table.id },
-                columnPrimary: { id: item.table.id },
-                columnSecondary: { id: item.table.id }
+                columnPrimary: { id: item.columnPrimary.id },
+                columnSecondary: { id: item.columnSecondary.id }
             }));
         return newModel;
     }
@@ -309,15 +334,55 @@ export class SqlBuilderComponent {
         alert(this.previewQueryResult.query);
     }
 
+    editModel(id) {
+        this.getModelExternal(id);
+    }
+
     saveThisModel() {
         const model = {
             name: this.name,
             queryModel: this.getModelToSave()
         };
+        if (this.id) {
+            this.fireboardDataService.updateDataSource(this.id, model).subscribe(() => {
+                this.closePanel();
+                this.fireboardDataService.updateDataSources();
+            });
+        } else {
+            this.fireboardDataService.addDataSource(model).subscribe(() => {
+                this.closePanel();
+                this.fireboardDataService.updateDataSources();
+            });
+        }
+    }
 
-        this.fireboardDataService.addDataSource(model).subscribe(() => {
-            this.closePanel();
-            this.fireboardDataService.updateDataSources();
+    setModel(model) {
+        this.id = model.id;
+        this.name = model.name;
+        this.model = model.queryModel;
+        this.expandByModel();
+        this.cdr.detectChanges();
+    }
+
+    expandByModel() {
+        Object.keys(this.model).forEach((key) => {
+            const checkValue = (value) => (Array.isArray(value) ? !!value.length : !!value);
+            const sqlBuildContainer = document.querySelector(`.sql-build-container`);
+            const element = sqlBuildContainer.querySelector(`.${key}-box`);
+            if (element) {
+                if (checkValue(this.model[key])) {
+                    element.classList.remove('collapsed');
+                } else {
+                    element.classList.add('collapsed');
+                }
+            }
+        });
+    }
+
+    private getModelExternal(id) {
+        this.fireboardDataService.getDataSource(id).subscribe(({ data }) => {
+            this.setModel(data);
+            console.log(data);
         });
     }
 }

@@ -55,6 +55,16 @@ export class FireboardDataService {
         return this.http.post<any>(`${api}/api/v1/dashboard-builder/datasource`, model).pipe(this.catchHttpError());
     }
 
+    updateDataSource(id, model): Observable<any> {
+        return this.http
+            .put<any>(`${api}/api/v1/dashboard-builder/datasource/${id}`, model)
+            .pipe(this.catchHttpError());
+    }
+
+    getDataSource(id): Observable<any> {
+        return this.http.get<any>(`${api}/api/v1/dashboard-builder/datasource/${id}`).pipe(this.catchHttpError());
+    }
+
     removeDataSource(id): Observable<any> {
         return this.http.delete<any>(`${api}/api/v1/dashboard-builder/datasource/${id}`).pipe(this.catchHttpError());
     }
