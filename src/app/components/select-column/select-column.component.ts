@@ -7,11 +7,11 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
     template: `
         <div class="input-group w-100">
             <ng-select
-                class="ng-select-sm ng-select-column"
+                class="ng-select-column"
                 [placeholder]="placeholder"
                 [hideSelected]="true"
                 [appendTo]="appendTo"
-                [closeOnSelect]="!multiple"
+                [closeOnSelect]="closeOnSelect"
                 (ngModelChange)="valueChange($event)"
                 [ngModel]="value"
                 [bindLabel]="bindLabel"
@@ -65,13 +65,14 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 export class SelectColumnComponent {
     @Input() items: any[];
     @Input() appendTo = null;
-    @Input() clearable: boolean;
+    @Input() clearable = false;
     @Input() searchable: boolean;
     @Input() multiple: boolean;
     @Input() placeholder: string;
     @Input() bindLabel: string;
     @Input() bindValue: string;
     @Input() value;
+    @Input() closeOnSelect = true;
 
     @Input() valueChange: (data: any) => any;
 }

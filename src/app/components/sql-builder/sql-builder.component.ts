@@ -317,17 +317,9 @@ export class SqlBuilderComponent {
         this.fireboardDataService.previewDataSource(this.getModelToSave()).subscribe(({ data }) => {
             this.previewQueryResult.query = data.query;
             this.previewQueryResult.result = data.result;
-            this.previewQueryResult.columns = data.result.length ? this.getColumnsOfData(data.result) : [];
+            this.previewQueryResult.columns = data.columns.map(({ name }) => name);
             this.cdr.detectChanges();
         });
-    }
-
-    getColumnsOfData(data: any[]) {
-        const keys = new Set();
-        data.forEach((el) => {
-            Object.keys(el).forEach((k) => keys.add(k));
-        });
-        return Array.from(keys);
     }
 
     viewQuerySql() {

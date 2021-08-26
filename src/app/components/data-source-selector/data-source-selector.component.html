@@ -1,95 +1,31 @@
 <div class="datasource-options-container">
     <div class="datasource-selector">
         <label for="datasource" style="font-size: 12px">Fonte de Dados:</label>
-        <select
-            class="form-control form-control-sm"
-            id="datasource"
-            [(ngModel)]="dataSourceSelected"
-            (ngModelChange)="changedDatasource()"
-            [ngModelOptions]="{ standalone: true }"
-        >
-            <option selected hidden [ngValue]="null">Selecione uma Fonte de Dados</option>
-            <option [ngValue]="item.id" *ngFor="let item of dataSources">{{ item.name }}</option>
-        </select>
+        <div class="input-group w-100">
+            <ng-select
+                id="datasource"
+                placeholder="Selecione uma Fonte de Dados"
+                (ngModelChange)="updateDatasource($event)"
+                [ngModel]="dataSourceSelected"
+                [bindLabel]="'name'"
+                [bindValue]="'id'"
+                [searchable]="true"
+                [items]="dataSources"
+                [clearable]="false"
+                style="flex-grow: 1; width: 214px;"
+            >
+            </ng-select>
+        </div>
     </div>
-    <div class="field-selector-container" [hidden]="!dataSourceSelected">
-        <div class="field-selector">
-            <div
-                *ngFor="let item of dataSourceBindOptions"
-                cdkDropList
-                #todoList="cdkDropList"
-                [id]="item.key"
-                [cdkDropListData]="dataSourceSelectedKeys.get(item.key)?.data"
-                class="field-bindings"
-                (cdkDropListExited)="checkExitItem($event)"
-                (cdkDropListEntered)="checkEnterItem($event)"
-                (cdkDropListDropped)="drop($event)"
-            >
-                <span class="field-bindings-label">{{ item.label }}</span>
-                <div
-                    *ngFor="let key of dataSourceSelectedKeys.get(item.key)?.data"
-                    [class.custom]="key.type === 'custom'"
-                    [class.number]="key.type === 'number'"
-                    [class.text]="key.type === 'string'"
-                    [class.date]="key.type === 'date'"
-                    [cdkDragData]="item"
-                    class="field"
-                    cdkDragBoundary=".field-bindings"
-                    cdkDrag
-                >
-                    <div class="field-text" [title]="key.name">
-                        <fa-icon *ngIf="key.type === 'number'" class="column-icon" icon="calculator"></fa-icon>
-                        <fa-icon *ngIf="key.type === 'string'" class="column-icon" icon="font"></fa-icon>
-                        <fa-icon *ngIf="key.type === 'date'" class="column-icon" icon="calendar"></fa-icon>
-                        <fa-icon *ngIf="key.type === 'custom'" class="column-icon" icon="code"></fa-icon>
-                        {{ key.name }}
-                    </div>
-                    <fa-icon
-                        class="remove-icon"
-                        icon="times-circle"
-                        (click)="removeKey(key, dataSourceSelectedKeys.get(item.key)?.data)"
-                    ></fa-icon>
-                </div>
-            </div>
-        </div>
-        <div class="field-list">
-            <div
-                cdkDropList
-                class="field-list-wrapper"
-                #fieldLists="cdkDropList"
-                [cdkDropListData]="dataSourceKeys"
-                [cdkDropListSortingDisabled]="true"
-                [cdkDropListConnectedTo]="bindingsIds"
-            >
-                <span class="field-list-label">Colunas</span>
-                <div
-                    *ngFor="let item of dataSourceKeys"
-                    [class.custom]="item.type === 'custom'"
-                    [class.number]="item.type === 'number'"
-                    [class.text]="item.type === 'string'"
-                    [class.date]="item.type === 'date'"
-                    [cdkDragData]="item"
-                    class="field"
-                    cdkDragBoundary=".field-selector-container"
-                    cdkDrag
-                >
-                    <div class="field-text" [title]="item.name">
-                        <fa-icon *ngIf="item.type === 'number'" class="column-icon" icon="calculator"></fa-icon>
-                        <fa-icon *ngIf="item.type === 'string'" class="column-icon" icon="font"></fa-icon>
-                        <fa-icon *ngIf="item.type === 'date'" class="column-icon" icon="calendar"></fa-icon>
-                        <fa-icon *ngIf="item.type === 'custom'" class="column-icon" icon="code"></fa-icon>
-                        {{ item.name }}
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div class="datasource-selector" [hidden]="!dataSourceSelected" *ngFor="let item of dataSourceBindOptions">
+        <label for="datasource" style="font-size: 12px">{{ item.label }}:</label>
+        <fb-select-column
+            [valueChange]="changedKeysSelected(item.key)"
+            [value]="dataSourceSelectedKeys[item.key]"
+            [multiple]="item.rules.max !== undefined  && item.rules.max !== null ? item.rules.max > 1 : true"
+            placeholder="Colunas"
+            [searchable]="true"
+            [items]="dataSourceKeysItems[item.key]"
+        ></fb-select-column>
     </div>
 </div>
-<fb-modal-panel [showPainel]="stateFilterPanel">
-    <fb-filter-selector
-        #fbFilter
-        [filters]="filters"
-        (selectFilter)="selectFilter($event)"
-        [(showPanel)]="stateFilterPanel"
-    ></fb-filter-selector>
-</fb-modal-panel>

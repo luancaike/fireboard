@@ -75,8 +75,15 @@ export class FireboardDataService {
             .pipe(this.catchHttpError());
     }
 
-    getDataOfSource(id): Observable<any> {
-        return this.http.get<any>(`${api}/api/v1/dashboard-builder/datasource/data/${id}`).pipe(this.catchHttpError());
+    getDataOfSource(
+        id,
+        filter = {
+            filters: []
+        }
+    ): Observable<any> {
+        return this.http
+            .post<any>(`${api}/api/v1/dashboard-builder/datasource/data/${id}`, filter)
+            .pipe(this.catchHttpError());
     }
 
     getTableSources(): Observable<any> {
@@ -117,8 +124,8 @@ export class FireboardDataService {
                 value: this.filterValues.get(el.filterKey)
             }));
         return new Promise<any[]>((resolve) => {
-            this.getDataOfSource(data.sourceId).subscribe(({ result }) => {
-                const dataResult = result?.data?.result ?? [];
+            this.getDataOfSource(data.sourceId).subscribe(({ data }) => {
+                const dataResult = data?.result ?? [];
                 resolve(
                     query.filters.reduce((acc, item) => {
                         if (item.type === FilterQueryTypes.DateInterval) {

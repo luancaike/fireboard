@@ -429,6 +429,7 @@ export class BarChartDefault {
                 label: 'Rótulos',
                 key: 'labels',
                 rules: {
+                    max: 1,
                     required: true
                 }
             }

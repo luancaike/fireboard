@@ -64,12 +64,7 @@ export abstract class WidgetAbstract implements WidgetComponent {
     }
 
     getConfig(): WidgetConfig {
-        return {
-            dataSourceSelectedKeys: this.dataSourceSelectedKeys,
-            dataSourceBindOptions: this.dataSourceBindOptions,
-            dataSource: this.dataSource,
-            options: this.getOptions()
-        };
+        return this;
     }
 
     getOptions(): WidgetOptions {

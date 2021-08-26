@@ -1,4 +1,3 @@
-import { CdkDragDrop, copyArrayItem, moveItemInArray } from '@angular/cdk/drag-drop';
 import {
     ChangeDetectionStrategy,
     ChangeDetectorRef,
@@ -10,12 +9,11 @@ import {
     SimpleChanges,
     ViewChild
 } from '@angular/core';
-import { DataSourceBindOption, DataSourceSelectedKey, WidgetConfig } from '../../widgets/widget.abstract';
+import { DataSourceBindOption, DataSourceBindOptionRules, WidgetConfig } from '../../widgets/widget.abstract';
 import { DataSource, DataSourceKey, DataSourceSelected, FilterModel } from '../../models/data-source.dtos';
 import { FilterSelectorComponent } from '../filter-selector/filter-selector.component';
 import { LoadingBarService } from '../../service/loading-bar.service';
 import { FireboardDataService } from '../../service/fireboard-data.service';
-import { CdkDragEnter, CdkDragExit } from '@angular/cdk/drag-drop/drag-events';
 
 @Component({
     selector: 'fb-data-source-selector',
@@ -37,7 +35,8 @@ export class DataSourceSelectorComponent implements OnChanges {
     public dataSourceBindOptions: DataSourceBindOption[] = [];
     public filters: FilterModel[] = [];
     public filtersSelected: FilterModel[] = [];
-    public dataSourceSelectedKeys: Map<string, DataSourceSelectedKey> = new Map();
+    public dataSourceSelectedKeys: { [key: string]: DataSourceKey[] } = {};
+    public dataSourceKeysItems: { [key: string]: DataSourceKey[] } = {};
     public bindingsIds: string[] = [];
 
     constructor(
@@ -46,82 +45,45 @@ export class DataSourceSelectorComponent implements OnChanges {
         public fireboardDataService: FireboardDataService
     ) {}
 
+    changedKeysSelected = (key) => (value) => {
+        this.dataSourceSelectedKeys[key] = value;
+        this.emitSelectedKeys();
+    };
+
+    emitSelectedKeys() {
+        const model = {
+            dataSourceSelectedKeys: Object.keys(this.dataSourceSelectedKeys).map((key) => {
+                let data = this.dataSourceSelectedKeys[key];
+                if (!!data && !Array.isArray(data)) {
+                    data = [data];
+                }
+                return {
+                    key,
+                    data
+                };
+            })
+        };
+        this.changedDataSource.emit(model);
+    }
+
     ngOnChanges(changes: SimpleChanges): void {
         if (changes.legoConfig) {
             this.editLego();
         }
     }
 
-    showFilterPanel() {
-        this.stateFilterPanel = true;
-        const dataSource = this.dataSources.find(({ id }) => this.dataSourceSelected === id);
-
-        if (dataSource) {
-            this.fbFilter.columnsData = dataSource.columns;
-            this.getAndSetFilters();
-        }
-    }
-
-    checkEnterItem(drag: CdkDragEnter<DataSourceKey[], DataSourceKey>) {
-        const allowed = this.checkRules(drag);
-        if (!allowed) {
-            console.log(drag.container.element.nativeElement.classList.toString());
-            drag.container.element.nativeElement.classList.add('not-allowed');
-        }
-    }
-
-    checkRules(drag: CdkDragEnter<DataSourceKey[], DataSourceKey>) {
-        let max = true;
-        let allowTypes = true;
-        const bind = this.dataSourceBindOptions.find((el) => el.key === drag.container.id);
-        if (bind && bind.rules) {
-            if (bind.rules.max) {
-                max = drag.container.data.length < bind.rules.max;
-            }
-            if (bind.rules.allowTypes) {
-                allowTypes = !!bind.rules.allowTypes.find((type) => type === drag.item.data.type);
-            }
-        }
-        return max && allowTypes;
-    }
-
-    checkExitItem(drag: CdkDragExit<DataSourceKey[], DataSourceKey>) {
-        this.resetDropAreaStyle(drag.container.element.nativeElement);
-    }
-
-    resetDropAreaStyle(element: HTMLElement) {
-        element.classList.remove('not-allowed');
-    }
-
-    getAndSetFilters() {
-        if (this.fireboardDataService.getExternalFilters && this.dataSourceSelected) {
-            this.loadingBarService.show();
-            this.fireboardDataService.getExternalFilters(this.dataSourceSelected).then((data) => {
-                this.filters = data;
-                this.loadingBarService.hide();
-                this.cdr.detectChanges();
-            });
-        }
-    }
-
     editLego(): void {
-        // this.legoConfig = legoConfig;
         this.resetData();
         this.selectDataSource();
         this.mountDataSourceBindOptions();
         this.mountDataSourceKeys();
-        this.mountFilters();
+        this.updateDataSourceKeysItems();
         this.cdr.detectChanges();
     }
 
     resetData(): void {
         this.dataSourceKeys = [];
-        this.dataSourceSelectedKeys.clear();
-    }
-
-    selectFilter(filter: FilterModel): void {
-        this.filtersSelected = [...this.filtersSelected, filter];
-        this.changedFiltersSelected();
+        this.dataSourceSelectedKeys = {};
     }
 
     selectDataSource(): void {
@@ -147,50 +109,28 @@ export class DataSourceSelectorComponent implements OnChanges {
             keys.forEach((key) => {
                 const result = this.legoConfig.dataSourceSelectedKeys.find((el) => el.key === key);
                 if (result) {
-                    this.dataSourceSelectedKeys.set(key, result);
+                    this.dataSourceSelectedKeys[key] = result.data;
                 } else {
-                    this.dataSourceSelectedKeys.set(key, {
-                        key,
-                        data: []
-                    });
+                    this.dataSourceSelectedKeys[key] = [];
                 }
             });
         }
     }
 
-    mountFilters(): void {
-        if (Array.isArray(this.legoConfig.filters)) {
-            this.filtersSelected = this.legoConfig.filters;
-        }
-    }
-
     clearDataSourceKeys(): void {
         if (Array.isArray(this.legoConfig.dataSourceBindOptions)) {
-            const keys = this.legoConfig.dataSourceBindOptions.map(({ key }) => key);
-            keys.forEach((key) => {
-                this.dataSourceSelectedKeys.set(key, {
-                    key,
-                    data: []
-                });
+            this.legoConfig.dataSourceBindOptions.forEach((value) => {
+                this.dataSourceSelectedKeys[value.key] = [];
             });
         }
     }
 
-    removeItemOfArray(item: unknown, array: any[]): void {
-        const index = array.indexOf(item);
-        if (~index) {
-            array.splice(index, 1);
+    updateDataSourceKeysItems() {
+        if (Array.isArray(this.legoConfig.dataSourceBindOptions)) {
+            this.legoConfig.dataSourceBindOptions.forEach((value) => {
+                this.dataSourceKeysItems[value.key] = this.dataSourcesFilterByRules(value.rules);
+            });
         }
-    }
-
-    removeKey(item: unknown, array: any[]): void {
-        this.removeItemOfArray(item, array);
-        this.changedKeysSelected();
-    }
-
-    removeFilter(item: unknown, array: any[]): void {
-        this.removeItemOfArray(item, array);
-        this.changedFiltersSelected();
     }
 
     updateLegoKeysBySelections(): void {
@@ -200,40 +140,18 @@ export class DataSourceSelectorComponent implements OnChanges {
         }
     }
 
-    changedDatasource(): void {
+    dataSourcesFilterByRules(rules: DataSourceBindOptionRules) {
+        return this.dataSourceKeys.filter(
+            (el) => !Array.isArray(rules.allowTypes) || rules.allowTypes.find((type) => type === el.type)
+        );
+    }
+
+    updateDatasource(value): void {
+        this.dataSourceSelected = value;
         this.updateLegoKeysBySelections();
         this.clearDataSourceKeys();
+        this.updateDataSourceKeysItems();
         this.changedDataSource.emit({ dataSource: this.dataSourceSelected });
-    }
-
-    changedKeysSelected(): void {
-        this.changedDataSource.emit({ dataSourceSelectedKeys: Array.from(this.dataSourceSelectedKeys.values()) });
-    }
-
-    changedFiltersSelected(): void {
-        this.changedDataSource.emit({ filters: this.filtersSelected });
-    }
-
-    drop(event: CdkDragDrop<DataSourceKey[]>): void {
-        this.resetDropAreaStyle(event.container.element.nativeElement);
-        const allowed = this.checkRules(event);
-        if (!allowed) {
-            return;
-        }
-        if (event.previousContainer === event.container) {
-            moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
-        } else {
-            copyArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
-        }
-        this.changedKeysSelected();
-    }
-
-    dropFilter(event: CdkDragDrop<FilterModel[]>): void {
-        if (event.previousContainer === event.container) {
-            moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
-        } else {
-            copyArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
-        }
-        this.changedFiltersSelected();
+        this.cdr.detectChanges();
     }
 }
