@@ -41,15 +41,18 @@ export interface DataGetter {
 export abstract class WidgetAbstract implements WidgetComponent {
     abstract legoData: LegoConfig;
     abstract fireboardDataService: FireboardDataService;
+    abstract options: WidgetOptions = {};
+
     public typeFilter: FilterQueryTypes;
     public isFilter = false;
     public isLoading: boolean;
     public dataSource: DataSourceSelected = null;
     public dataSourceBindOptions: DataSourceBindOption[] = [];
     public dataSourceSelectedKeys: DataSourceSelectedKey[] = [];
-    public options: WidgetOptions = {};
     public data: any[] = [];
     public fieldsEditor: FieldEditor[] = [];
+
+    private config: WidgetConfig = {};
 
     constructor(protected cdr: ChangeDetectorRef) {}
 
@@ -64,7 +67,11 @@ export abstract class WidgetAbstract implements WidgetComponent {
     }
 
     getConfig(): WidgetConfig {
-        return this;
+        this.config.dataSourceSelectedKeys = this.dataSourceSelectedKeys;
+        this.config.dataSourceBindOptions = this.dataSourceBindOptions;
+        this.config.dataSource = this.dataSource;
+        this.config.options = this.getOptions();
+        return this.config;
     }
 
     getOptions(): WidgetOptions {
@@ -89,7 +96,7 @@ export abstract class WidgetAbstract implements WidgetComponent {
         if (options) {
             this.setOptions(options);
         }
-        if (this.checkValidityForGetData()) {
+        if ((dataSourceSelectedKeys || dataSource) && this.checkValidityForGetData()) {
             this.updateDataAndApplyComponent();
         }
     }

@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { DataSourceKey } from '../../models/data-source.dtos';
 
 @Component({
     changeDetection: ChangeDetectionStrategy.OnPush,
@@ -9,7 +10,7 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
             <ng-select
                 class="ng-select-column"
                 [placeholder]="placeholder"
-                [hideSelected]="true"
+                [hideSelected]="false"
                 [appendTo]="appendTo"
                 [closeOnSelect]="closeOnSelect"
                 (ngModelChange)="valueChange($event)"
@@ -19,6 +20,7 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
                 [searchable]="searchable"
                 [clearable]="clearable"
                 [multiple]="multiple"
+                [searchFn]="customSearchFn"
                 [items]="items"
                 style="flex-grow: 1; width: 214px;"
             >
@@ -63,7 +65,7 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
     `
 })
 export class SelectColumnComponent {
-    @Input() items: any[];
+    @Input() items: DataSourceKey[];
     @Input() appendTo = null;
     @Input() clearable = false;
     @Input() searchable: boolean;
@@ -75,4 +77,9 @@ export class SelectColumnComponent {
     @Input() closeOnSelect = true;
 
     @Input() valueChange: (data: any) => any;
+
+    customSearchFn = (term: string, item: any) => {
+        term = term.toLowerCase();
+        return item.name.toLowerCase().indexOf(term) > -1;
+    };
 }

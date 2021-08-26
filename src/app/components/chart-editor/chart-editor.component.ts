@@ -61,6 +61,7 @@ export class ChartEditorComponent {
     }
 
     _save() {
+        console.log(this.modelChart);
         this.save.emit({ ...this.modelChart });
     }
 }

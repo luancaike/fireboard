@@ -97,7 +97,7 @@ export class StyleEditorComponent implements OnChanges {
 
     setValueObjectByPath(keyPath: string, value: unknown): void {
         SetValueObjectByPath(this.legoOptions.options, keyPath, value);
-        this.changedOptions.emit({ ...this.legoOptions });
+        this.changedOptions.emit({ options: this.legoOptions.options });
         this.cdr.detectChanges();
     }
 
