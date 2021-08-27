@@ -15,6 +15,8 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { debounce } from '../../utils/effects';
 import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap/modal/modal-ref';
 import { DataSource } from '../../models/data-source.dtos';
+import { FireboardDataService } from '../../service/fireboard-data.service';
+import { ConfirmService } from '../../service/confirm.service';
 
 @Component({
     selector: 'fb-chart-selector',
@@ -60,7 +62,13 @@ export class ChartSelectorComponent {
         return this.chartsFilter.length ? this.chartsFilter : this.charts;
     }
 
-    constructor(private modalService: NgbModal, private cdr: ChangeDetectorRef, private zone: NgZone) {}
+    constructor(
+        private modalService: NgbModal,
+        private cdr: ChangeDetectorRef,
+        private confirmService: ConfirmService,
+        private zone: NgZone,
+        public fireboardDataService: FireboardDataService
+    ) {}
 
     selectChart(item: ChartItemConfig) {
         this.selected.emit(item);
@@ -68,9 +76,20 @@ export class ChartSelectorComponent {
     }
 
     editChart(item: ChartItemConfig) {
-        this.modelChart = item;
-        this.chartEditorModal = true;
         this.modalRef.close();
+        this.fireboardDataService.getChartLegoById(item.id).subscribe(({ data }) => {
+            this.modelChart = data;
+            this.chartEditorModal = true;
+            this.cdr.detectChanges();
+        });
+    }
+
+    removeChart(item: ChartItemConfig) {
+        this.confirmService.show('Deseja realmente excluir o gráfico?', () => {
+            this.fireboardDataService.deleteChart(item.id).subscribe(() => {
+                this.getItems.splice(this.getItems.indexOf(item), 1);
+            });
+        });
     }
 
     newChart() {

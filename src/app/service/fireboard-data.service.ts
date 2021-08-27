@@ -7,6 +7,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { ToastService } from './toast.service';
 import { catchError } from 'rxjs/operators';
 import { Observable, throwError } from 'rxjs';
+import { ChartItemConfig } from '../models/charts.dtos';
 
 const randomTimer = () => Math.random() * (1000 - 100) + 100;
 
@@ -19,6 +20,7 @@ export class FireboardDataService {
     public filterValues = new Map<string, any>();
     public tableSources: DataSource[] = [];
     public dataSources: DataSource[] = [];
+    public chartsLego: ChartItemConfig[] = [];
 
     constructor(private http: HttpClient, private toastService: ToastService) {}
 
@@ -94,6 +96,26 @@ export class FireboardDataService {
         return this.http.get(`${api}/api/v1/dashboard-builder/datasource`).pipe(this.catchHttpError());
     }
 
+    getChartsLego(): Observable<any> {
+        return this.http.get(`${api}/api/v1/dashboard-builder/chart`).pipe(this.catchHttpError());
+    }
+
+    getChartLegoById(id): Observable<any> {
+        return this.http.get(`${api}/api/v1/dashboard-builder/chart/${id}`).pipe(this.catchHttpError());
+    }
+
+    deleteChart(id): Observable<any> {
+        return this.http.delete(`${api}/api/v1/dashboard-builder/chart/${id}`).pipe(this.catchHttpError());
+    }
+
+    addChartLego(model): Observable<any> {
+        return this.http.post(`${api}/api/v1/dashboard-builder/chart`, model).pipe(this.catchHttpError());
+    }
+
+    editChartLego(id, model): Observable<any> {
+        return this.http.put(`${api}/api/v1/dashboard-builder/chart/${id}`, model).pipe(this.catchHttpError());
+    }
+
     searchTable(table: string): Observable<any> {
         return this.http.get(`${api}/api/v1/dashboard-builder/table-columns/${table}`).pipe(this.catchHttpError());
     }
@@ -101,14 +123,25 @@ export class FireboardDataService {
     getData() {
         this.updateTableSources();
         this.updateDataSources();
+        this.updateChartsLego();
     }
 
     updateTableSources() {
-        this.getTableSources().subscribe(({ data }) => (this.tableSources = data));
+        const result = this.getTableSources();
+        result.subscribe(({ data }) => (this.tableSources = data));
+        return result;
     }
 
     updateDataSources() {
-        this.getDataSources().subscribe(({ data }) => (this.dataSources = data));
+        const result = this.getDataSources();
+        result.subscribe(({ data }) => (this.dataSources = data));
+        return result;
+    }
+
+    updateChartsLego() {
+        const result = this.getChartsLego();
+        result.subscribe(({ data }) => (this.chartsLego = data));
+        return result;
     }
 
     async dataGetter(data: DataGetter): Promise<any[]> {

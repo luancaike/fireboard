@@ -35,7 +35,7 @@ export class DataSourceSelectorComponent implements OnChanges {
     public dataSourceBindOptions: DataSourceBindOption[] = [];
     public filters: FilterModel[] = [];
     public filtersSelected: FilterModel[] = [];
-    public dataSourceSelectedKeys: { [key: string]: DataSourceKey[] } = {};
+    public dataSourceSelectedKeys: { [key: string]: any } = {};
     public dataSourceKeysItems: { [key: string]: DataSourceKey[] } = {};
     public bindingsIds: string[] = [];
 
@@ -105,11 +105,15 @@ export class DataSourceSelectorComponent implements OnChanges {
 
     mountDataSourceKeys(): void {
         if (Array.isArray(this.legoConfig.dataSourceBindOptions)) {
-            const keys = this.legoConfig.dataSourceBindOptions.map(({ key }) => key);
-            keys.forEach((key) => {
+            this.legoConfig.dataSourceBindOptions.forEach((item) => {
+                const key = item.key;
                 const result = this.legoConfig.dataSourceSelectedKeys.find((el) => el.key === key);
                 if (result) {
-                    this.dataSourceSelectedKeys[key] = result.data;
+                    this.dataSourceSelectedKeys[key] = (
+                        item.rules.max !== undefined && item.rules.max !== null ? item.rules.max > 1 : true
+                    )
+                        ? result.data
+                        : result.data[0];
                 } else {
                     this.dataSourceSelectedKeys[key] = [];
                 }

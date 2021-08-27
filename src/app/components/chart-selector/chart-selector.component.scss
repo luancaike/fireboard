@@ -12,6 +12,10 @@
         .icon-item-edit {
             display: block;
         }
+
+        .icon-item-delete {
+            display: block;
+        }
     }
 
     .icon-item {
@@ -31,9 +35,21 @@
     }
 
     .icon-item-edit {
+        color: #007bff;
+        cursor: pointer;
         display: none;
-        color: #777777;
-        font-size: 25px;
+        font-size: 20px;
+        position: absolute;
+        right: 35px;
+        top: 5px;
+        width: 40px;
+    }
+
+    .icon-item-delete {
+        cursor: pointer;
+        display: none;
+        color: #dc3545;
+        font-size: 20px;
         position: absolute;
         right: 5px;
         top: 5px;

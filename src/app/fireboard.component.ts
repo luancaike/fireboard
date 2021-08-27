@@ -12,7 +12,6 @@ import { CraftableComponent } from 'ng-craftable';
 import { DataSourceSelectorComponent } from './components/data-source-selector/data-source-selector.component';
 import { WidgetAbstract, WidgetConfig } from './widgets/widget.abstract';
 import { DataSource, DataSourceKey } from './models/data-source.dtos';
-import { ChartsMockList } from './models/mocks';
 import { StyleEditorComponent } from './components/style-editor/style-editor.component';
 import { FireboardDataService } from './service/fireboard-data.service';
 import { debounce } from './utils/effects';
@@ -55,7 +54,6 @@ export class FireboardComponent implements AfterViewInit {
     public nameBoard = 'Nome do Dashboard';
     public isLoading = false;
     public showLegoOptionsEditor = false;
-    public chartsList: ChartItemConfig[] = ChartsMockList;
     public selectedFilter: WidgetAbstract;
     public visualizationMode = false;
     public enableDrag = true;
@@ -79,6 +77,10 @@ export class FireboardComponent implements AfterViewInit {
         return this.fireboardDataService.dataSources;
     }
 
+    get chartsList(): ChartItemConfig[] {
+        return this.fireboardDataService.chartsLego;
+    }
+
     constructor(
         private cdr: ChangeDetectorRef,
         public fireboardDataService: FireboardDataService,
@@ -89,10 +91,10 @@ export class FireboardComponent implements AfterViewInit {
 
     ngAfterViewInit(): void {
         this.addPage();
-        this.getDataSources();
+        this.serviceGetData();
     }
 
-    getDataSources() {
+    serviceGetData() {
         this.fireboardDataService.getData();
     }
 

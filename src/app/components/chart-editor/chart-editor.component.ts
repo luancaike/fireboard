@@ -15,6 +15,7 @@ import { DataSource } from '../../models/data-source.dtos';
 import { ChartItemConfig } from '../../models/charts.dtos';
 import { DataSourceSelectorComponent } from '../data-source-selector/data-source-selector.component';
 import { StyleEditorComponent } from '../style-editor/style-editor.component';
+import { FireboardDataService } from '../../service/fireboard-data.service';
 
 @Component({
     selector: 'fb-chart-editor',
@@ -27,14 +28,13 @@ export class ChartEditorComponent {
     @ViewChild('datasourceSelector') datasourceSelector: DataSourceSelectorComponent;
     @ViewChild('styleEditorWidget') styleEditorWidget: StyleEditorComponent;
 
-    @Output() save = new EventEmitter<ChartItemConfig>();
     @Output() showPanelChange = new EventEmitter();
     @Input() craftable: CraftableComponent;
     @Input() filtersList: QueryList<WidgetAbstract>;
     @Input() dataSources: DataSource[] = [];
     @Input() modelChart: ChartItemConfig;
 
-    constructor(protected cdr: ChangeDetectorRef) {}
+    constructor(protected cdr: ChangeDetectorRef, public fireboardDataService: FireboardDataService) {}
 
     get getChartSelect() {
         return this.widgetsList?.first;
@@ -60,8 +60,22 @@ export class ChartEditorComponent {
         this.getChartSelect?.setConfig(legoOptions);
     }
 
-    _save() {
-        console.log(this.modelChart);
-        this.save.emit({ ...this.modelChart });
+    closePanel() {
+        this.showPanel = false;
+        this.cdr.detectChanges();
+    }
+
+    saveChart() {
+        if (this.modelChart.id) {
+            this.fireboardDataService.editChartLego(this.modelChart.id, this.modelChart).subscribe(() => {
+                this.closePanel();
+                this.fireboardDataService.updateChartsLego();
+            });
+        } else {
+            this.fireboardDataService.addChartLego(this.modelChart).subscribe(() => {
+                this.closePanel();
+                this.fireboardDataService.updateChartsLego();
+            });
+        }
     }
 }

@@ -29,6 +29,7 @@ import { TableSourceModule } from './components/table-source/table-source.module
 import { ToastComponent } from './components/toast/toast.component';
 import { ToastService } from './service/toast.service';
 import { DataSourceModule } from './components/data-source/data-source.module';
+import { ConfirmationModalComponent } from './components/confirmation-modal/confirmation-modal.component';
 
 @NgModule({
     imports: [
@@ -69,7 +70,8 @@ import { DataSourceModule } from './components/data-source/data-source.module';
         InputSelectComponent,
         InputTextComponent,
         CardSelectComponent,
-        ToastComponent
+        ToastComponent,
+        ConfirmationModalComponent
     ],
     bootstrap: [FireboardComponent]
 })
